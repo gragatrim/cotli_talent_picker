@@ -126,33 +126,33 @@ table, th, td {
     <td></td><td></td>
   </tr>
 </table>
-Total Idols: <input type="text" name="total_idols" value="<?php echo print_value("total_idols"); ?>"><br>
-Golden Items: <input type="text" name="golden_items" value="<?php echo print_value("golden_items"); ?>"><br>
-Common + Uncommon Recipies: <input type="text" name="common_and_uncommon_recipies" value="<?php echo print_value("common_and_uncommon_recipies"); ?>"><br>
-Rare Recipies: <input type="text" name="rare_recipies" value="<?php echo print_value("rare_recipies"); ?>"><br>
-Epic Recipies: <input type="text" name="epic_recipies" value="<?php echo print_value("epic_recipies"); ?>"><br>
-Missions Accomplished: <input type="text" name="missions_accomplished" value="<?php echo print_value("missions_accomplished"); ?>"><br>
-Legendaries: <input type="text" name="legendaries" value="<?php echo print_value("legendaries"); ?>"><br>
-Brass Rings: <input type="text" name="brass_rings" value="<?php echo print_value("brass_rings"); ?>"><br>
-Silver Rings: <input type="text" name="silver_rings" value="<?php echo print_value("silver_rings"); ?>"><br>
-Golden Rings: <input type="text" name="golden_rings" value="<?php echo print_value("golden_rings"); ?>"><br>
-Diamond Rings: <input type="text" name="diamond_rings" value="<?php echo print_value("diamond_rings"); ?>"><br>
-Average Mission Completion in 8h: <input type="text" name="average_mission_completion" value="<?php echo print_value("average_mission_completion"); ?>"><br>
-Main DPS Slot: <input type="text" name="main_dps_slot" value="<?php echo print_value("main_dps_slot"); ?>"><br>
-Cooldown Reduction%: <input type="text" name="cooldown_reduction" value="<?php echo print_value("cooldown_reduction"); ?>"><br>
-EP from main DPS: <input type="text" name="ep_from_main_dps" value="<?php echo print_value("ep_from_main_dps"); ?>"><br>
-EP from Benched Crusaders: <input type="text" name="ep_from_benched_crusaders" value="<?php echo print_value("ep_from_benched_crusaders"); ?>"><br>
-Epics on main DPS: <input type="text" name="epics_on_main_dps" value="<?php echo print_value("epics_on_main_dps"); ?>"><br>
-Epics on Benched Crusaders: <input type="text" name="epics_on_benched_crusaders" value="<?php echo print_value("epics_on_benched_crusaders"); ?>"><br>
-Storm Rider Gear Bonus: <input type="text" name="storm_rider_gear_bonus" value="<?php echo print_value("storm_rider_gear_bonus"); ?>"><br>
-Main DPS benched crusaders legendaries: <input type="text" name="main_dps_benched_crusaders_legendaries" value="<?php echo print_value("main_dps_benched_crusaders_legendaries"); ?>"><br>
-Main DPS benched crusaders golden gear: <input type="text" name="main_dps_benched_crusaders_golden_gear" value="<?php echo print_value("main_dps_benched_crusaders_golden_gear"); ?>"><br>
-Taskmasters owned: <input type="text" name="taskmasters_owned" value="<?php echo print_value("taskmasters_owned"); ?>"><br>
-Clicks per second: <input type="text" name="clicks_per_second" value="<?php echo print_value("clicks_per_second"); ?>"><br>
-Crusaders owned: <input type="text" name="crusaders_owned" value="<?php echo print_value("crusaders_owned"); ?>"><br>
-Crusaders in formation: <input type="text" name="crusaders_in_formation" value="<?php echo print_value("crusaders_in_formation"); ?>"><br>
-Critical chance: <input type="text" name="critical_chance" value="<?php echo print_value("critical_chance"); ?>"><br>
-Click damage per DPS: <input type="text" name="click_damage_per_dps" value="<?php echo print_value("click_damage_per_dps"); ?>"><br>
+Total Idols: <input type="text" name="total_idols" value="<?php echo $user->total_idols; ?>"><br>
+Golden Items: <input type="text" name="golden_items" value="<?php echo $user->golden_items; ?>"><br>
+Common + Uncommon Recipies: <input type="text" name="common_and_uncommon_recipies" value="<?php echo $user->common_and_uncommon_recipies; ?>"><br>
+Rare Recipies: <input type="text" name="rare_recipies" value="<?php echo $user->rare_recipies; ?>"><br>
+Epic Recipies: <input type="text" name="epic_recipies" value="<?php echo $user->epic_recipies; ?>"><br>
+Missions Accomplished: <input type="text" name="missions_accomplished" value="<?php echo $user->missions_accomplished; ?>"><br>
+Legendaries: <input type="text" name="legendaries" value="<?php echo $user->legendaries; ?>"><br>
+Brass Rings: <input type="text" name="brass_rings" value="<?php echo $user->brass_rings; ?>"><br>
+Silver Rings: <input type="text" name="silver_rings" value="<?php echo $user->silver_rings; ?>"><br>
+Golden Rings: <input type="text" name="golden_rings" value="<?php echo $user->golden_rings; ?>"><br>
+Diamond Rings: <input type="text" name="diamond_rings" value="<?php echo $user->diamond_rings; ?>"><br>
+Average Mission Completion in 8h: <input type="text" name="average_mission_completion" value="<?php echo $user->average_mission_completion; ?>"><br>
+Main DPS Slot: <input type="text" name="main_dps_slot" value="<?php echo $user->main_dps_slot; ?>"><br>
+Cooldown Reduction%: <input type="text" name="cooldown_reduction" value="<?php echo $user->cooldown_reduction; ?>"><br>
+EP from main DPS: <input type="text" name="ep_from_main_dps" value="<?php echo $user->ep_from_main_dps; ?>"><br>
+EP from Benched Crusaders: <input type="text" name="ep_from_benched_crusaders" value="<?php echo $user->ep_from_benched_crusaders; ?>"><br>
+Epics on main DPS: <input type="text" name="epics_on_main_dps" value="<?php echo $user->epics_on_main_dps; ?>"><br>
+Epics on Benched Crusaders: <input type="text" name="epics_on_benched_crusaders" value="<?php echo $user->epics_on_benched_crusaders; ?>"><br>
+Storm Rider Gear Bonus: <input type="text" name="storm_rider_gear_bonus" value="<?php echo $user->storm_rider_gear_bonus; ?>"><br>
+Main DPS benched crusaders legendaries: <input type="text" name="main_dps_benched_crusaders_legendaries" value="<?php echo $user->main_dps_benched_crusaders_legendaries; ?>"><br>
+Main DPS benched crusaders golden gear: <input type="text" name="main_dps_benched_crusaders_golden_gear" value="<?php echo $user->main_dps_benched_crusaders_golden_gear; ?>"><br>
+Taskmasters owned: <input type="text" name="taskmasters_owned" value="<?php echo $user->taskmasters_owned; ?>"><br>
+Clicks per second: <input type="text" name="clicks_per_second" value="<?php echo $user->clicks_per_second; ?>"><br>
+Crusaders owned: <input type="text" name="crusaders_owned" value="<?php echo $user->crusaders_owned; ?>"><br>
+Crusaders in formation: <input type="text" name="crusaders_in_formation" value="<?php echo $user->crusaders_in_formation; ?>"><br>
+Critical chance: <input type="text" name="critical_chance" value="<?php echo $user->critical_chance; ?>"><br>
+Click damage per DPS: <input type="text" name="click_damage_per_dps" value="<?php echo $user->click_damage_per_dps; ?>"><br>
 <input type="submit">
 </form>
 

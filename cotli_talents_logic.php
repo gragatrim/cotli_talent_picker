@@ -1,5 +1,32 @@
 <?php
 if ($_POST) {
+  $user = new User($_POST['total_idols'],
+                   $_POST['golden_items'],
+                   $_POST['common_and_uncommon_recipies'],
+                   $_POST['rare_recipies'],
+                   $_POST['epic_recipies'],
+                   $_POST['missions_accomplished'],
+                   $_POST['legendaries'],
+                   $_POST['brass_rings'],
+                   $_POST['silver_rings'],
+                   $_POST['golden_rings'],
+                   $_POST['diamond_rings'],
+                   $_POST['average_mission_completion'],
+                   $_POST['main_dps_slot'],
+                   $_POST['cooldown_reduction'],
+                   $_POST['ep_from_main_dps'],
+                   $_POST['ep_from_benched_crusaders'],
+                   $_POST['epics_on_main_dps'],
+                   $_POST['epics_on_benched_crusaders'],
+                   $_POST['storm_rider_gear_bonus'],
+                   $_POST['main_dps_benched_crusaders_legendaries'],
+                   $_POST['main_dps_benched_crusaders_golden_gear'],
+                   $_POST['taskmasters_owned'],
+                   $_POST['clicks_per_second'],
+                   $_POST['crusaders_owned'],
+                   $_POST['crusaders_in_formation'],
+                   $_POST['critical_chance'],
+                   $_POST['click_damage_per_dps']);
   $time_o_rama_talent = new Talent(20, 25, 1.25, $_POST['time_o_rama']);
   $massive_criticals_talent = new Talent(25, 50, 1.25, $_POST['massive_criticals']);
   $golden_benefits_talent = new Talent(-1, 1500, 1.061, $_POST['golden_benefits'], '+', $_POST['golden_items'], $_POST['golden_benefits']);
@@ -79,7 +106,7 @@ if ($_POST) {
   $sprint_for_the_finish_talent = new Talent(30, 200000000000, 1.2275, $_POST['sprint_for_the_finish']);
   $magical_training_talent = new Talent(-1, 20000000000, 1.285, $_POST['magical_training'], '*', 400, 1);
   $base_damage = 1;
-  echo $_POST['golden_benefits'] . " means " . $golden_benefits_talent->get_current_damage() . "% gain<br>";
+  echo $golden_benefits_talent->current_level . " means " . $golden_benefits_talent->get_current_damage() . "% gain<br>";
   echo "Friendly Helpers lvl " . $friendly_helpers_talent->current_level . " means " . $friendly_helpers_talent->get_current_damage() . "% gain<br>";
   echo "Every little bit helps lvl " . $every_little_bit_helps_talent->current_level . " means " . $every_little_bit_helps_talent->get_current_damage() . "% gain<br>";
   echo "Friendly Helpers next level cost is " . $friendly_helpers_talent->get_next_level_cost() . " <br>";
@@ -146,15 +173,33 @@ class Talent {
 }
 
 class User {
-  function __construct() {
-    $this->max_level = $max_level;
-    $this->base_cost = $base_cost;
-    $this->level_multiplier = $level_multiplier;
-    $this->current_level = $current_level;
-    $this->damage_type = $damage_type;
-    $this->stacks = $stacks;
-    $this->damage_base = $damage_base;
-    $this->multiplicative_damage_base_multiplier = $multiplicative_damage_base_multiplier;
-    $this->effect = $effect;
+  function __construct($total_idols, $golden_items, $common_and_uncommon_recipies, $rare_recipies, $epic_recipies, $missions_accomplished, $legendaries, $brass_rings, $silver_rings, $golden_rings, $diamond_rings, $average_mission_completion, $main_dps_slot, $cooldown_reduction, $ep_from_main_dps, $ep_from_benched_crusaders, $epics_on_main_dps, $epics_on_benched_crusaders, $storm_rider_gear_bonus, $main_dps_benched_crusaders_legendaries, $main_dps_benched_crusaders_golden_gear, $taskmasters_owned, $clicks_per_second, $crusaders_owned, $crusaders_in_formation, $critical_chance, $click_damage_per_dps) {
+    $this->total_idols = $total_idols;
+    $this->golden_items = $golden_items;
+    $this->common_and_uncommon_recipies = $common_and_uncommon_recipies;
+    $this->rare_recipies = $rare_recipies;
+    $this->epic_recipies = $epic_recipies;
+    $this->missions_accomplished = $missions_accomplished;
+    $this->legendaries = $legendaries;
+    $this->brass_rings = $brass_rings;
+    $this->silver_rings = $silver_rings;
+    $this->golden_rings = $golden_rings;
+    $this->diamond_rings = $diamond_rings;
+    $this->average_mission_completion = $average_mission_completion;
+    $this->main_dps_slot = $main_dps_slot;
+    $this->cooldown_reduction = $cooldown_reduction;
+    $this->ep_from_main_dps = $ep_from_main_dps;
+    $this->ep_from_benched_crusaders = $ep_from_benched_crusaders;
+    $this->epics_on_main_dps = $epics_on_main_dps;
+    $this->epics_on_benched_crusaders = $epics_on_benched_crusaders;
+    $this->storm_rider_gear_bonus = $storm_rider_gear_bonus;
+    $this->main_dps_benched_crusaders_legendaries = $main_dps_benched_crusaders_legendaries;
+    $this->main_dps_benched_crusaders_golden_gear = $main_dps_benched_crusaders_golden_gear;
+    $this->taskmasters_owned = $taskmasters_owned;
+    $this->clicks_per_second = $clicks_per_second;
+    $this->crusaders_owned = $crusaders_owned;
+    $this->crusaders_in_formation = $crusaders_in_formation;
+    $this->critical_chance = $critical_chance;
+    $this->click_damage_per_dps = $click_damage_per_dps;
   }
 }
