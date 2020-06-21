@@ -41,16 +41,16 @@ if ($_POST) {
   $journeyman_crafter_talent = new Talent(-1, 200000,1.061, $_POST['journeyman_crafter'], '+', $_POST['rare_recipies']);
   $cheer_squad_talent = new Talent(50, 166000,1.165, $_POST['cheer_squad']);
   $valuable_experience_talent = new Talent(45, 500000,1.132, $_POST['valuable_experience']);
-  $every_little_bit_helps_talent = new Talent(500, 25000,1.022, $_POST['every_little_bit_helps'], '*', 1, 5);
+  $every_little_bit_helps_talent = new Talent(500, 25000,1.022, $_POST['every_little_bit_helps'], '*', $_POST['every_little_bit_helps'], 5, 1);
   $jeweler_talent = new Talent(20, 80000,1.5, $_POST['jeweler']);
   $big_earner_talent = new Talent(10, 250000000,1.9, $_POST['big_earner']);
   //TODO Count maxed talents and update
   $maxed_power_talent = new Talent(50, 75000000,1.3, $_POST['maxed_power'], '+', '0');
-  $idolatry_talent = new Talent(20, 50000000,1.5, $_POST['idolatry'], '*', $_POST['total_idols'], 10);
+  $idolatry_talent = new Talent(20, 50000000,1.5, $_POST['idolatry'], '*', $_POST['total_idols'], 10, 1);
   $master_crafter_talent = new Talent(-1, 900000000,1.28, $_POST['master_crafter'], '+', $_POST['epic_recipies']);
   $legendary_friendship_talent = new Talent(25, 7500000000,1.56, $_POST['legendary_friendship']);
   $golden_friendship_talent = new Talent(25, 8000000000,1.395, $_POST['golden_friendship']);
-  $friendly_helpers_talent = new Talent(50, 500000000,1.26, $_POST['friendly_helpers'], '*', $_POST['taskmasters_owned'], 10);
+  $friendly_helpers_talent = new Talent(50, 500000000,1.26, $_POST['friendly_helpers'], '*', $_POST['taskmasters_owned'], 10, $_POST['friendly_helpers']);
   $scavenger_talent = new Talent(50, 25, 1.1, $_POST['scavenger']);
   $impatience_talent = new Talent(20, 25, 1.25, $_POST['impatience']);
   //TODO Count total levels purchased and update
@@ -61,23 +61,23 @@ if ($_POST) {
   $prospector_talent = new Talent(10, 300, 1.6, $_POST['prospector']);
   $doing_it_again_talent = new Talent(1, 1000,0, $_POST['doing_it_again']);
   $deep_idol_scavenger_talent = new Talent(25, 500,1.15, $_POST['deep_idol_scavenger']);
-  $extra_training_talent = new Talent(40, 1000, 1.075, $_POST['extra_training'], '*', 400);
+  $extra_training_talent = new Talent(40, 1000, 1.075, $_POST['extra_training'], '*', 400, 1);
   $head_start_talent = new Talent(1, 10000, 0, $_POST['head_start']);
   $triple_tier_trouble_talent = new Talent(1, 5000, 0, $_POST['triple_tier_trouble']);
   $sprint_mode_talent = new Talent(10, 25000, 2, $_POST['sprint_mode']);
-  $superior_training_talent = new Talent(80, 5000, 1.0888, $_POST['superior_training'], '*', 400);
+  $superior_training_talent = new Talent(80, 5000, 1.0888, $_POST['superior_training'], '*', 400, 1);
   $kilo_leveling_talent = new Talent(5, 500000, 4, $_POST['kilo_leveling']);
   $fourth_times_the_charm_talent = new Talent(1, 25000, 0, $_POST['fourth_times_the_charm']);
   $idol_champions_talent = new Talent(40, 50000, 1.211, $_POST['idol_champions']);
-  $tenk_training_talent = new Talent(80, 140000, 1.083, $_POST['tenk_training'], '*', 400);
+  $tenk_training_talent = new Talent(80, 140000, 1.083, $_POST['tenk_training'], '*', 400, 1);
   $bonus_training_talent = new Talent(24, 225000, 1.31, $_POST['bonus_training']);
   $scrap_hoarder_talent = new Talent(3, 15000000, 2, $_POST['scrap_hoarder']);
   $marathon_sprint_talent = new Talent(20, 123000000, 1.5, $_POST['marathon_sprint']);
-  $montage_training_talent = new Talent(120, 35000000, 1.065, $_POST['montage_training'], '*', 400);
+  $montage_training_talent = new Talent(120, 35000000, 1.065, $_POST['montage_training'], '*', 400, 1);
   $arithmagician_talent = new Talent(19, 500000000, 'arithmagician', $_POST['arithmagician']);
   $cash_in_hand_talent = new Talent(10, 40000000, 2.5, $_POST['cash_in_hand']);
   $sprint_for_the_finish_talent = new Talent(30, 200000000000, 1.2275, $_POST['sprint_for_the_finish']);
-  $magical_training_talent = new Talent(-1, 20000000000, 1.285, $_POST['magical_training'], '*', 400);
+  $magical_training_talent = new Talent(-1, 20000000000, 1.285, $_POST['magical_training'], '*', 400, 1);
   $base_damage = 1;
   echo $_POST['golden_benefits'] . " means " . $golden_benefits_talent->get_current_damage() . "% gain<br>";
   echo "Friendly Helpers lvl " . $friendly_helpers_talent->current_level . " means " . $friendly_helpers_talent->get_current_damage() . "% gain<br>";
@@ -91,14 +91,15 @@ if ($_POST) {
 }
 
 class Talent {
-  function __construct($max_level, $base_cost, $level_multiplier, $current_level, $damage_type = '', $damage_multiplier = '', $multiplicative_damage_base = '', $effect = '') {
+  function __construct($max_level, $base_cost, $level_multiplier, $current_level, $damage_type = '', $stacks = '', $multiplicative_damage_base = '', $multiplicative_damage_base_multiplier = '', $effect = '') {
     $this->max_level = $max_level;
     $this->base_cost = $base_cost;
     $this->level_multiplier = $level_multiplier;
     $this->current_level = $current_level;
     $this->damage_type = $damage_type;
-    $this->damage_multiplier = $damage_multiplier;
+    $this->stacks = $stacks;
     $this->multiplicative_damage_base = $multiplicative_damage_base;
+    $this->multiplicative_damage_base_multiplier = $multiplicative_damage_base_multiplier;
     $this->effect = $effect;
   }
 
@@ -109,10 +110,9 @@ class Talent {
   public function get_current_damage() {
     $damage = 0;
     if ($this->damage_type == '+') {
-      $damage = $this->current_level * $this->damage_multiplier;
+      $damage = $this->current_level * $this->stacks;
     } else if ($this->damage_type == '*') {
-      $owned_taskmaster_damage = (pow(1 + (.1 * $_POST['friendly_helpers']), $_POST['taskmasters_owned']) - 1) * 100;
-      $damage = (pow(1 + $this->multiplicative_damage_base * $this->damage_multiplier / 100, $this->current_level) - 1) * 100;
+      $damage = (pow(1 + $this->multiplicative_damage_base / 100 * $this->multiplicative_damage_base_multiplier, $this->stacks) - 1) * 100;
     }
     return $damage;
   }
