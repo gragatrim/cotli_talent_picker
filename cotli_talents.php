@@ -1,15 +1,6 @@
 <?php
 #ceil(Base Cost * Multiplier ^ (n - 1))
 include "cotli_talents_logic.php";
-
-
-function print_value($input_name) {
-  $return_value = '';
-  if (!empty($_POST[$input_name])) {
-    $return_value = $_POST[$input_name];
-  }
-  return $return_value;
-}
 ?>
 <html>
 <head>
@@ -94,7 +85,7 @@ table, th, td {
     <td>Jeweler</td><td><input style="width:50px" type="text" name="jeweler" value="<?php echo $jeweler_talent->current_level; ?>"></td>
     <td>Idol Champions</td><td><input style="width:50px" type="text" name="idol_champions" value="<?php echo $idol_champions_talent->current_level; ?>"></td>
     <td>10K Training</td><td><input style="width:50px" type="text" name="tenk_training" value="<?php echo $tenk_training_talent->current_level; ?>"></td>
-    <td>Bonus Training</td><td><input style="width:50px" type="text" name="bonus_training" value="<?php echo $bonus_training_talent->current_levelt ?>"></td>
+    <td>Bonus Training</td><td><input style="width:50px" type="text" name="bonus_training" value="<?php echo $bonus_training_talent->current_level ?>"></td>
     <td>Scrap Hoarder</td><td><input style="width:50px" type="text" name="scrap_hoarder" value="<?php echo $scrap_hoarder_talent->current_level; ?>"></td>
   </tr>
   <tr>
@@ -153,6 +144,7 @@ Crusaders owned: <input type="text" name="crusaders_owned" value="<?php echo $us
 Crusaders in formation: <input type="text" name="crusaders_in_formation" value="<?php echo $user->crusaders_in_formation; ?>"><br>
 Critical chance: <input type="text" name="critical_chance" value="<?php echo $user->critical_chance; ?>"><br>
 Click damage per DPS: <input type="text" name="click_damage_per_dps" value="<?php echo $user->click_damage_per_dps; ?>"><br>
+Gold bonus provided by crusaders: <input type="text" name="gold_bonus_provided_by_crusaders" value="<?php echo $user->gold_bonus_provided_by_crusaders; ?>"><br>
 <input type="submit">
 </form>
 
