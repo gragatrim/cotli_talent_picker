@@ -5,7 +5,7 @@ if ($_POST) {
   $talents['time_o_rama'] = $time_o_rama_talent;
   $massive_criticals_talent = new Talent('massive_criticals', 1, 25, 50, 1.25, $_POST['massive_criticals']);
   $talents['massive_criticals'] = $massive_criticals_talent;
-  $golden_benefits_talent = new Talent('golden_benefits', 1, -1, 1500, 1.061, $_POST['golden_benefits'], '+', 0, $_POST['golden_items']);
+  $golden_benefits_talent = new Talent('golden_benefits', 1, -1, 1500, 1.061, $_POST['golden_benefits'], '+', $_POST['golden_items']);
   $talents['golden_benefits'] = $golden_benefits_talent;
   $super_clicks_talent = new Talent('super_clicks', 1, 25, 50, 1.1, $_POST['super_clicks']);
   $talents['super_clicks'] = $super_clicks_talent;
@@ -33,7 +33,7 @@ if ($_POST) {
   $talents['instant_satisfaction'] = $instant_satisfaction_talent;
   $extra_healthy_talent = new Talent('extra_healthy', 4, 50, 1500,1.305, $_POST['extra_healthy']);
   $talents['extra_healthy'] = $extra_healthy_talent;
-  $mission_adrenaline_talent = new Talent('mission_adrenaline', 5, 50, 125000,1.153, $_POST['mission_adrenaline'], '+', 10);
+  $mission_adrenaline_talent = new Talent('mission_adrenaline', 5, 50, 125000,1.153, $_POST['mission_adrenaline'], '+', 10, $_POST['missions_accomplished']);
   $talents['mission_adrenaline'] = $mission_adrenaline_talent;
   $lingering_buffs_talent = new Talent('lingering_buffs', 5, 10, 1000000,2, $_POST['lingering_buffs']);
   $talents['lingering_buffs'] = $lingering_buffs_talent;
@@ -47,18 +47,18 @@ if ($_POST) {
   $talents['weekend_warrior'] = $weekend_warrior_talent;
   $material_goods_talent = new Talent('material_goods', 6, 40, 30000000,1.2, $_POST['material_goods']);
   $talents['material_goods'] = $material_goods_talent;
-  $passive_criticals_talent = new Talent('passive_criticals', 1, 50, 10,1.1, $_POST['passive_criticals'], '+', 1);
+  $passive_criticals_talent = new Talent('passive_criticals', 1, 50, 10,1.1, $_POST['passive_criticals'], '+', 1, $_POST['critical_chance']);
   $talents['passive_criticals'] = $passive_criticals_talent;
   $set_bonus_talent = new Talent('set_bonus', 1, 50, 25, 1.1, $_POST['set_bonus'], '+', 20);
   $talents['set_bonus'] = $set_bonus_talent;
   $every_last_cent_talent = new Talent('every_last_cent', 1, 20, 50,1.25, $_POST['every_last_cent']);
   $talents['every_last_cent'] = $every_last_cent_talent;
-  $apprentice_crafter_talent = new Talent('apprentice_crafter', 1, -1, 200,1.1, $_POST['apprentice_crafter'], '+', $_POST['common_and_uncommon_recipies'] * 2);
+  //Multiplier is 2 due to the fact that fanta reports them as a set since you get them as a set of C/UC with up to speed
+  $apprentice_crafter_talent = new Talent('apprentice_crafter', 1, -1, 200,1.1, $_POST['apprentice_crafter'], '+', $_POST['common_and_uncommon_recipies'],  2);
   $talents['apprentice_crafter'] = $apprentice_crafter_talent;
   $overenchanted_talent = new Talent('overenchanted', 2, 50, 100,1.1, $_POST['overenchanted'], '+', $_POST['ep_from_main_dps']);
   $talents['overenchanted'] = $overenchanted_talent;
-  //TODO fix the surplus_cooldown/4 won't actually work when trying to figure our what next level will give
-  $surplus_cooldown_talent = new Talent('surplus_cooldown', 2, 50, 100,1.1, $_POST['surplus_cooldown'], '+', $_POST['cooldown_reduction'] - 50, $_POST['surplus_cooldown']/4);
+  $surplus_cooldown_talent = new Talent('surplus_cooldown', 2, 50, 100,1.1, $_POST['surplus_cooldown'], '+', $_POST['cooldown_reduction'] - 50, .25);
   $talents['surplus_cooldown'] = $surplus_cooldown_talent;
   $sharing_is_caring_talent = new Talent('sharing_is_caring', 2, 14, 500,1.25, $_POST['sharing_is_caring']);
   $talents['sharing_is_caring'] = $sharing_is_caring_talent;
@@ -66,9 +66,9 @@ if ($_POST) {
   $talents['task_mastery'] = $task_mastery_talent;
   $fast_learners_talent = new Talent('fast_learners', 3, 18, 250,1.2, $_POST['fast_learners']);
   $talents['fast_learners'] = $fast_learners_talent;
-  $well_equiped_talent = new Talent('well_equiped', 3, 50, 500,1.075, $_POST['well_equiped'], '+', 20 * $_POST['epics_on_main_dps']);
+  $well_equiped_talent = new Talent('well_equiped', 3, 50, 500,1.075, $_POST['well_equiped'], '+', 20, $_POST['epics_on_main_dps']);
   $talents['well_equiped'] = $well_equiped_talent;
-  $swap_day_talent = new Talent('swap_day', 3, 50, 500,1.075, $_POST['swap_day'], '+', 20 * $_POST['epics_on_benched_crusaders']);
+  $swap_day_talent = new Talent('swap_day', 3, 50, 500,1.075, $_POST['swap_day'], '+', 20, $_POST['epics_on_benched_crusaders']);
   $talents['swap_day'] = $swap_day_talent;
   $synergy_talent = new Talent('synergy', 3, 20, 300,1.85, $_POST['synergy']);
   $talents['synergy'] = $synergy_talent;
@@ -106,9 +106,9 @@ if ($_POST) {
   $talents['scavenger'] = $scavenger_talent;
   $impatience_talent = new Talent('impatience', 1, 20, 25, 1.25, $_POST['impatience']);
   $talents['impatience'] = $impatience_talent;
-  $level_all_the_way_talent = new Talent('level_all_the_way', 1, 50, 200,1.11, $_POST['level_all_the_way'], '+', 0);
+  $level_all_the_way_talent = new Talent('level_all_the_way', 1, 50, 200,1.11, $_POST['level_all_the_way'], '+', 1);
   $talents['level_all_the_way'] = $level_all_the_way_talent;
-  $mission_accomplished_talent = new Talent('mission_accomplished', 1, -1, 500,1.19, $_POST['mission_accomplished'], '+', $_POST['missions_accomplished']);
+  $mission_accomplished_talent = new Talent('mission_accomplished', 1, -1, 500,1.19, $_POST['mission_accomplished'], '+', 1, $_POST['missions_accomplished']);
   $talents['mission_accomplished'] = $mission_accomplished_talent;
   $efficient_crusading_talent = new Talent('efficient_crusading', 2, 25, 50,1.1, $_POST['efficient_crusading']);
   $talents['efficient_crusading'] = $efficient_crusading_talent;
@@ -185,9 +185,9 @@ if ($_POST) {
                    $talents,
                    $_POST['talents_to_recommend'],
                    $_POST['max_level_reached']);
-  $user->talents['maxed_power']->stacks = $user->talents_at_max;
-  $user->talents['level_all_the_way']->stacks = $user->total_talent_levels;
-  $user->talents['kilo_leveling']->damage_base = floor(($user->main_dps_max_levels * $user->talents['kilo_leveling']->current_level)/1000);
+  $user->talents['maxed_power']->damage_base = $user->talents_at_max;
+  $user->talents['level_all_the_way']->damage_base = $user->total_talent_levels;
+  $user->talents['kilo_leveling']->damage_base = floor($user->main_dps_max_levels/1000);
   $base_damage = 1;
   //echo "Every Little Bit Helps lvl " . $user->talents['every_little_bit_helps']->current_level . " provides " . $user->talents['every_little_bit_helps']->get_current_damage() . " %<br>";
   //echo "maxed power at lvl " . $user->talents['maxed_power']->current_level . " provides " . $user->talents['maxed_power']->get_current_damage() . " %<br>";
@@ -208,7 +208,7 @@ if ($_POST) {
 }
 
 class Talent {
-  function __construct($name, $tier, $max_level, $base_cost, $level_multiplier, $current_level = 0, $damage_type = '', $stacks = 0, $damage_base = 0, $multiplicative_damage_base_multiplier = 0, $effect = '') {
+  function __construct($name, $tier, $max_level, $base_cost, $level_multiplier, $current_level = 0, $damage_type = '', $damage_base = 0, $damage_base_multiplier = 1, $effect = '') {
     $this->name = $name;
     $this->tier = $tier;
     $this->max_level = $max_level;
@@ -216,41 +216,16 @@ class Talent {
     $this->level_multiplier = $level_multiplier;
     $this->current_level = $current_level;
     $this->damage_type = $damage_type;
-    $this->stacks = $stacks == 0 ? $current_level : $stacks;
-    $this->damage_base = $damage_base == 0 ? $current_level : $damage_base;
-    $this->multiplicative_damage_base_multiplier = $multiplicative_damage_base_multiplier;
+    $this->damage_base = $damage_base;
+    $this->damage_base_multiplier = $damage_base_multiplier;
     $this->effect = $effect;
   }
 
   public function get_damage_at_additional_level($levels_to_add) {
     $damage = 0;
-    if ($this->name == 'master_crafter') {
-      $this->damage_base += $levels_to_add;
-    } else if ($this->name != 'every_little_bit_helps'
-            && $this->name != 'extra_training'
-            && $this->name != 'superior_training'
-            && $this->name != 'tenk_training'
-            && $this->name != 'idolatry'
-            && $this->name != 'montage_training'
-            && $this->name != 'magical_training') {
-      $this->stacks += $levels_to_add;
-    } else {
-      $this->current_level += $levels_to_add;
-    }
+    $this->current_level += $levels_to_add;
     $damage = $this->get_current_damage();
-    if ($this->name == 'master_crafter') {
-      $this->damage_base -= $levels_to_add;
-    } else if ($this->name != 'every_little_bit_helps'
-            && $this->name != 'extra_training'
-            && $this->name != 'superior_training'
-            && $this->name != 'tenk_training'
-            && $this->name != 'idolatry'
-            && $this->name != 'montage_training'
-            && $this->name != 'magical_training') {
-      $this->stacks -= $levels_to_add;
-    } else {
-      $this->current_level -= $levels_to_add;
-    }
+    $this->current_level -= $levels_to_add;
     return $damage;
   }
 
@@ -267,21 +242,19 @@ class Talent {
   function get_additive_damage() {
     $damage = 1;
     if ($this->name == 'overenchanted') {
-      $damage = ((1+(0.25 + 0.05 * $this->current_level) * $this->stacks)/(1 + 0.25 * $this->stacks));
-    //} else if ($this->name == 'kilo_leveling') {
-    //  $damage = $this->stacks * $this->current_level * floor(;
+      $damage = ((1+(0.25 + 0.05 * $this->current_level) * $this->damage_base)/(1 + 0.25 * $this->damage_base));
     } else {
-      $damage = $this->damage_base * $this->stacks;
+      $damage = $this->damage_base * $this->current_level * $this->damage_base_multiplier;
     }
     return $damage;
   }
 
   function get_multiplicative_damage() {
     $damage = 0;
-    if (($this->multiplicative_damage_base_multiplier == 0
+    if (($this->damage_base_multiplier == 0
      && $this->name != 'every_little_bit_helps')
       || $this->name == 'idolatry') {
-      $this->multiplicative_damage_base_multiplier = $this->current_level;
+      $this->damage_base_multiplier = $this->current_level;
     }
     if ($this->name == 'every_little_bit_helps') {
       $this->stacks = $this->current_level;
@@ -293,7 +266,7 @@ class Talent {
      || $this->name == 'magical_training') {
       $damage = pow(4, $this->current_level);
     } else {
-      $damage = (pow(1 + $this->damage_base / 100 * $this->multiplicative_damage_base_multiplier, $this->stacks) - 1) * 100;
+      $damage = (pow(1 + $this->damage_base / 100 * $this->damage_base_multiplier, $this->stacks) - 1) * 100;
     }
     return $damage;
   }
@@ -406,15 +379,16 @@ class User {
       }
       $current_talent_damage = $talent->get_current_damage();
       $next_talent_level_cost = $talent->get_next_level_cost();
-      if ($current_talent_damage == 0) {
-        $current_talent_damage = 1;
-      }
       if ($talent->current_level + 1 > $talent->max_level && $talent->max_level != -1) {
         continue;
       }
       $new_talent_damage = $talent->get_damage_at_additional_level(1);
-      $damage_diff = ($new_talent_damage - $current_talent_damage)/$current_talent_damage/$next_talent_level_cost;
-      echo "possible talent to buy: " . $talent_name . " DPS diff of " . $damage_diff . " current damage " . $current_talent_damage . " new talent damage " . $new_talent_damage . "<br>";
+      if ($current_talent_damage == 0) {
+        $damage_diff = $new_talent_damage/$next_talent_level_cost;
+      } else {
+        $damage_diff = ($new_talent_damage - $current_talent_damage)/$current_talent_damage/$next_talent_level_cost;
+      }
+      //echo "possible talent to buy: " . $talent_name . " DPS diff of " . $damage_diff . " current damage " . $current_talent_damage . " new talent damage " . $new_talent_damage . "<br>";
       if ($damage_diff > $best_dps_diff) {
         $talent_to_buy = $talent_name;
         $best_dps_diff = $damage_diff;
@@ -425,9 +399,6 @@ class User {
 
   public function is_valid_talent($talent) {
     $is_valid = false;
-    if ($talent->name == 'extra_training') {
-      echo "tier: $talent->tier max_level_reached: $this->max_level_reached<br>";
-    }
     if ($this->max_level_reached < 150) {
       $is_valid = false;
     } else if ($talent->tier <=1 && $this->max_level_reached >= 150) {
@@ -452,6 +423,9 @@ class User {
     $this->talents[$talent_to_update]->current_level++;
     $this->talents_at_max = $this->get_max_talents();
     $this->total_talent_levels = $this->get_all_talent_levels();
+    $this->talents['maxed_power']->damage_base = $this->talents_at_max;
+    $this->talents['level_all_the_way']->damage_base = $this->total_talent_levels;
     $this->main_dps_max_levels = 5000 + $this->talents['extra_training']->current_level * 50 + $this->talents['superior_training']->current_level * 50 + $this->talents['tenk_training']->current_level * 50 + $this->talents['montage_training']->current_level * 50 + $this->talents['magical_training']->current_level * 50 + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot) * 50;
+    $this->talents['kilo_leveling']->damage_base = floor($this->main_dps_max_levels/1000);
   }
 }
