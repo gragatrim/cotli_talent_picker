@@ -116,6 +116,11 @@ table, th, td {
     <td></td><td></td>
   </tr>
 </table>
+<?php
+  if (!empty($results_to_print)) {
+    echo $results_to_print;
+  }
+?>
 Total Idols: <input type="text" name="total_idols" value="<?php echo $user->total_idols; ?>"><br>
 Talents to Recommend: <input type="text" name="talents_to_recommend" value="<?php echo $user->talents_to_recommend; ?>"><br>
 Max level Reached: <input type="text" name="max_level_reached" value="<?php echo $user->max_level_reached; ?>"><br>

@@ -84,23 +84,23 @@ if ($_POST) {
   $talents['cheer_squad'] = $cheer_squad_talent;
   $valuable_experience_talent = new Talent('valuable_experience', 5, 45, 500000,1.132, $_POST['valuable_experience']);
   $talents['valuable_experience'] = $valuable_experience_talent;
-  $every_little_bit_helps_talent = new Talent('every_little_bit_helps', 5, 500, 25000,1.022, $_POST['every_little_bit_helps'], '*', $_POST['every_little_bit_helps'], 5, 1);
+  $every_little_bit_helps_talent = new Talent('every_little_bit_helps', 5, 500, 25000,1.022, $_POST['every_little_bit_helps'], '*', 5, 1, $_POST['every_little_bit_helps']);
   $talents['every_little_bit_helps'] = $every_little_bit_helps_talent;
   $jeweler_talent = new Talent('jeweler', 5, 20, 80000,1.5, $_POST['jeweler']);
   $talents['jeweler'] = $jeweler_talent;
   $big_earner_talent = new Talent('big_earner', 6, 10, 250000000,1.9, $_POST['big_earner']);
   $talents['big_earner'] = $big_earner_talent;
-  $maxed_power_talent = new Talent('maxed_power', 6, 50, 75000000, 1.3, $_POST['maxed_power'], '*', 0, 1);
+  $maxed_power_talent = new Talent('maxed_power', 6, 50, 75000000, 1.3, $_POST['maxed_power'], '*', 1, $_POST['maxed_power']);
   $talents['maxed_power'] = $maxed_power_talent;
-  $idolatry_talent = new Talent('idolatry', 6, 20, 50000000,1.5, $_POST['idolatry'], '*', floor(log($_POST['total_idols'], 10)), 20);
+  $idolatry_talent = new Talent('idolatry', 6, 20, 50000000,1.5, $_POST['idolatry'], '*', 20, $_POST['idolatry'], floor(log($_POST['total_idols'], 10)));
   $talents['idolatry'] = $idolatry_talent;
   $master_crafter_talent = new Talent('master_crafter', 6, -1, 900000000,1.28, $_POST['master_crafter'], '+', $_POST['epic_recipies']);
   $talents['master_crafter'] = $master_crafter_talent;
-  $legendary_friendship_talent = new Talent('legendary_friendship', 7, 25, 7500000000, 1.56, $_POST['legendary_friendship'], '*', $_POST['main_dps_benched_crusaders_legendaries'], 5);
+  $legendary_friendship_talent = new Talent('legendary_friendship', 7, 25, 7500000000, 1.56, $_POST['legendary_friendship'], '*', 5, $_POST['legendary_friendship'], $_POST['main_dps_benched_crusaders_legendaries'], 5);
   $talents['legendary_friendship'] = $legendary_friendship_talent;
-  $golden_friendship_talent = new Talent('golden_friendship', 7, 25, 8000000000,1.395, $_POST['golden_friendship'], '*', $_POST['main_dps_benched_crusaders_golden_gear'], 5);
+  $golden_friendship_talent = new Talent('golden_friendship', 7, 25, 8000000000,1.395, $_POST['golden_friendship'], '*', 5, $_POST['golden_friendship'], $_POST['main_dps_benched_crusaders_golden_gear']);
   $talents['golden_friendship'] = $golden_friendship_talent;
-  $friendly_helpers_talent = new Talent('friendly_helpers', 7, 50, 500000000,1.26, $_POST['friendly_helpers'], '*', $_POST['taskmasters_owned'], 10);
+  $friendly_helpers_talent = new Talent('friendly_helpers', 7, 50, 500000000,1.26, $_POST['friendly_helpers'], '*', 10, $_POST['friendly_helpers'], $_POST['taskmasters_owned']);
   $talents['friendly_helpers'] = $friendly_helpers_talent;
   $scavenger_talent = new Talent('scavenger', 1, 50, 25, 1.1, $_POST['scavenger']);
   $talents['scavenger'] = $scavenger_talent;
@@ -120,7 +120,7 @@ if ($_POST) {
   $talents['doing_it_again'] = $doing_it_again_talent;
   $deep_idol_scavenger_talent = new Talent('deep_idol_scavenger', 3, 25, 500,1.15, $_POST['deep_idol_scavenger']);
   $talents['deep_idol_scavenger'] = $deep_idol_scavenger_talent;
-  $extra_training_talent = new Talent('extra_training', 3, 40, 1000, 1.075, $_POST['extra_training'], '*', $_POST['extra_training'], 300, 1);
+  $extra_training_talent = new Talent('extra_training', 3, 40, 1000, 1.075, $_POST['extra_training'], '*');
   $talents['extra_training'] = $extra_training_talent;
   $head_start_talent = new Talent('head_start', 3, 1, 10000, 0, $_POST['head_start']);
   $talents['head_start'] = $head_start_talent;
@@ -128,7 +128,7 @@ if ($_POST) {
   $talents['triple_tier_trouble'] = $triple_tier_trouble_talent;
   $sprint_mode_talent = new Talent('sprint_mode', 4, 10, 25000, 2, $_POST['sprint_mode']);
   $talents['sprint_mode'] = $sprint_mode_talent;
-  $superior_training_talent = new Talent('superior_training', 4, 80, 5000, 1.0888, $_POST['superior_training'], '*', $_POST['superior_training'], 300, 1);
+  $superior_training_talent = new Talent('superior_training', 4, 80, 5000, 1.0888, $_POST['superior_training'], '*');
   $talents['superior_training'] = $superior_training_talent;
   $kilo_leveling_talent = new Talent('kilo_leveling', 4, 5, 500000, 4, $_POST['kilo_leveling'], '+', 10);
   $talents['kilo_leveling'] = $kilo_leveling_talent;
@@ -136,7 +136,7 @@ if ($_POST) {
   $talents['fourth_times_the_charm'] = $fourth_times_the_charm_talent;
   $idol_champions_talent = new Talent('idol_champions', 5, 40, 50000, 1.211, $_POST['idol_champions']);
   $talents['idol_champions'] = $idol_champions_talent;
-  $tenk_training_talent = new Talent('tenk_training', 5, 80, 140000, 1.083, $_POST['tenk_training'], '*', $_POST['tenk_training'], 300, 1);
+  $tenk_training_talent = new Talent('tenk_training', 5, 80, 140000, 1.083, $_POST['tenk_training'], '*');
   $talents['tenk_training'] = $tenk_training_talent;
   $bonus_training_talent = new Talent('bonus_training', 5, 33, 225000, 1.31, $_POST['bonus_training']);
   $talents['bonus_training'] = $bonus_training_talent;
@@ -144,7 +144,7 @@ if ($_POST) {
   $talents['scrap_hoarder'] = $scrap_hoarder_talent;
   $marathon_sprint_talent = new Talent('marathon_sprint', 6, 20, 123000000, 1.5, $_POST['marathon_sprint']);
   $talents['marathon_sprint'] = $marathon_sprint_talent;
-  $montage_training_talent = new Talent('montage_training', 6, 120, 35000000, 1.065, $_POST['montage_training'], '*', $_POST['montage_training'], 300, 1);
+  $montage_training_talent = new Talent('montage_training', 6, 120, 35000000, 1.065, $_POST['montage_training'], '*');
   $talents['montage_training'] = $montage_training_talent;
   $arithmagician_talent = new Talent('arithmagician', 6, 19, 500000000, 'arithmagician', $_POST['arithmagician']);
   $talents['arithmagician'] = $arithmagician_talent;
@@ -152,7 +152,7 @@ if ($_POST) {
   $talents['cash_in_hand'] = $cash_in_hand_talent;
   $sprint_for_the_finish_talent = new Talent('sprint_for_the_finish', 7, 30, 200000000000, 1.2275, $_POST['sprint_for_the_finish']);
   $talents['sprint_for_the_finish'] = $sprint_for_the_finish_talent;
-  $magical_training_talent = new Talent('magical_training', 7, -1, 20000000000, 1.285, $_POST['magical_training'], '*', $_POST['magical_training'], 300, 1);
+  $magical_training_talent = new Talent('magical_training', 7, -1, 20000000000, 1.285, $_POST['magical_training'], '*');
   $talents['magical_training'] = $magical_training_talent;
   $user = new User($_POST['total_idols'],
                    $_POST['golden_items'],
@@ -185,30 +185,32 @@ if ($_POST) {
                    $talents,
                    $_POST['talents_to_recommend'],
                    $_POST['max_level_reached']);
-  $user->talents['maxed_power']->damage_base = $user->talents_at_max;
+  $user->talents['maxed_power']->stacks = $user->talents_at_max;
   $user->talents['level_all_the_way']->damage_base = $user->total_talent_levels;
   $user->talents['kilo_leveling']->damage_base = floor($user->main_dps_max_levels/1000);
   $base_damage = 1;
-  //echo "Every Little Bit Helps lvl " . $user->talents['every_little_bit_helps']->current_level . " provides " . $user->talents['every_little_bit_helps']->get_current_damage() . " %<br>";
+  //echo "Every Little Bit Helps lvl " . $user->talents['every_little_bit_helps']->current_level . " provides " . sprintf('%E',$user->talents['every_little_bit_helps']->get_current_damage()) . " %<br>";
   //echo "maxed power at lvl " . $user->talents['maxed_power']->current_level . " provides " . $user->talents['maxed_power']->get_current_damage() . " %<br>";
   //echo "<br>";
-  echo "Final Damage " . $base_damage * $user->get_total_damage() . "<br>";
+  $results_to_print = '<div style="float: right;">';
+  $results_to_print .= "Final Damage " . sprintf('%.2E', $base_damage * $user->get_total_damage() - 1) . "<br>";
   //This is here to make a copy of the object so we aren't still accessing things by reference
   $future_talents_user = unserialize(serialize($user));
   for ($i = 0; $i < $user->talents_to_recommend; $i++) {
     $talent_to_buy = $future_talents_user->get_next_talent_to_buy();
     if (empty($talent_to_buy)) {
-      echo "No talent found!<br>";
+      $results_to_print .= "No talent found!<br>";
       break;
     } else {
-      echo "Talent to buy: " . $talent_to_buy . "<br>";
+      $results_to_print .= "Talent to buy: " . $talent_to_buy . "<br>";
       $future_talents_user->update($talent_to_buy);
     }
   }
+  $results_to_print .= '</div>';
 }
 
 class Talent {
-  function __construct($name, $tier, $max_level, $base_cost, $level_multiplier, $current_level = 0, $damage_type = '', $damage_base = 0, $damage_base_multiplier = 1, $effect = '') {
+  function __construct($name, $tier, $max_level, $base_cost, $level_multiplier, $current_level = 0, $damage_type = '', $damage_base = 0, $damage_base_multiplier = 1, $stacks = 1, $effect = '') {
     $this->name = $name;
     $this->tier = $tier;
     $this->max_level = $max_level;
@@ -218,6 +220,7 @@ class Talent {
     $this->damage_type = $damage_type;
     $this->damage_base = $damage_base;
     $this->damage_base_multiplier = $damage_base_multiplier;
+    $this->stacks = $stacks;
     $this->effect = $effect;
   }
 
@@ -251,9 +254,9 @@ class Talent {
 
   function get_multiplicative_damage() {
     $damage = 0;
-    if (($this->damage_base_multiplier == 0
-     && $this->name != 'every_little_bit_helps')
-      || $this->name == 'idolatry') {
+    //All other talents use current level as the multiplier, just every little bit helps use it as the stack
+    if ($this->name != 'every_little_bit_helps'
+      && $this->current_level != $this->damage_base_multiplier) {
       $this->damage_base_multiplier = $this->current_level;
     }
     if ($this->name == 'every_little_bit_helps') {
@@ -360,7 +363,7 @@ class User {
   }
 
   public function get_total_damage() {
-    $total_damage = (1 + $this->brass_rings + (2 * $this->silver_rings) + (4 * $this->golden_rings) + (8 * $this->diamond_rings)) * (1 + $this->total_idols * .03);
+    $total_damage = (1 + .01 * $this->brass_rings + (.02 * $this->silver_rings) + (.04 * $this->golden_rings) + (.08 * $this->diamond_rings)) * (1 + $this->total_idols * .03);
     foreach ($this->talents AS $talent_name => $talent) {
       $talent_damage = $talent->get_current_damage();
       if ($talent_damage > 0) {
@@ -388,8 +391,8 @@ class User {
       } else {
         $damage_diff = ($new_talent_damage - $current_talent_damage)/$current_talent_damage/$next_talent_level_cost;
       }
-      //echo "possible talent to buy: " . $talent_name . " DPS diff of " . $damage_diff . " current damage " . $current_talent_damage . " new talent damage " . $new_talent_damage . "<br>";
       if ($damage_diff > $best_dps_diff) {
+        //echo "possible talent to buy: " . $talent_name . " DPS diff of " . $damage_diff . " current damage " . $current_talent_damage . " new talent damage " . $new_talent_damage . "<br>";
         $talent_to_buy = $talent_name;
         $best_dps_diff = $damage_diff;
       }
@@ -423,7 +426,7 @@ class User {
     $this->talents[$talent_to_update]->current_level++;
     $this->talents_at_max = $this->get_max_talents();
     $this->total_talent_levels = $this->get_all_talent_levels();
-    $this->talents['maxed_power']->damage_base = $this->talents_at_max;
+    $this->talents['maxed_power']->stacks = $this->talents_at_max;
     $this->talents['level_all_the_way']->damage_base = $this->total_talent_levels;
     $this->main_dps_max_levels = 5000 + $this->talents['extra_training']->current_level * 50 + $this->talents['superior_training']->current_level * 50 + $this->talents['tenk_training']->current_level * 50 + $this->talents['montage_training']->current_level * 50 + $this->talents['magical_training']->current_level * 50 + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot) * 50;
     $this->talents['kilo_leveling']->damage_base = floor($this->main_dps_max_levels/1000);
