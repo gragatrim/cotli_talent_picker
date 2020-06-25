@@ -381,22 +381,34 @@ class User {
         continue;
       }
       $current_talent_damage = $talent->get_current_damage();
+      if ($current_talent_damage == 0) {
+        //So that we can safely divide below to see the change is DPS
+        $current_talent_damage = 1;
+      }
+      $current_damage = $this->get_total_damage();
       $next_talent_level_cost = $talent->get_next_level_cost();
       if ($talent->current_level + 1 > $talent->max_level && $talent->max_level != -1) {
         continue;
       }
-      $new_talent_damage = $talent->get_damage_at_additional_level(1);
-      if ($current_talent_damage == 0) {
-        $damage_diff = $new_talent_damage/$next_talent_level_cost;
-      } else {
-        $damage_diff = ($new_talent_damage - $current_talent_damage)/$current_talent_damage/$next_talent_level_cost;
+      $new_talent_damage = $talent->get_damage_at_additional_level(1) / 100 + 1;
+      $new_damage = $this->get_total_damage() / $current_talent_damage * $new_talent_damage;
+      //if ($current_talent_damage == 0) {
+      //  $damage_diff = $new_talent_damage/$next_talent_level_cost;
+      //} else {
+        $damage_diff = ($new_damage - $current_damage)/$current_damage/$next_talent_level_cost;
+      //}
+      if ($talent_name == 'passive_criticals' ) {
+        echo "passive_criticals current damage : $current_talent_damage Next level damage : $new_talent_damage <br>";
+      }
+      if ($current_talent_damage != $new_talent_damage || $talent_name == 'passive_criticals') {
+        echo "possible talent to buy: " . $talent_name . " DPS diff of " . $damage_diff . " current damage " . sprintf("%.2E", $current_damage) . " new talent damage " . sprintf("%.2E", $new_damage) . "<br>";
       }
       if ($damage_diff > $best_dps_diff) {
-        //echo "possible talent to buy: " . $talent_name . " DPS diff of " . $damage_diff . " current damage " . $current_talent_damage . " new talent damage " . $new_talent_damage . "<br>";
         $talent_to_buy = $talent_name;
         $best_dps_diff = $damage_diff;
       }
     }
+    echo "================== end of talents to buy ===================<br>";
     return $talent_to_buy;
   }
 
