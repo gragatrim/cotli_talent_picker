@@ -18,5 +18,6 @@ To run it locally you just need to do the following
     2. Does not handle Fast Learners
     3. Does not handle anything regarding CLK
     4. Does not handle anything to give more idols
-    5. Does not handle Maxed Power in terms of possible gains from creating a new max level
+    5. Does not handle Maxed Power in terms of gains from creating a new max level
+    6. Does not handle Kilo Leveling in terms of gains from hitting a new 1k crusader level
 3. UI is pretty terrible
