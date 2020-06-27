@@ -407,9 +407,6 @@ class User {
     foreach ($this->talents AS $talent_name => $talent) {
       $talent_cost = $talent->get_total_cost();
       $total_cost += $talent_cost;
-      if ($this->debug) {
-        echo "Idols spent on $talent_name : " . number_format($talent_cost) . " current total spent: " . number_format($total_cost) . "<br>";
-      }
     }
     return $total_cost;
   }
