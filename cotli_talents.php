@@ -121,7 +121,7 @@ table, th, td {
     echo $results_to_print;
   }
 ?>
-Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : 0); ?>"> Debug: <input type="checkbox" name="debug" value="true" <?php (isset($_POST['debug']) ? "checked" : ''); ?>"><br>
+Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : 0); ?>"> Debug: <input type="checkbox" name="debug" value="true" <?php echo (isset($_POST['debug']) ? "checked" : ''); ?>><br>
 Talents to Recommend: <input type="text" name="talents_to_recommend" value="<?php echo (isset($user->talents_to_recommend) ? $user->talents_to_recommend : 0); ?>"><br>
 Max level Reached: <input type="text" name="max_level_reached" value="<?php echo (isset($user->max_level_reached) ? $user->max_level_reached : 0); ?>"><br>
 Golden Items: <input type="text" name="golden_items" value="<?php echo (isset($user->golden_items) ? $user->golden_items : 0); ?>"><br>
