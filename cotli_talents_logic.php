@@ -45,7 +45,7 @@ if ($_POST) {
   $talents['phase_skip'] = $phase_skip_talent;
   $weekend_warrior_talent = new Talent('weekend_warrior', 6, 25, 750000000,1.31, $_POST['weekend_warrior']);
   $talents['weekend_warrior'] = $weekend_warrior_talent;
-  $material_goods_talent = new Talent('material_goods', 6, 40, 30000000,1.2, $_POST['material_goods']);
+  $material_goods_talent = new Talent('material_goods', 6, 40, 300000000,1.2, $_POST['material_goods']);
   $talents['material_goods'] = $material_goods_talent;
   $passive_criticals_talent = new Talent('passive_criticals', 1, 50, 10,1.1, $_POST['passive_criticals'], '+', .01, $_POST['critical_chance']);
   $talents['passive_criticals'] = $passive_criticals_talent;
@@ -116,15 +116,15 @@ if ($_POST) {
   $talents['nurturing'] = $nurturing_talent;
   $prospector_talent = new Talent('prospector', 2, 10, 300, 1.6, $_POST['prospector']);
   $talents['prospector'] = $prospector_talent;
-  $doing_it_again_talent = new Talent('doing_it_again', 2, 1, 1000,0, $_POST['doing_it_again']);
+  $doing_it_again_talent = new Talent('doing_it_again', 2, 1, 1000, 1, $_POST['doing_it_again']);
   $talents['doing_it_again'] = $doing_it_again_talent;
   $deep_idol_scavenger_talent = new Talent('deep_idol_scavenger', 3, 25, 500,1.15, $_POST['deep_idol_scavenger']);
   $talents['deep_idol_scavenger'] = $deep_idol_scavenger_talent;
   $extra_training_talent = new Talent('extra_training', 3, 40, 1000, 1.075, $_POST['extra_training'], '*');
   $talents['extra_training'] = $extra_training_talent;
-  $head_start_talent = new Talent('head_start', 3, 1, 10000, 0, $_POST['head_start']);
+  $head_start_talent = new Talent('head_start', 3, 1, 10000, 1, $_POST['head_start']);
   $talents['head_start'] = $head_start_talent;
-  $triple_tier_trouble_talent = new Talent('triple_tier_trouble', 3, 1, 5000, 0, $_POST['triple_tier_trouble']);
+  $triple_tier_trouble_talent = new Talent('triple_tier_trouble', 3, 1, 5000, 1, $_POST['triple_tier_trouble']);
   $talents['triple_tier_trouble'] = $triple_tier_trouble_talent;
   $sprint_mode_talent = new Talent('sprint_mode', 4, 10, 25000, 2, $_POST['sprint_mode']);
   $talents['sprint_mode'] = $sprint_mode_talent;
@@ -132,7 +132,7 @@ if ($_POST) {
   $talents['superior_training'] = $superior_training_talent;
   $kilo_leveling_talent = new Talent('kilo_leveling', 4, 5, 500000, 4, $_POST['kilo_leveling'], '+', .10);
   $talents['kilo_leveling'] = $kilo_leveling_talent;
-  $fourth_times_the_charm_talent = new Talent('fourth_times_the_charm', 4, 1, 25000, 0, $_POST['fourth_times_the_charm']);
+  $fourth_times_the_charm_talent = new Talent('fourth_times_the_charm', 4, 1, 25000, 1, $_POST['fourth_times_the_charm']);
   $talents['fourth_times_the_charm'] = $fourth_times_the_charm_talent;
   $idol_champions_talent = new Talent('idol_champions', 5, 40, 50000, 1.211, $_POST['idol_champions']);
   $talents['idol_champions'] = $idol_champions_talent;
@@ -190,20 +190,34 @@ if ($_POST) {
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
   $user->talents['kilo_leveling']->damage_base = floor($user->main_dps_max_levels/1000);
   $base_damage = 1;
-  //echo "idolatry lvl " . $user->talents['idolatry']->current_level . " provides " . sprintf('%E',$user->talents['idolatry']->get_current_damage()) . " %<br>";
-  //echo "maxed power at lvl " . $user->talents['maxed_power']->current_level . " provides " . $user->talents['maxed_power']->get_current_damage() . " %<br>";
-  //echo "<br>";
+  //echo "total idols spent on doing_it_again_talent: " . $user->talents['doing_it_again']->get_total_cost() . "<br>";
+  echo "total idols spent " . number_format($user->get_total_talent_cost()) . " total idols remaining: " . number_format($user->total_idols - $user->get_total_talent_cost()) . "<br>";
   $results_to_print = '<div style="float: right;">';
   $results_to_print .= "Final Damage " . sprintf('%.2E', $user->get_total_damage() - 100) . "% Increase<br>";
   //This is here to make a copy of the object so we aren't still accessing things by reference
   $future_talents_user = unserialize(serialize($user));
   for ($i = 0; $i < $user->talents_to_recommend; $i++) {
     $talent_to_buy = $future_talents_user->get_next_talent_to_buy();
+    $future_idols_remaining = $future_talents_user->total_idols - $future_talents_user->get_total_talent_cost();
+    //Going to use this to keep track of leftover idols after making the larger idol purchases so you can spend the remainder if you want
+    if (!isset($leftover_idols)) {
+      $leftover_idols = $future_idols_remaining;
+    } else if ($future_idols_remaining >= 0) {
+      $leftover_idols = $future_idols_remaining;
+    }
     if (empty($talent_to_buy)) {
       $results_to_print .= "No talent found!<br>";
       break;
     } else {
-      $results_to_print .= "Talent to buy: " . $talent_to_buy . "<br>";
+      $color = "red";
+      $next_talent_cost = $future_talents_user->talents[$talent_to_buy]->get_next_level_cost();
+      if ($next_talent_cost <= ($future_idols_remaining)) {
+        $color = "green";
+      } else if ($next_talent_cost <= $leftover_idols) {
+        $color = "yellow";
+        $leftover_idols -= $next_talent_cost;
+      }
+      $results_to_print .= '<div style="clear: right; background: ' . $color . ';">Talent to buy: ' . $talent_to_buy . '</div>';
       $future_talents_user->update($talent_to_buy);
     }
   }
@@ -223,6 +237,25 @@ class Talent {
     $this->damage_base_multiplier = $damage_base_multiplier;
     $this->stacks = $stacks;
     $this->effect = $effect;
+    $this->arith_cost = [0 => '500000000',
+                         1 => '750000000',
+                         2 => '1137750000',
+                         3 => '1745308500',
+                         4 => '2706973483',
+                         5 => '4244534422',
+                         6 => '6727587059',
+                         7 => '10777594469',
+                         8 => '17448925445',
+                         9 => '28546442028',
+                        10 => '47187268672',
+                        11 => '78802738681',
+                        12 => '132940220156',
+                        13 => '226530135145',
+                        14 => '389858362585',
+                        15 => '677573834173',
+                        16 => '1189142078973',
+                        17 => '2107159763941',
+                        18 => '3769708817690'];
   }
 
   public function get_damage_at_additional_level($levels_to_add) {
@@ -275,35 +308,29 @@ class Talent {
     return $damage;
   }
 
+  //TODO refactor these as they duplicate code
   public function get_next_level_cost() {
     $next_level_cost = 0;
     if ($this->current_level + 1 <= $this->max_level || $this->max_level == -1) {
       if ($this->level_multiplier != 'arithmagician') {
         $next_level_cost = ceil($this->base_cost * pow($this->level_multiplier, ($this->current_level)));
       } else {
-        $arith_cost = [0 => '500000000',
-                       1 => '750000000',
-                       2 => '1137750000',
-                       3 => '1745308500',
-                       4 => '2706973483',
-                       5 => '4244534422',
-                       6 => '6727587059',
-                       7 => '10777594469',
-                       8 => '17448925445',
-                       9 => '28546442028',
-                      10 => '47187268627',
-                      11 => '78802738681',
-                      12 => '132940220156',
-                      13 => '226530135145',
-                      14 => '389858362585',
-                      15 => '677573834173',
-                      16 => '1189142078973',
-                      17 => '2107159763941',
-                      18 => '3769708817690'];
-        $next_level_cost = $arith_cost[$this->current_level];
+        $next_level_cost = $this->arith_cost[$this->current_level];
       }
     }
     return $next_level_cost;
+  }
+
+  public function get_total_cost() {
+    $total_cost = 0;
+      for ($i = 0; $i < $this->current_level; $i++) {
+        if ($this->level_multiplier != 'arithmagician') {
+          $total_cost += ceil($this->base_cost * pow($this->level_multiplier, ($i)));
+        } else {
+          $total_cost += $this->arith_cost[$i];
+        }
+      }
+    return $total_cost;
   }
 }
 
@@ -373,6 +400,18 @@ class User {
       }
     }
     return $total_damage;
+  }
+
+  public function get_total_talent_cost() {
+    $total_cost = 0;
+    foreach ($this->talents AS $talent_name => $talent) {
+      $talent_cost = $talent->get_total_cost();
+      $total_cost += $talent_cost;
+      if ($this->debug) {
+        echo "Idols spent on $talent_name : " . number_format($talent_cost) . " current total spent: " . number_format($total_cost) . "<br>";
+      }
+    }
+    return $total_cost;
   }
 
   public function get_next_talent_to_buy() {
