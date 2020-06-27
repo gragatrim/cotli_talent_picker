@@ -10,7 +10,7 @@ To run it locally you just need to do the following
 4. Open up a browser and navigate to http://localhost:8080/cotli_talents.php
 5. Fill in the information and it will suggest talents to you.
 
-##Known Issues/Missing Features
+## Known Issues/Missing Features
 
 1. No storing of information, everything is just "saved" in POST data.
 2. Will only suggest talents that directly impact DPS
