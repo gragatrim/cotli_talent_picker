@@ -95,7 +95,7 @@ table, th, td {
     <td class="red">Fourth Time's The Charm</td><td><input style="width:50px" type="text" name="fourth_times_the_charm" value="<?php echo $user->talents['fourth_times_the_charm']->current_level; ?>"></td>
   </tr>
   <tr>
-    <td class="red">Mission Adrenaline</td><td><input style="width:50px" type="text" name="mission_adrenaline" value="<?php echo $user->talents['mission_adrenaline']->current_level; ?>"></td>
+    <td class="green">Mission Adrenaline</td><td><input style="width:50px" type="text" name="mission_adrenaline" value="<?php echo $user->talents['mission_adrenaline']->current_level; ?>"></td>
     <td class="red">Lingering Buffs</td><td><input style="width:50px" type="text" name="lingering_buffs" value="<?php echo $user->talents['lingering_buffs']->current_level; ?>"</td>
     <td class="red">Omniclicking</td><td><input style="width:50px" type="text" name="omniclicking" value="<?php echo $user->talents['omniclicking']->current_level; ?>"></td>
     <td class="red">Bossing Around</td><td><input style="width:50px" type="text" name="bossing_around" value="<?php echo $user->talents['bossing_around']->current_level; ?>"></td>
@@ -142,7 +142,7 @@ table, th, td {
     echo $results_to_print;
   }
 ?>
-Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : 0); ?>"> Debug: <input type="checkbox" name="debug" value="true" <?php echo (isset($_POST['debug']) ? "checked" : ''); ?>><br>
+Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : 0); ?>"> <label for="debug">Debug: </label><input type="checkbox" id="debug" name="debug" value="true" <?php echo (isset($_POST['debug']) ? "checked" : ''); ?>><br>
 Talents to Recommend: <input type="text" name="talents_to_recommend" value="<?php echo (isset($user->talents_to_recommend) ? $user->talents_to_recommend : 0); ?>"><br>
 Max level Reached: <input type="text" name="max_level_reached" value="<?php echo (isset($user->max_level_reached) ? $user->max_level_reached : 0); ?>"><br>
 Golden Items: <input type="text" name="golden_items" value="<?php echo (isset($user->golden_items) ? $user->golden_items : 0); ?>"><br>
@@ -155,7 +155,7 @@ Brass Rings: <input type="text" name="brass_rings" value="<?php echo (isset($use
 Silver Rings: <input type="text" name="silver_rings" value="<?php echo (isset($user->silver_rings) ? $user->silver_rings : 0); ?>"><br>
 Golden Rings: <input type="text" name="golden_rings" value="<?php echo (isset($user->golden_rings) ? $user->golden_rings : 0); ?>"><br>
 Diamond Rings: <input type="text" name="diamond_rings" value="<?php echo (isset($user->diamond_rings) ? $user->diamond_rings : 0); ?>"><br>
-<div class="hidden" >Average Mission Completion in 8h: <input type="text" name="average_mission_completion" value="<?php echo (isset($user->average_mission_completion) ? $user->average_mission_completion : 0); ?>"><br></div>
+Average Mission Completion in 8h: <input type="text" name="average_mission_completion" value="<?php echo (isset($user->average_mission_completion) ? $user->average_mission_completion : 0); ?>"><br>
 Main DPS Slot: <input type="text" name="main_dps_slot" value="<?php echo (isset($user->main_dps_slot) ? $user->main_dps_slot : 0); ?>"><br>
 <div class="hidden" >Cooldown Reduction%: <input type="text" name="cooldown_reduction" value="<?php echo (isset($user->cooldown_reduction) ? $user->cooldown_reduction : 0); ?>"><br></div>
 EP from main DPS: <input type="text" name="ep_from_main_dps" value="<?php echo (isset($user->ep_from_main_dps) ? $user->ep_from_main_dps : 0); ?>"><br>

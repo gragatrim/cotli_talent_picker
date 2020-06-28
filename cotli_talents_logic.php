@@ -39,7 +39,7 @@ if ($_POST) {
   $talents['lingering_buffs'] = $lingering_buffs_talent;
   $omniclicking_talent = new Talent('omniclicking', 5, 25, 75000,1.322, $_POST['omniclicking']);
   $talents['omniclicking'] = $omniclicking_talent;
-  $bossing_around_talent = new Talent('bossing_around', 5, 2, 40000000,13999., $_POST['bossing_around']);
+  $bossing_around_talent = new Talent('bossing_around', 5, 2, 40000000, 1399999, $_POST['bossing_around']);
   $talents['bossing_around'] = $bossing_around_talent;
   $phase_skip_talent = new Talent('phase_skip', 6, 10, 30000000,1.2, $_POST['phase_skip']);
   $talents['phase_skip'] = $phase_skip_talent;
@@ -192,7 +192,9 @@ if ($_POST) {
   $base_damage = 1;
   //echo "total idols spent on doing_it_again_talent: " . $user->talents['doing_it_again']->get_total_cost() . "<br>";
   echo "total idols spent " . number_format($user->get_total_talent_cost()) . " total idols remaining: " . number_format($user->total_idols - $user->get_total_talent_cost()) . "<br>";
-  $results_to_print = '<div style="float: right;">';
+  $results_legend = '<div class="green" style="float:right; clear: both;">Green means you can afford it</div><div class="yellow" style="float:right;clear: both;">Yellow means your leftover idols can afford it</div><div class="red" style="float:right;clear: both;">Red means you can\'t afford it</div>';
+  $results_to_print = $results_legend;
+  $results_to_print .= '<div style="float: right;clear: both;">';
   $results_to_print .= "Final Damage " . sprintf('%.2E', $user->get_total_damage() - 100) . "% Increase<br>";
   //This is here to make a copy of the object so we aren't still accessing things by reference
   $future_talents_user = unserialize(serialize($user));
@@ -419,20 +421,30 @@ class User {
         continue;
       }
       $current_talent_damage = $talent->get_current_damage();
-      $current_damage = $this->get_total_damage();
+      $current_total_damage = $this->get_total_damage();
       $next_talent_level_cost = $talent->get_next_level_cost();
-      if ($talent->current_level + 1 > $talent->max_level && $talent->max_level != -1) {
+      if (($talent->current_level + 1 > $talent->max_level && $talent->max_level != -1) || $next_talent_level_cost > ($this->total_idols / 3)) {
         continue;
       }
-      $new_talent_damage = $talent->get_damage_at_additional_level(1);
+      $current_maxed_power_damage_increase = 1;
+      $new_maxed_power_damage_increase = 1;
+      if ($talent->current_level + 1 == $talent->max_level) {
+        $current_maxed_power_damage_increase = $this->talents['maxed_power']->get_current_damage();
+        $this->talents['maxed_power']->stacks++;
+        $new_maxed_power_damage_increase = $this->talents['maxed_power']->get_current_damage();
+      }
+      $new_talent_damage = $talent->get_damage_at_additional_level(1) / $current_maxed_power_damage_increase * $new_maxed_power_damage_increase;
+      if ($talent->current_level + 1 == $talent->max_level) {
+        $this->talents['maxed_power']->stacks--;
+      }
       if ($current_talent_damage > 0) {
         $new_damage = $this->get_total_damage() / $current_talent_damage * $new_talent_damage;
       } else {
         $new_damage = $this->get_total_damage() * $new_talent_damage;
       }
-      $damage_diff = ($new_damage - $current_damage)/$current_damage/$next_talent_level_cost;
+      $damage_diff = ($new_damage - $current_total_damage)/$current_total_damage/$next_talent_level_cost;
       if ($this->debug && $damage_diff > 0) {
-        echo "possible talent to buy: " . $talent_name . " DPS diff of " . $damage_diff . " current damage " . sprintf("%.2E", $current_damage) . " new talent damage " . sprintf("%.2E", $new_damage) . "<br>";
+        echo "possible talent to buy: " . $talent_name . " DPS diff of " . $damage_diff . " current damage " . sprintf("%.2E", $current_total_damage) . " new talent damage " . sprintf("%.2E", $new_damage) . "<br>";
       }
       if ($damage_diff > $best_dps_diff) {
         $talent_to_buy = $talent_name;
