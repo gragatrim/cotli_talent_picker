@@ -9,6 +9,7 @@ To run it locally you just need to do the following
     2. docker run -p 8080:8080 -v .:/var/www/html cotli-talents
 4. Open up a browser and navigate to http://localhost:8080/cotli_talents.php
 5. Fill in the information and it will suggest talents to you.
+6. Checking the debug checkbox will show how much the next level of each talent will increase your DPS, as well as the increase as a % of idols spent.
 
 ## Known Issues/Missing Features
 
