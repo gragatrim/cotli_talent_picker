@@ -94,7 +94,7 @@ if ($_POST) {
   $talents['maxed_power'] = $maxed_power_talent;
   $idolatry_talent = new Talent('idolatry', 6, 20, 50000000,1.5, $_POST['idolatry'], '*', 20, $_POST['idolatry'], floor(log($_POST['total_idols'], 10)));
   $talents['idolatry'] = $idolatry_talent;
-  $master_crafter_talent = new Talent('master_crafter', 6, -1, 900000000,1.28, $_POST['master_crafter'], '+', $_POST['epic_recipies'], .01);
+  $master_crafter_talent = new Talent('master_crafter', 6, -1, 900000000,1.28, $_POST['master_crafter'], '+', .01, $_POST['epic_recipies']);
   $talents['master_crafter'] = $master_crafter_talent;
   $legendary_friendship_talent = new Talent('legendary_friendship', 7, 25, 7500000000, 1.56, $_POST['legendary_friendship'], '*', 5, $_POST['legendary_friendship'], $_POST['main_dps_benched_crusaders_legendaries'], 5);
   $talents['legendary_friendship'] = $legendary_friendship_talent;
@@ -130,7 +130,7 @@ if ($_POST) {
   $talents['sprint_mode'] = $sprint_mode_talent;
   $superior_training_talent = new Talent('superior_training', 4, 80, 5000, 1.0888, $_POST['superior_training'], '*');
   $talents['superior_training'] = $superior_training_talent;
-  $kilo_leveling_talent = new Talent('kilo_leveling', 4, 5, 500000, 4, $_POST['kilo_leveling'], '+', .10);
+  $kilo_leveling_talent = new Talent('kilo_leveling', 4, 5, 500000, 4, $_POST['kilo_leveling'], '*', 10, $_POST['kilo_leveling']);
   $talents['kilo_leveling'] = $kilo_leveling_talent;
   $fourth_times_the_charm_talent = new Talent('fourth_times_the_charm', 4, 1, 25000, 1, $_POST['fourth_times_the_charm']);
   $talents['fourth_times_the_charm'] = $fourth_times_the_charm_talent;
@@ -138,7 +138,7 @@ if ($_POST) {
   $talents['idol_champions'] = $idol_champions_talent;
   $tenk_training_talent = new Talent('tenk_training', 5, 80, 140000, 1.083, $_POST['tenk_training'], '*');
   $talents['tenk_training'] = $tenk_training_talent;
-  $bonus_training_talent = new Talent('bonus_training', 5, 33, 225000, 1.31, $_POST['bonus_training']);
+  $bonus_training_talent = new Talent('bonus_training', 5, 34, 225000, 1.31, $_POST['bonus_training'], '*', 1, 1, 1, $_POST['main_dps_slot']);
   $talents['bonus_training'] = $bonus_training_talent;
   $scrap_hoarder_talent = new Talent('scrap_hoarder', 5, 3, 15000000, 2, $_POST['scrap_hoarder']);
   $talents['scrap_hoarder'] = $scrap_hoarder_talent;
@@ -188,16 +188,18 @@ if ($_POST) {
                    (isset($_POST['debug']) ? true: false));
   $user->talents['maxed_power']->stacks = $user->talents_at_max;
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
-  $user->talents['kilo_leveling']->damage_base = floor($user->main_dps_max_levels/1000);
+  $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);
   $base_damage = 1;
-  //echo "total idols spent on doing_it_again_talent: " . $user->talents['doing_it_again']->get_total_cost() . "<br>";
+  //echo "master_crafter damage: " . $user->talents['master_crafter']->get_current_damage() . "<br>";
+  //echo "main_dps_max_levels: " . $user->main_dps_max_levels . "<br>";
   echo "total idols spent " . number_format($user->get_total_talent_cost()) . " total idols remaining: " . number_format($user->total_idols - $user->get_total_talent_cost()) . "<br>";
   $results_legend = '<div class="green" style="float:right; clear: both;">Green means you can afford it</div><div class="yellow" style="float:right;clear: both;">Yellow means your leftover idols can afford it</div><div class="red" style="float:right;clear: both;">Red means you can\'t afford it</div>';
   $results_to_print = $results_legend;
   $results_to_print .= '<div style="float: right;clear: both;">';
-  $results_to_print .= "Final Damage " . sprintf('%.2E', $user->get_total_damage() - 100) . "% Increase<br>";
+  $results_to_print .= "Final Damage " . format(bcsub($user->get_total_damage(), 100)) . "% Increase<br>";
   //This is here to make a copy of the object so we aren't still accessing things by reference
   $future_talents_user = unserialize(serialize($user));
+  $talents_to_buy = '';
   for ($i = 0; $i < $user->talents_to_recommend; $i++) {
     $talent_to_buy = $future_talents_user->get_next_talent_to_buy();
     $future_idols_remaining = $future_talents_user->total_idols - $future_talents_user->get_total_talent_cost();
@@ -208,7 +210,7 @@ if ($_POST) {
       $leftover_idols = $future_idols_remaining;
     }
     if (empty($talent_to_buy)) {
-      $results_to_print .= "No talent found!<br>";
+      $talents_to_buy .= "No talent found!<br>";
       break;
     } else {
       $color = "red";
@@ -219,15 +221,17 @@ if ($_POST) {
         $color = "yellow";
         $leftover_idols -= $next_talent_cost;
       }
-      $results_to_print .= '<div style="clear: right; background: ' . $color . ';">Talent to buy: ' . $talent_to_buy . '</div>';
+      $talents_to_buy .= '<div style="clear: right; background: ' . $color . ';">Talent to buy: ' . $talent_to_buy . '</div>';
       $future_talents_user->update($talent_to_buy);
     }
   }
+  $results_to_print .= "Future Damage " . format(bcsub($future_talents_user->get_total_damage(), 100)) . "% Increase<br>";
+  $results_to_print .= $talents_to_buy;
   $results_to_print .= '</div>';
 }
 
 class Talent {
-  function __construct($name, $tier, $max_level, $base_cost, $level_multiplier, $current_level = 0, $damage_type = '', $damage_base = 0, $damage_base_multiplier = 1, $stacks = 1, $effect = '') {
+  function __construct($name, $tier, $max_level, $base_cost, $level_multiplier, $current_level = 0, $damage_type = '', $damage_base = 0, $damage_base_multiplier = 1, $stacks = 1, $main_dps_slot = 0) {
     $this->name = $name;
     $this->tier = $tier;
     $this->max_level = $max_level;
@@ -238,7 +242,7 @@ class Talent {
     $this->damage_base = $damage_base;
     $this->damage_base_multiplier = $damage_base_multiplier;
     $this->stacks = $stacks;
-    $this->effect = $effect;
+    $this->main_dps_slot = $main_dps_slot;
     $this->arith_cost = [0 => '500000000',
                          1 => '750000000',
                          2 => '1137750000',
@@ -261,7 +265,7 @@ class Talent {
   }
 
   public function get_damage_at_additional_level($levels_to_add) {
-    $damage = 0;
+    $damage = '0';
     $this->current_level += $levels_to_add;
     $damage = $this->get_current_damage();
     $this->current_level -= $levels_to_add;
@@ -269,7 +273,7 @@ class Talent {
   }
 
   public function get_current_damage() {
-    $damage = 1;
+    $damage = '1';
     if ($this->damage_type == '+') {
       $damage = $this->get_additive_damage();
     } else if ($this->damage_type == '*') {
@@ -279,17 +283,17 @@ class Talent {
   }
 
   function get_additive_damage() {
-    $damage = 0;
+    $damage = '0';
     if ($this->name == 'overenchanted') {
-      $damage = ((1+(0.25 + $this->damage_base_multiplier * $this->current_level) * $this->damage_base));
+      $damage = bcadd(1, bcadd(0.25, bcmul(bcmul($this->damage_base_multiplier, $this->current_level, 40), $this->damage_base, 40), 40), 40);
     } else {
-      $damage = (1 + $this->damage_base * $this->current_level * $this->damage_base_multiplier);
+      $damage = bcadd(1, bcmul(bcmul($this->damage_base, $this->current_level, 40), $this->damage_base_multiplier, 40), 40);
     }
     return $damage;
   }
 
   function get_multiplicative_damage() {
-    $damage = 0;
+    $damage = '0';
     //All other talents use current level as the multiplier, just every little bit helps use it as the stack
     if ($this->name != 'every_little_bit_helps'
       && $this->current_level != $this->damage_base_multiplier) {
@@ -301,18 +305,26 @@ class Talent {
     if ($this->name == 'extra_training'
      || $this->name == 'superior_training'
      || $this->name == 'tenk_training'
+     || ($this->name == 'bonus_training' && $this->current_level >= $this->main_dps_slot)
      || $this->name == 'montage_training'
      || $this->name == 'magical_training') {
-      $damage = pow(4, $this->current_level);
+      if ($this->main_dps_slot == 27) {
+        $level_multiplier = '4.25';
+      } else {
+        $level_multiplier = '4';
+      }
+      $damage = bcpow($level_multiplier, $this->current_level);
+    } else if ($this->name == 'kilo_leveling') {
+      $damage = bcpow(bcmul($this->damage_base, $this->damage_base_multiplier), $this->stacks);
     } else {
-      $damage = (pow(1 + $this->damage_base / 100 * $this->damage_base_multiplier, $this->stacks) - 1) * 100;
+      $damage = bcmul(bcsub(bcpow(bcadd('1', bcmul(bcdiv($this->damage_base, '100', 2), $this->damage_base_multiplier, 2), 2), $this->stacks, 2), '1', 2), '100', 2);
     }
     return $damage;
   }
 
   //TODO refactor these as they duplicate code
   public function get_next_level_cost() {
-    $next_level_cost = 0;
+    $next_level_cost = '0';
     if ($this->current_level + 1 <= $this->max_level || $this->max_level == -1) {
       if ($this->level_multiplier != 'arithmagician') {
         $next_level_cost = ceil($this->base_cost * pow($this->level_multiplier, ($this->current_level)));
@@ -320,11 +332,11 @@ class Talent {
         $next_level_cost = $this->arith_cost[$this->current_level];
       }
     }
-    return $next_level_cost;
+    return (string)$next_level_cost;
   }
 
   public function get_total_cost() {
-    $total_cost = 0;
+    $total_cost = '0';
       for ($i = 0; $i < $this->current_level; $i++) {
         if ($this->level_multiplier != 'arithmagician') {
           $total_cost += ceil($this->base_cost * pow($this->level_multiplier, ($i)));
@@ -332,7 +344,7 @@ class Talent {
           $total_cost += $this->arith_cost[$i];
         }
       }
-    return $total_cost;
+    return (string)$total_cost;
   }
 }
 
@@ -372,7 +384,7 @@ class User {
     $this->debug = $debug;
     $this->talents_at_max = $this->get_max_talents();
     $this->total_talent_levels = $this->get_all_talent_levels();
-    $this->main_dps_max_levels = 5000 + $this->talents['extra_training']->current_level * 50 + $this->talents['superior_training']->current_level * 50 + $this->talents['tenk_training']->current_level * 50 + $this->talents['montage_training']->current_level * 50 + $this->talents['magical_training']->current_level * 50 + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot) * 50;
+    $this->main_dps_max_levels = 5000 + ($this->talents['extra_training']->current_level + $this->talents['superior_training']->current_level + $this->talents['tenk_training']->current_level + $this->talents['montage_training']->current_level + $this->talents['magical_training']->current_level + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot)) * 25;
   }
 
   public function get_all_talent_levels() {
@@ -394,21 +406,21 @@ class User {
   }
 
   public function get_total_damage() {
-    $total_damage = (1 + .01 * $this->brass_rings + (.02 * $this->silver_rings) + (.04 * $this->golden_rings) + (.08 * $this->diamond_rings)) * (1 + $this->total_idols * .03) * ($this->total_idols < 1 ? 1 : 100);
+    $total_damage = bcmul(bcmul(bcadd(1, bcadd(bcadd(bcadd(bcmul(.01, $this->brass_rings), bcmul(.02, $this->silver_rings)), bcmul(.04, $this->golden_rings)), bcmul(.08, $this->diamond_rings))), bcadd(1, bcmul($this->total_idols, .03))), ($this->total_idols < 1 ? 1 : 100));
     foreach ($this->talents AS $talent_name => $talent) {
       $talent_damage = $talent->get_current_damage();
-      if ($talent->current_level > 0) {
-        $total_damage *= $talent_damage;
+      if ($talent->current_level > 0 && $talent_damage > 0) {
+        $total_damage = bcmul($total_damage, $talent_damage, 40);
       }
     }
     return $total_damage;
   }
 
   public function get_total_talent_cost() {
-    $total_cost = 0;
+    $total_cost = '0';
     foreach ($this->talents AS $talent_name => $talent) {
       $talent_cost = $talent->get_total_cost();
-      $total_cost += $talent_cost;
+      $total_cost = bcadd($talent_cost, $total_cost, 40);
     }
     return $total_cost;
   }
@@ -423,28 +435,48 @@ class User {
       $current_talent_damage = $talent->get_current_damage();
       $current_total_damage = $this->get_total_damage();
       $next_talent_level_cost = $talent->get_next_level_cost();
-      if (($talent->current_level + 1 > $talent->max_level && $talent->max_level != -1) || $next_talent_level_cost > ($this->total_idols / 3)) {
+      if (($talent->current_level + 1 > $talent->max_level && $talent->max_level != -1) || bccomp($next_talent_level_cost, bcdiv($this->total_idols, 3, 40)) == 1) {
         continue;
       }
       $current_maxed_power_damage_increase = 1;
       $new_maxed_power_damage_increase = 1;
-      if ($talent->current_level + 1 == $talent->max_level) {
+      $current_kilo_leveling_damage_increase = 1;
+      $new_kilo_leveling_damage_increase = 1;
+      $current_main_dps_max_levels = 5000 + ($this->talents['extra_training']->current_level + $this->talents['superior_training']->current_level + $this->talents['tenk_training']->current_level + $this->talents['montage_training']->current_level + $this->talents['magical_training']->current_level + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot)) * 25;
+      if ($talent->current_level + 1 == $talent->max_level && $this->talents['maxed_power']->current_level > 0) {
         $current_maxed_power_damage_increase = $this->talents['maxed_power']->get_current_damage();
         $this->talents['maxed_power']->stacks++;
         $new_maxed_power_damage_increase = $this->talents['maxed_power']->get_current_damage();
       }
-      $new_talent_damage = $talent->get_damage_at_additional_level(1) / $current_maxed_power_damage_increase * $new_maxed_power_damage_increase;
-      if ($talent->current_level + 1 == $talent->max_level) {
+      if ($talent_name == 'extra_training' || $talent_name == 'superior_training' || $talent_name == 'tenk_training' || $talent_name == 'montage_training' || $talent_name == 'magical_training' || $talent_name == 'bonus_training') {
+        $current_kilo_leveling_damage_increase = $this->talents['kilo_leveling']->get_current_damage();
+        $main_dps_max_next_levels = 5000 + ($this->talents['extra_training']->current_level + $this->talents['superior_training']->current_level + $this->talents['tenk_training']->current_level + $this->talents['montage_training']->current_level + $this->talents['magical_training']->current_level + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot) + 1) * 25;
+        $this->talents['kilo_leveling']->stacks = floor($main_dps_max_next_levels/1000);
+        $new_kilo_leveling_damage_increase = $this->talents['kilo_leveling']->get_current_damage();
+      }
+      if ($current_maxed_power_damage_increase < 1) {
+        echo "talent_name: " . $talent_name . " new_maxed_power_damage_increase: " . $new_maxed_power_damage_increase . " current_maxed_power_damage_increase: " . $current_maxed_power_damage_increase . "<br>";
+      }
+      $new_talent_damage = bcmul(bcdiv(bcmul(bcdiv($talent->get_damage_at_additional_level(1),
+      $current_maxed_power_damage_increase, 40),
+      $new_maxed_power_damage_increase, 40),
+      $current_kilo_leveling_damage_increase, 40),
+      $new_kilo_leveling_damage_increase, 40);
+      if ($talent->current_level + 1 == $talent->max_level && $this->talents['maxed_power']->current_level > 0) {
         $this->talents['maxed_power']->stacks--;
       }
-      if ($current_talent_damage > 0) {
-        $new_damage = $this->get_total_damage() / $current_talent_damage * $new_talent_damage;
-      } else {
-        $new_damage = $this->get_total_damage() * $new_talent_damage;
+      if ($talent_name == 'extra_training' || $talent_name == 'superior_training' || $talent_name == 'tenk_training' || $talent_name == 'montage_training' || $talent_name == 'magical_training' || $talent_name == 'bonus_training') {
+        $this->talents['kilo_leveling']->stacks = floor($this->main_dps_max_levels/1000);
       }
-      $damage_diff = ($new_damage - $current_total_damage)/$current_total_damage/$next_talent_level_cost;
-      if ($this->debug && $damage_diff > 0) {
-        echo "possible talent to buy: " . $talent_name . " DPS diff of " . $damage_diff . " current damage " . sprintf("%.2E", $current_total_damage) . " new talent damage " . sprintf("%.2E", $new_damage) . "<br>";
+      if ($current_talent_damage > 0) {
+        $new_damage = bcmul(bcdiv($this->get_total_damage(), $current_talent_damage, 40), $new_talent_damage, 40);
+      } else {
+        $new_damage = bcmul($this->get_total_damage(), $new_talent_damage);
+      }
+      $damage_diff = bcdiv(bcdiv(bcsub($new_damage, $current_total_damage, 40), $current_total_damage, 40), $next_talent_level_cost, 40);
+      if ($this->debug && bccomp($damage_diff, 0, 40) == 1) {
+        echo "<br>current_talent_damage: " . $current_talent_damage . " new_damage: " . format($new_damage) . " current_total_damage: " . format($current_total_damage) . " next_talent_level_cost: " . format($next_talent_level_cost) . " bcdiv(bcsub(new_damage, current_total_damage), current_total_damage): " . bcdiv(bcsub($new_damage, $current_total_damage, 40), $current_total_damage, 40). "<br>";
+        echo $talent_name . " DPS diff of " . format($damage_diff) . " current damage " . format($current_total_damage) . " new talent damage " . format($new_damage) . "<br>";
       }
       if ($damage_diff > $best_dps_diff) {
         $talent_to_buy = $talent_name;
@@ -485,7 +517,34 @@ class User {
     $this->total_talent_levels = $this->get_all_talent_levels();
     $this->talents['maxed_power']->stacks = $this->talents_at_max;
     $this->talents['level_all_the_way']->damage_base_multiplier = $this->total_talent_levels;
-    $this->main_dps_max_levels = 5000 + $this->talents['extra_training']->current_level * 50 + $this->talents['superior_training']->current_level * 50 + $this->talents['tenk_training']->current_level * 50 + $this->talents['montage_training']->current_level * 50 + $this->talents['magical_training']->current_level * 50 + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot) * 50;
-    $this->talents['kilo_leveling']->damage_base = floor($this->main_dps_max_levels/1000);
+    $this->main_dps_max_levels = 5000 + ($this->talents['extra_training']->current_level + $this->talents['superior_training']->current_level + $this->talents['tenk_training']->current_level + $this->talents['montage_training']->current_level + $this->talents['magical_training']->current_level + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot)) * 25;
+    $this->talents['kilo_leveling']->stacks = floor($this->main_dps_max_levels/1000);
   }
+}
+
+function format($number) {
+  $formatted_number = '';
+  $decimal_position = strpos($number, '.');
+  if (strpos($number, '0') === 0) {
+    $ltrim = ltrim($number, '0.');
+    $ltrim_strlen = strlen($ltrim);
+    $number_strlen = strlen($number);
+    $exponent = '-' . ($number_strlen - $ltrim_strlen - 1);
+    $base = substr($ltrim,0,1);
+    $decimal = substr($ltrim,1,2);
+    $formatted_number = $base . "." . $decimal . "E" . $exponent;
+  } else if ($decimal_position > 2 || ($decimal_position === false && strlen($number) > 3)) {
+    if ($decimal_position !== false) {
+      $exponent_value = (strlen(substr($number, 0, $decimal_position)) - 1);
+    } else {
+      $exponent_value = strlen($number) - 1;
+    }
+    $exponent = '+' . $exponent_value;
+    $base = substr($number,0,1);
+    $decimal = substr($number,1,2);
+    $formatted_number = $base . "." . $decimal . "E" . $exponent;
+  } else {
+    $formatted_number = sprintf("%.2E", $number);
+  }
+  return $formatted_number;
 }
