@@ -5,7 +5,7 @@ if ($_POST) {
   $talents['time_o_rama'] = $time_o_rama_talent;
   $massive_criticals_talent = new Talent('massive_criticals', 1, 25, 50, 1.25, $_POST['massive_criticals']);
   $talents['massive_criticals'] = $massive_criticals_talent;
-  $golden_benefits_talent = new Talent('golden_benefits', 1, -1, 1500, 1.061, $_POST['golden_benefits'], '+', $_POST['golden_items']);
+  $golden_benefits_talent = new Talent('golden_benefits', 1, -1, 1500, 1.061, $_POST['golden_benefits'], '+', .01, $_POST['golden_items']);
   $talents['golden_benefits'] = $golden_benefits_talent;
   $super_clicks_talent = new Talent('super_clicks', 1, 25, 50, 1.1, $_POST['super_clicks']);
   $talents['super_clicks'] = $super_clicks_talent;
@@ -190,7 +190,7 @@ if ($_POST) {
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
   $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);
   $base_damage = 1;
-  //echo "master_crafter damage: " . $user->talents['master_crafter']->get_current_damage() . "<br>";
+  //echo "golden_age: " . $user->talents['golden_age']->get_next_level_cost() . "<br>";
   //echo "main_dps_max_levels: " . $user->main_dps_max_levels . "<br>";
   echo "total idols spent " . number_format($user->get_total_talent_cost()) . " total idols remaining: " . number_format($user->total_idols - $user->get_total_talent_cost()) . "<br>";
   $results_legend = '<div class="green" style="float:right; clear: both;">Green means you can afford it</div><div class="yellow" style="float:right;clear: both;">Yellow means your leftover idols can afford it</div><div class="red" style="float:right;clear: both;">Red means you can\'t afford it</div>';
