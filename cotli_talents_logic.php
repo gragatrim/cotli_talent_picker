@@ -200,6 +200,7 @@ if ($_POST) {
   //This is here to make a copy of the object so we aren't still accessing things by reference
   $future_talents_user = unserialize(serialize($user));
   $talents_to_buy = '';
+  $future_damage = $future_talents_user->get_total_damage();
   for ($i = 0; $i < $user->talents_to_recommend; $i++) {
     $talent_to_buy = $future_talents_user->get_next_talent_to_buy();
     $future_idols_remaining = $future_talents_user->total_idols - $future_talents_user->get_total_talent_cost();
@@ -217,15 +218,17 @@ if ($_POST) {
       $next_talent_cost = $future_talents_user->talents[$talent_to_buy]->get_next_level_cost();
       if ($next_talent_cost <= ($future_idols_remaining)) {
         $color = "green";
+        $future_damage = bcmul(bcdiv($future_damage, $future_talents_user->talents[$talent_to_buy]->get_current_damage()), $future_talents_user->talents[$talent_to_buy]->get_damage_at_additional_level(1));
       } else if ($next_talent_cost <= $leftover_idols) {
         $color = "yellow";
         $leftover_idols -= $next_talent_cost;
+        $future_damage = bcmul(bcdiv($future_damage, $future_talents_user->talents[$talent_to_buy]->get_current_damage()), $future_talents_user->talents[$talent_to_buy]->get_damage_at_additional_level(1));
       }
       $talents_to_buy .= '<div style="clear: right; background: ' . $color . ';">Talent to buy: ' . $talent_to_buy . '</div>';
       $future_talents_user->update($talent_to_buy);
     }
   }
-  $results_to_print .= "Future Damage " . format(bcsub($future_talents_user->get_total_damage(), 100)) . "% Increase<br>";
+  $results_to_print .= "Future Damage " . format(bcsub($future_damage, 100)) . "% Increase<br>";
   $results_to_print .= $talents_to_buy;
   $results_to_print .= '</div>';
 }
