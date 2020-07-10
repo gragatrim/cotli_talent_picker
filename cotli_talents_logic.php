@@ -58,7 +58,7 @@ if ($_POST) {
   $talents['apprentice_crafter'] = $apprentice_crafter_talent;
   $overenchanted_talent = new Talent('overenchanted', 2, 50, 100,1.1, $_POST['overenchanted'], '+', $_POST['ep_from_main_dps'], .05);
   $talents['overenchanted'] = $overenchanted_talent;
-  $surplus_cooldown_talent = new Talent('surplus_cooldown', 2, 50, 100,1.1, $_POST['surplus_cooldown'], '+', $_POST['cooldown_reduction'] - 50, .0025);
+  $surplus_cooldown_talent = new Talent('surplus_cooldown', 2, 50, 100, 1.1, $_POST['surplus_cooldown'], '+', .0025, ($_POST['cooldown_reduction'] - 50));
   $talents['surplus_cooldown'] = $surplus_cooldown_talent;
   $sharing_is_caring_talent = new Talent('sharing_is_caring', 2, 14, 500,1.25, $_POST['sharing_is_caring']);
   $talents['sharing_is_caring'] = $sharing_is_caring_talent;
@@ -82,7 +82,7 @@ if ($_POST) {
   $talents['journeyman_crafter'] = $journeyman_crafter_talent;
   $cheer_squad_talent = new Talent('cheer_squad', 5, 50, 166000,1.165, $_POST['cheer_squad'], '+', ($_POST['crusaders_owned'] - $_POST['crusaders_in_formation']), .01);
   $talents['cheer_squad'] = $cheer_squad_talent;
-  $valuable_experience_talent = new Talent('valuable_experience', 5, 45, 500000,1.132, $_POST['valuable_experience']);
+  $valuable_experience_talent = new Talent('valuable_experience', 5, 45, 500000, 1.132, $_POST['valuable_experience']);
   $talents['valuable_experience'] = $valuable_experience_talent;
   $every_little_bit_helps_talent = new Talent('every_little_bit_helps', 5, 500, 25000,1.022, $_POST['every_little_bit_helps'], '*', 5, 1, $_POST['every_little_bit_helps']);
   $talents['every_little_bit_helps'] = $every_little_bit_helps_talent;
@@ -96,9 +96,9 @@ if ($_POST) {
   $talents['idolatry'] = $idolatry_talent;
   $master_crafter_talent = new Talent('master_crafter', 6, -1, 900000000,1.28, $_POST['master_crafter'], '+', .01, $_POST['epic_recipies']);
   $talents['master_crafter'] = $master_crafter_talent;
-  $legendary_friendship_talent = new Talent('legendary_friendship', 7, 25, 7500000000, 1.56, $_POST['legendary_friendship'], '*', 5, $_POST['legendary_friendship'], $_POST['main_dps_benched_crusaders_legendaries'], 5);
+  $legendary_friendship_talent = new Talent('legendary_friendship', 7, 25, 7500000000, 1.56, $_POST['legendary_friendship'], '*', 5, $_POST['main_dps_benched_crusaders_legendaries'], $_POST['legendary_friendship']);
   $talents['legendary_friendship'] = $legendary_friendship_talent;
-  $golden_friendship_talent = new Talent('golden_friendship', 7, 25, 8000000000,1.395, $_POST['golden_friendship'], '*', 5, $_POST['golden_friendship'], $_POST['main_dps_benched_crusaders_golden_gear']);
+  $golden_friendship_talent = new Talent('golden_friendship', 7, 25, 8000000000,1.395, $_POST['golden_friendship'], '*', 5, $_POST['main_dps_benched_crusaders_golden_gear'], $_POST['golden_friendship']);
   $talents['golden_friendship'] = $golden_friendship_talent;
   $friendly_helpers_talent = new Talent('friendly_helpers', 7, 50, 500000000,1.26, $_POST['friendly_helpers'], '*', 10, $_POST['friendly_helpers'], $_POST['taskmasters_owned']);
   $talents['friendly_helpers'] = $friendly_helpers_talent;
@@ -190,7 +190,9 @@ if ($_POST) {
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
   $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);
   $base_damage = 1;
-  //echo "golden_age: " . $user->talents['golden_age']->get_next_level_cost() . "<br>";
+  //echo "surplus_cooldown: " . format(bcsub(bcmul($user->talents['surplus_cooldown']->get_current_damage(), 100), 100)) . "<br>";
+  //echo "golden_benefits: " . bcsub(bcmul($user->talents['golden_benefits']->get_current_damage(), 100), 100) . "<br>";
+  //echo "friendly_helpers_talent: " . format($user->talents['friendly_helpers']->get_current_damage()) . "<br>";
   //echo "main_dps_max_levels: " . $user->main_dps_max_levels . "<br>";
   echo "total idols spent " . number_format($user->get_total_talent_cost()) . " total idols remaining: " . number_format($user->total_idols - $user->get_total_talent_cost()) . "<br>";
   $results_legend = '<div class="green" style="float:right; clear: both;">Green means you can afford it</div><div class="yellow" style="float:right;clear: both;">Yellow means your leftover idols can afford it</div><div class="red" style="float:right;clear: both;">Red means you can\'t afford it</div>';
@@ -320,7 +322,7 @@ class Talent {
     } else if ($this->name == 'kilo_leveling') {
       $damage = bcpow(bcmul($this->damage_base, $this->damage_base_multiplier), $this->stacks);
     } else {
-      $damage = bcmul(bcsub(bcpow(bcadd('1', bcmul(bcdiv($this->damage_base, '100', 2), $this->damage_base_multiplier, 2), 2), $this->stacks, 2), '1', 2), '100', 2);
+      $damage = bcsub(bcpow(bcadd('1', bcmul(bcdiv($this->damage_base, '100', 2), $this->damage_base_multiplier, 2), 2), $this->stacks, 2), '1', 2);
     }
     return $damage;
   }
