@@ -1,5 +1,6 @@
 <?php
 if ($_POST) {
+  set_time_limit(60);
   $talents = array();
   $time_o_rama_talent = new Talent('time_o_rama', 1, 20, 25, 1.25, $_POST['time_o_rama']);
   $talents['time_o_rama'] = $time_o_rama_talent;
@@ -96,9 +97,9 @@ if ($_POST) {
   $talents['idolatry'] = $idolatry_talent;
   $master_crafter_talent = new Talent('master_crafter', 6, -1, 900000000,1.28, $_POST['master_crafter'], '+', .01, $_POST['epic_recipies']);
   $talents['master_crafter'] = $master_crafter_talent;
-  $legendary_friendship_talent = new Talent('legendary_friendship', 7, 25, 7500000000, 1.56, $_POST['legendary_friendship'], '*', 5, $_POST['main_dps_benched_crusaders_legendaries'], $_POST['legendary_friendship']);
+  $legendary_friendship_talent = new Talent('legendary_friendship', 7, 25, 7500000000, 1.56, $_POST['legendary_friendship'], '*', 5, $_POST['legendary_friendship'], $_POST['main_dps_benched_crusaders_legendaries']);
   $talents['legendary_friendship'] = $legendary_friendship_talent;
-  $golden_friendship_talent = new Talent('golden_friendship', 7, 25, 8000000000,1.395, $_POST['golden_friendship'], '*', 5, $_POST['main_dps_benched_crusaders_golden_gear'], $_POST['golden_friendship']);
+  $golden_friendship_talent = new Talent('golden_friendship', 7, 25, 8000000000, 1.395, $_POST['golden_friendship'], '*', 5, $_POST['golden_friendship'], $_POST['main_dps_benched_crusaders_golden_gear']);
   $talents['golden_friendship'] = $golden_friendship_talent;
   $friendly_helpers_talent = new Talent('friendly_helpers', 7, 50, 500000000,1.26, $_POST['friendly_helpers'], '*', 10, $_POST['friendly_helpers'], $_POST['taskmasters_owned']);
   $talents['friendly_helpers'] = $friendly_helpers_talent;
@@ -190,15 +191,13 @@ if ($_POST) {
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
   $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);
   $base_damage = 1;
-  //echo "surplus_cooldown: " . format(bcsub(bcmul($user->talents['surplus_cooldown']->get_current_damage(), 100), 100)) . "<br>";
-  //echo "golden_benefits: " . bcsub(bcmul($user->talents['golden_benefits']->get_current_damage(), 100), 100) . "<br>";
-  //echo "friendly_helpers_talent: " . format($user->talents['friendly_helpers']->get_current_damage()) . "<br>";
-  //echo "main_dps_max_levels: " . $user->main_dps_max_levels . "<br>";
+  //echo "golden_friendship: " . bcmul(bcsub($user->talents['golden_friendship']->get_current_damage(), 1, 10), 100, 10) . "<br>";
+  //echo "legendary_friendship: " . bcmul(bcsub($user->talents['legendary_friendship']->get_current_damage(), 1, 10), 100, 10) . "<br>";
   echo "total idols spent " . number_format($user->get_total_talent_cost()) . " total idols remaining: " . number_format($user->total_idols - $user->get_total_talent_cost()) . "<br>";
   $results_legend = '<div class="green" style="float:right; clear: both;">Green means you can afford it</div><div class="yellow" style="float:right;clear: both;">Yellow means your leftover idols can afford it</div><div class="red" style="float:right;clear: both;">Red means you can\'t afford it</div>';
   $results_to_print = $results_legend;
   $results_to_print .= '<div style="float: right;clear: both;">';
-  $results_to_print .= "Final Damage " . format(bcsub($user->get_total_damage(), 100)) . "% Increase<br>";
+  $results_to_print .= "Final Damage " . format(bcsub($user->get_total_damage(), 40)) . "% Increase<br>";
   //This is here to make a copy of the object so we aren't still accessing things by reference
   $future_talents_user = unserialize(serialize($user));
   $talents_to_buy = '';
@@ -217,7 +216,7 @@ if ($_POST) {
       break;
     } else {
       $color = "red";
-      $next_talent_cost = $future_talents_user->talents[$talent_to_buy]->get_next_level_cost();
+      $next_talent_cost = $future_talents_user->talents[$talent_to_buy]->get_cost_at_level($future_talents_user->talents[$talent_to_buy]->current_level);
       if ($next_talent_cost <= ($future_idols_remaining)) {
         $color = "green";
         $future_damage = bcmul(bcdiv($future_damage, $future_talents_user->talents[$talent_to_buy]->get_current_damage()), $future_talents_user->talents[$talent_to_buy]->get_damage_at_additional_level(1));
@@ -230,7 +229,7 @@ if ($_POST) {
       $future_talents_user->update($talent_to_buy);
     }
   }
-  $results_to_print .= "Future Damage " . format(bcsub($future_damage, 100)) . "% Increase<br>";
+  $results_to_print .= "Future Damage " . format(bcsub($future_damage, 40)) . "% Increase<br>";
   $results_to_print .= $talents_to_buy;
   $results_to_print .= '</div>';
 }
@@ -322,34 +321,39 @@ class Talent {
     } else if ($this->name == 'kilo_leveling') {
       $damage = bcpow(bcmul($this->damage_base, $this->damage_base_multiplier), $this->stacks);
     } else {
-      $damage = bcsub(bcpow(bcadd('1', bcmul(bcdiv($this->damage_base, '100', 2), $this->damage_base_multiplier, 2), 2), $this->stacks, 2), '1', 2);
+      $damage = bcpow(bcadd('1', bcmul(bcdiv($this->damage_base, '100', 20), $this->damage_base_multiplier, 20), 20), $this->stacks, 20);
     }
     return $damage;
   }
 
-  //TODO refactor these as they duplicate code
-  public function get_next_level_cost() {
-    $next_level_cost = '0';
-    if ($this->current_level + 1 <= $this->max_level || $this->max_level == -1) {
+  public function get_cost_at_level($level) {
+    $level_cost = '0';
+    if ($level < $this->max_level || $this->max_level == -1) {
       if ($this->level_multiplier != 'arithmagician') {
-        $next_level_cost = ceil($this->base_cost * pow($this->level_multiplier, ($this->current_level)));
+        $unrounded_level_cost = bcmul($this->base_cost, bcpow($this->level_multiplier, $level, 40), 40);
+        $unrounded_level_cost_floored = substr($unrounded_level_cost, 0, strpos($unrounded_level_cost, '.'));
+        if (bccomp($unrounded_level_cost, $unrounded_level_cost_floored, 2) === 1) {
+          $level_cost = bcadd($unrounded_level_cost_floored, 1);
+        } else {
+          $level_cost = $unrounded_level_cost;
+        }
       } else {
-        $next_level_cost = $this->arith_cost[$this->current_level];
+        $level_cost = $this->arith_cost[$level];
       }
     }
-    return (string)$next_level_cost;
+    return $level_cost;
   }
 
   public function get_total_cost() {
     $total_cost = '0';
       for ($i = 0; $i < $this->current_level; $i++) {
         if ($this->level_multiplier != 'arithmagician') {
-          $total_cost += ceil($this->base_cost * pow($this->level_multiplier, ($i)));
+          $total_cost = bcadd($this->get_cost_at_level($i), $total_cost);
         } else {
-          $total_cost += $this->arith_cost[$i];
+          $total_cost = bcadd($total_cost, $this->arith_cost[$i]);
         }
       }
-    return (string)$total_cost;
+    return $total_cost;
   }
 }
 
@@ -424,8 +428,7 @@ class User {
   public function get_total_talent_cost() {
     $total_cost = '0';
     foreach ($this->talents AS $talent_name => $talent) {
-      $talent_cost = $talent->get_total_cost();
-      $total_cost = bcadd($talent_cost, $total_cost, 40);
+      $total_cost = bcadd($talent->get_total_cost(), $total_cost, 2);
     }
     return $total_cost;
   }
@@ -439,18 +442,18 @@ class User {
       }
       $current_talent_damage = $talent->get_current_damage();
       $current_total_damage = $this->get_total_damage();
-      $next_talent_level_cost = $talent->get_next_level_cost();
+      $next_talent_level_cost = $talent->get_cost_at_level($talent->current_level);
       if (($talent->current_level + 1 > $talent->max_level && $talent->max_level != -1) || bccomp($next_talent_level_cost, bcdiv($this->total_idols, 3, 40)) == 1) {
         continue;
       }
       $future_talents_user = unserialize(serialize($this));
       $future_talents_user->update($talent_name);
-      $future_damage = $future_talents_user->get_total_damage();
-      $damage_diff = bcdiv(bcdiv(bcsub($future_damage, $current_total_damage, 40), $current_total_damage, 40), $next_talent_level_cost, 40);
+      $future_total_damage = $future_talents_user->get_total_damage();
+      $damage_diff = bcdiv(bcdiv(bcsub($future_total_damage, $current_total_damage, 40), $current_total_damage, 40), $next_talent_level_cost, 40);
       if ($this->debug) {
-        //echo "current level_all_the_way: " . $this->talents['level_all_the_way']->get_current_damage() . " future level_all_the_way: " . $future_talents_user->talents['level_all_the_way']->get_current_damage() . "<br>";
-        echo "<br>current_talent_damage: " . $current_talent_damage . " new_damage: " . format($future_damage) . " current_total_damage: " . format($current_total_damage) . " next_talent_level_cost: " . format($next_talent_level_cost) . " damage_diff: " . format($damage_diff) . "<br>";
-        echo $talent_name . " DPS diff of " . format($damage_diff) . " current damage " . format($current_total_damage) . " new talent damage " . format($future_damage) . "<br>";
+        echo "<br>";
+        echo "<br>future_total_damage: " . format($future_total_damage) . " current_total_damage: " . format($current_total_damage) . " next_talent_level_cost: " . format($next_talent_level_cost) . " damage_diff: " . format($damage_diff) . "<br>";
+        echo $talent_name . " DPS diff of " . $damage_diff . " current damage " . format($current_total_damage) . " new talent damage " . format($future_total_damage) . "<br>";
       }
       if ($damage_diff > $best_dps_diff) {
         $talent_to_buy = $talent_name;
