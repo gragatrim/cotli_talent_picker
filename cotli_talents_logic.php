@@ -218,6 +218,7 @@ if (!empty($_POST) || !empty($user)) {
     } else {
       $color = "red";
       $next_talent_cost = $future_talents_user->talents[$talent_to_buy]->get_cost_at_level($future_talents_user->talents[$talent_to_buy]->current_level);
+      $future_talents_user->update($talent_to_buy);
       if ($next_talent_cost <= ($future_idols_remaining)) {
         $color = "green";
         $future_damage = bcmul(bcdiv($future_damage, $future_talents_user->talents[$talent_to_buy]->get_current_damage()), $future_talents_user->talents[$talent_to_buy]->get_damage_at_additional_level(1));
@@ -227,7 +228,6 @@ if (!empty($_POST) || !empty($user)) {
         $future_damage = bcmul(bcdiv($future_damage, $future_talents_user->talents[$talent_to_buy]->get_current_damage()), $future_talents_user->talents[$talent_to_buy]->get_damage_at_additional_level(1));
       }
       $talents_to_buy .= '<div style="clear: right; background: ' . $color . ';">Talent to buy: ' . $talent_to_buy . '</div>';
-      $future_talents_user->update($talent_to_buy);
     }
   }
   $results_to_print .= "Future Damage " . format(bcsub($future_damage, 40)) . "% Increase<br>";
@@ -363,7 +363,9 @@ class Talent {
 function format($number) {
   $formatted_number = '';
   $decimal_position = strpos($number, '.');
-  if (strpos($number, '0') === 0) {
+  if (bccomp($number, '0', 40) === 0) {
+    $formatted_number = '0';
+  } else if (strpos($number, '0') === 0) {
     $ltrim = ltrim($number, '0.');
     $ltrim_strlen = strlen($ltrim);
     $number_strlen = strlen($number);
