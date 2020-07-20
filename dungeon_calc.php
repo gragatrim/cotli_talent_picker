@@ -26,10 +26,10 @@ FP areas per hour: <input type="text" name="fp_areas_per_hour" value="<?php echo
     echo '<tr class="' . ($dungeon_results[$i]['idol_over_fp'] > 0 ? 'green' : 'red') . '">
             <td>' .  $i . '</td>
             <td>' .  $dungeon_results[$i]['total_time'] . '</td>
-            <td>' .  format($dungeon_results[$i]['idols_gained']) . '</td>
-            <td>' .  format($dungeon_results[$i]['idols_per_hour']) . '</td>
-            <td>' .  format($dungeon_results[$i]['idols_per_fp_time']) . '</td>
-            <td>' .  format($dungeon_results[$i]['idol_over_fp']) . '</td>
+            <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_gained']) . '</td>
+            <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_per_hour']) . '</td>
+            <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_per_fp_time']) . '</td>
+            <td>' .  sprintf("%.2E", $dungeon_results[$i]['idol_over_fp']) . '</td>
           </tr>';
   }?>
 </table>
