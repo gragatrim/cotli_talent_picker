@@ -16,6 +16,7 @@ FP areas per hour: <input type="text" name="fp_areas_per_hour" value="<?php echo
 <table>
   <tr>
     <th>Area reached</th>
+    <th>Rough DPS needed</th>
     <th>Total Time to ledge(in minutes)</th>
     <th>Idols Gained</th>
     <th>Idols per Hour</th>
@@ -25,6 +26,7 @@ FP areas per hour: <input type="text" name="fp_areas_per_hour" value="<?php echo
   for ($i = 500; $i <= 10500; $i += 500) {
     echo '<tr class="' . ($dungeon_results[$i]['idol_over_fp'] > 0 ? 'green' : 'red') . '">
             <td>' .  $i . '</td>
+            <td>' .  $i / 5.16 . '</td>
             <td>' .  $dungeon_results[$i]['total_time'] . '</td>
             <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_gained']) . '</td>
             <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_per_hour']) . '</td>
