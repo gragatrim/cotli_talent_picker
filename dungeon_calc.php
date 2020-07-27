@@ -23,7 +23,7 @@ FP areas per hour: <input type="text" name="fp_areas_per_hour" value="<?php echo
     <th>Idols per FP time</th>
     <th>Idols gained over FP</th>
   <?php
-  for ($i = 500; $i <= 10500; $i += 500) {
+  for ($i = 500; $i <= 10000; $i += 500) {
     echo '<tr class="' . ($dungeon_results[$i]['idol_over_fp'] > 0 ? 'green' : 'red') . '">
             <td>' .  $i . '</td>
             <td>' .  $i / 5.16 . '</td>
