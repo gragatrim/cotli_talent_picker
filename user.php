@@ -1,7 +1,7 @@
 <?php
 
 class User {
-  function __construct($total_idols = 0, $golden_items = 0, $common_and_uncommon_recipies = 0, $rare_recipies = 0, $epic_recipies = 0, $missions_accomplished = 0, $legendaries = 0, $brass_rings = 0, $silver_rings = 0, $golden_rings = 0, $diamond_rings = 0, $average_mission_completion = 0, $main_dps_slot = 0, $cooldown_reduction = 0, $ep_from_main_dps = 0, $ep_from_benched_crusaders = 0, $epics_on_main_dps = 0, $epics_on_benched_crusaders = 0, $storm_rider_gear_bonus = 0, $main_dps_benched_crusaders_legendaries = 0, $main_dps_benched_crusaders_golden_gear = 0, $taskmasters_owned = 0, $clicks_per_second = 0, $crusaders_owned = 0, $crusaders_in_formation = 0, $critical_chance = 0, $click_damage_per_dps = 0, $gold_bonus_provided_by_crusaders = 0, $talents = 0, $talents_to_recommend = 0, $max_level_reached = 0, $debug = false, $fp_idol_average = 0, $time_to_complete_fp = 0, $time_to_complete_sprint = 0, $areas_sprintable = 0, $fp_areas_per_hour = 0) {
+  function __construct($total_idols = 0, $golden_items = 0, $common_and_uncommon_recipies = 0, $rare_recipies = 0, $epic_recipies = 0, $missions_accomplished = 0, $legendaries = 0, $brass_rings = 0, $silver_rings = 0, $golden_rings = 0, $diamond_rings = 0, $average_mission_completion = 0, $main_dps_slot = 0, $cooldown_reduction = 0, $ep_from_main_dps = 0, $ep_from_benched_crusaders = 0, $epics_on_main_dps = 0, $epics_on_benched_crusaders = 0, $storm_rider_gear_bonus = 0, $main_dps_benched_crusaders_legendaries = 0, $main_dps_benched_crusaders_golden_gear = 0, $taskmasters_owned = 0, $clicks_per_second = 0, $crusaders_owned = 0, $crusaders_in_formation = 0, $critical_chance = 0, $click_damage_per_dps = 0, $gold_bonus_provided_by_crusaders = 0, $talents = 0, $talents_to_recommend = 0, $max_level_reached = 0, $debug = false, $fp_idol_average = 0, $time_to_complete_fp = 0, $time_to_complete_sprint = 0, $areas_sprintable = 0, $fp_areas_per_hour = 0, $idol_buff = 1) {
     $this->total_idols = $total_idols;
     $this->golden_items = $golden_items;
     $this->common_and_uncommon_recipies = $common_and_uncommon_recipies;
@@ -39,13 +39,33 @@ class User {
     $this->time_to_complete_sprint = $time_to_complete_sprint;
     $this->areas_sprintable = $areas_sprintable;
     $this->fp_areas_per_hour = $fp_areas_per_hour;
+    $this->idol_buff = $idol_buff;
     if (!empty($this->talents)) {
       $this->talents_at_max = $this->get_max_talents();
       $this->total_talent_levels = $this->get_all_talent_levels();
       $this->main_dps_max_levels = 5000 + ($this->talents['extra_training']->current_level + $this->talents['superior_training']->current_level + $this->talents['tenk_training']->current_level + $this->talents['montage_training']->current_level + $this->talents['magical_training']->current_level + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot)) * 25;
     }
     $this->dungeon_level_increment = 500;
-    $this->dungeon_idol_increment = 0.0015;
+    $this->dungeon_idol_increment = array(500  => .0001,
+                                          1000 => .0002,
+                                          1500 => .0003,
+                                          2000 => .0004,
+                                          2500 => .0005,
+                                          3000 => .0006,
+                                          3500 => .0007,
+                                          4000 => .0008,
+                                          4500 => .0009,
+                                          5000 => .0010,
+                                          5500 => .0015,
+                                          6000 => .0030,
+                                          6500 => .0045,
+                                          7000 => .0060,
+                                          7500 => .0075,
+                                          8000 => .0090,
+                                          8500 => .0105,
+                                          9000 => .0120,
+                                          9500 => .0135,
+                                          10000 => .0150);
   }
 
   public function get_all_talent_levels() {
@@ -152,13 +172,13 @@ class User {
 
   public function get_dungeon_data($ledge) {
     $results = array();
-    $next_highest_idol_ledge = $ledge / $this->dungeon_level_increment * $this->dungeon_idol_increment;
+    $next_highest_idol_ledge = $this->dungeon_idol_increment[$ledge];
     if ($ledge < $this->areas_sprintable) {
       $total_time = $this->time_to_complete_sprint / $this->areas_sprintable * $ledge;
     } else {
       $total_time = $this->time_to_complete_sprint + 60 * ($ledge - $this->areas_sprintable) / $this->fp_areas_per_hour;
     }
-    $idols_gained = $this->total_idols * $next_highest_idol_ledge;
+    $idols_gained = $this->total_idols * $next_highest_idol_ledge * $this->idol_buff;
     $idols_per_hour = $idols_gained / $total_time * 60;
     $idols_per_fp_time = $idols_per_hour / 60 * $this->time_to_complete_fp;
     $idol_over_fp = $idols_per_fp_time - $this->fp_idol_average;
