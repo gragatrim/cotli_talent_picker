@@ -1,7 +1,7 @@
 <?php
 include "user.php";
 if (!empty($_POST) || !empty($user)) {
-  set_time_limit(60);
+  set_time_limit(600);
   $talents = array();
   $time_o_rama_talent = new Talent('time_o_rama', 1, 20, 25, 1.25, $_POST['time_o_rama']);
   $talents['time_o_rama'] = $time_o_rama_talent;

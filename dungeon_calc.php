@@ -4,7 +4,7 @@ include "dungeon_calc_logic.php";
 ?>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : 0); ?>"><br>
-Free Play Idol Average(including all buffs): <input type="text" name="fp_idol_average" value="<?php echo (isset($user->fp_idol_average) ? $user->fp_idol_average : 0); ?>"><br>
+Free Play Idol Average(EXCLUDING all buffs): <input type="text" name="fp_idol_average" value="<?php echo (isset($user->fp_idol_average) ? $user->fp_idol_average : 0); ?>"><br>
 Time to complete FP(in minutes): <input type="text" name="time_to_complete_fp" value="<?php echo (isset($user->time_to_complete_fp) ? $user->time_to_complete_fp : 0); ?>"><br>
 Time to complete sprint(in minutes): <input type="text" name="time_to_complete_sprint" value="<?php echo (isset($user->time_to_complete_sprint) ? $user->time_to_complete_sprint : 0); ?>"><br>
 Areas sprintable: <input type="text" name="areas_sprintable" value="<?php echo (isset($user->areas_sprintable) ? $user->areas_sprintable : 0); ?>"><br>
