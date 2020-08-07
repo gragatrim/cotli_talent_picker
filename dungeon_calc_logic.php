@@ -33,13 +33,14 @@ if ($_POST) {
                    0,
                    0,
                    0,
-                   $_POST['fp_idol_average'],
+                   $_POST['t2_11ths_completed'],
+                   $_POST['max_area_reached'],
                    $_POST['time_to_complete_fp'],
                    $_POST['time_to_complete_sprint'],
                    $_POST['areas_sprintable'],
                    $_POST['fp_areas_per_hour'],
                    $_POST['idol_buff']);
-  for($i = 500; $i <= 10500; $i += 500) {
+  for($i = 500; $i < 10500; $i += 500) {
     $dungeon_results[$i] = $user->get_dungeon_data($i);
   }
 }
