@@ -132,6 +132,10 @@ if (!empty($_POST) || !empty($user)) {
 
     $_POST['missions_accomplished'] = $json_response->details->stats->missions_completed;
 
+    error_log("======== idols ========\r\n", 0);
+    error_log($json_response->details->reset_currency, 0);
+    error_log($json_response->details->reset_currency_spent, 0);
+    error_log("======== end idols ========\r\n", 0);
     if (!is_int($json_response->details->reset_currency_spent)) {
         $e_idols = substr($json_response->details->reset_currency_spent, (strpos($json_response->details->reset_currency_spent, 'E') + 1));
         $fake_total_idols = str_pad("1", $e_idols, "0");
