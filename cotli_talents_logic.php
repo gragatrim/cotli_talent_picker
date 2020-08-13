@@ -3,15 +3,26 @@ include "user.php";
 if (!empty($_POST) || !empty($user)) {
   set_time_limit(600);
   $talents = array();
-  if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
+  if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server'])) {
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "http://idleps19.djartsgames.ca/~idle/post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
+    curl_setopt($ch, CURLOPT_URL, "http://" . urlencode($_POST['server']) . ".djartsgames.ca/~idle/post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
 
     $response = curl_exec($ch);
     $json_response = json_decode($response);
-    if ($json_response->success != true) {
+    if (!empty($json_response->switch_play_server)) {
+      $curl_url = $json_response->switch_play_server;
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $curl_url . "post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
+
+      $response = curl_exec($ch);
+      $json_response = json_decode($response);
+    }
+    if (empty($json_response) || $json_response->success != true) {
+      error_log("curl_error: " . curl_error($ch), 0);
       error_log("json_response: " . $response, 0);
     }
     curl_close($ch);
@@ -285,6 +296,7 @@ if (!empty($_POST) || !empty($user)) {
   $talents['magical_training'] = $magical_training_talent;
   $user = new User($_POST['user_id'],
                    $_POST['user_hash'],
+                   $_POST['server'],
                    $_POST['total_idols'],
                    $_POST['golden_items'],
                    $_POST['common_and_uncommon_recipes'],

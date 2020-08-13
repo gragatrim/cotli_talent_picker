@@ -4,6 +4,7 @@ $dungeon_results = array();
 if ($_POST) {
   $user = new User('',
                    '',
+                   '',
                    $_POST['total_idols'],
                    0,
                    0,
