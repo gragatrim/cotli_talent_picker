@@ -132,12 +132,16 @@ if (!empty($_POST) || !empty($user)) {
 
     $_POST['missions_accomplished'] = $json_response->details->stats->missions_completed;
 
-    error_log("======== idols ========\r\n", 0);
-    error_log($json_response->details->reset_currency, 0);
-    error_log($json_response->details->reset_currency_spent, 0);
-    error_log("======== end idols ========\r\n", 0);
-    $_POST['total_idols'] = bcadd($json_response->details->reset_currency, $json_response->details->reset_currency_spent);
-    $_POST['idolatry_total_idols'] = $json_response->details->reset_currency + $json_response->details->reset_currency_spent;
+    if (!is_int($json_response->details->reset_currency_spent)) {
+        $e_idols = substr($json_response->details->reset_currency_spent, (strpos($json_response->details->reset_currency_spent, 'E') + 1));
+        $fake_total_idols = str_pad("1", $e_idols, "0");
+        $unspent_idols = $json_response->details->reset_currency;
+        $_POST['total_idols'] = $fake_total_idols;
+        $_POST['idolatry_total_idols'] = $fake_total_idols;
+    } else {
+      $_POST['total_idols'] = $json_response->details->reset_currency + $json_response->details->reset_currency_spent;
+      $_POST['idolatry_total_idols'] = $json_response->details->reset_currency + $json_response->details->reset_currency_spent;
+    }
     $_POST['common_and_uncommon_recipes'] = $common_and_uncommon_recipes/2;
     $_POST['rare_recipes'] = $rare_recipes;
     $_POST['epic_recipes'] = $epic_recipes;
@@ -335,6 +339,9 @@ if (!empty($_POST) || !empty($user)) {
                    $_POST['talents_to_recommend'],
                    $_POST['max_level_reached'],
                    (isset($_POST['debug']) ? true: false));
+  if (!empty($unspent_idols)) {
+    $user->total_idols = bcadd($user->get_total_talent_cost(), $unspent_idols);
+  }
   $user->talents['maxed_power']->stacks = $user->talents_at_max;
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
   $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);
