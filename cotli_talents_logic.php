@@ -131,6 +131,11 @@ if (!empty($_POST) || !empty($user)) {
     }
 
     $_POST['missions_accomplished'] = $json_response->details->stats->missions_completed;
+
+    error_log("======== idols ========\r\n", 0);
+    error_log($json_response->details->reset_currency, 0);
+    error_log($json_response->details->reset_currency_spent, 0);
+    error_log("======== end idols ========\r\n", 0);
     $_POST['total_idols'] = bcadd($json_response->details->reset_currency, $json_response->details->reset_currency_spent);
     $_POST['idolatry_total_idols'] = $json_response->details->reset_currency + $json_response->details->reset_currency_spent;
     $_POST['common_and_uncommon_recipes'] = $common_and_uncommon_recipes/2;
