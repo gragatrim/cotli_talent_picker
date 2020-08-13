@@ -26,15 +26,27 @@ Idol Buff(if you have none use 1): <input type="text" name="idol_buff" value="<?
     <th>Idols gained over FP</th>
   <?php
   for ($i = 500; $i <= 10000; $i += 500) {
-    echo '<tr class="' . ($dungeon_results[$i]['idol_over_fp'] > 0 ? 'green' : 'red') . '">
+    if (empty($dungeon_results[$i])) {
+    echo '<tr class="red">
             <td>' .  $i . '</td>
             <td>' .  $i / 5.16 . '</td>
-            <td>' .  $dungeon_results[$i]['total_time'] . '</td>
-            <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_gained']) . '</td>
-            <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_per_hour']) . '</td>
-            <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_per_fp_time']) . '</td>
-            <td>' .  sprintf("%.2E", $dungeon_results[$i]['idol_over_fp']) . '</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
           </tr>';
+    } else {
+      echo '<tr class="' . ($dungeon_results[$i]['idol_over_fp'] > 0 ? 'green' : 'red') . '">
+              <td>' .  $i . '</td>
+              <td>' .  $i / 5.16 . '</td>
+              <td>' .  $dungeon_results[$i]['total_time'] . '</td>
+              <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_gained']) . '</td>
+              <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_per_hour']) . '</td>
+              <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_per_fp_time']) . '</td>
+              <td>' .  sprintf("%.2E", $dungeon_results[$i]['idol_over_fp']) . '</td>
+            </tr>';
+    }
   }?>
 </table>
 

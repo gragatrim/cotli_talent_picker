@@ -1,5 +1,6 @@
 <?php
 include "user.php";
+$dungeon_results = array();
 if ($_POST) {
   $user = new User('',
                    '',
