@@ -131,7 +131,8 @@ if (!empty($_POST) || !empty($user)) {
     }
 
     $_POST['missions_accomplished'] = $json_response->details->stats->missions_completed;
-    $_POST['total_idols'] = $json_response->details->reset_currency + $json_response->details->reset_currency_spent;
+    $_POST['total_idols'] = bcadd($json_response->details->reset_currency, $json_response->details->reset_currency_spent);
+    $_POST['idolatry_total_idols'] = $json_response->details->reset_currency + $json_response->details->reset_currency_spent;
     $_POST['common_and_uncommon_recipes'] = $common_and_uncommon_recipes/2;
     $_POST['rare_recipes'] = $rare_recipes;
     $_POST['epic_recipes'] = $epic_recipes;
@@ -232,7 +233,7 @@ if (!empty($_POST) || !empty($user)) {
   $talents['big_earner'] = $big_earner_talent;
   $maxed_power_talent = new Talent('maxed_power', 6, 50, 75000000, 1.3, $_POST['maxed_power'], '*', 1, $_POST['maxed_power']);
   $talents['maxed_power'] = $maxed_power_talent;
-  $idolatry_talent = new Talent('idolatry', 6, 20, 50000000,1.5, $_POST['idolatry'], '*', 20, $_POST['idolatry'], floor(log($_POST['total_idols'], 10)));
+  $idolatry_talent = new Talent('idolatry', 6, 20, 50000000,1.5, $_POST['idolatry'], '*', 20, $_POST['idolatry'], floor(log($_POST['idolatry_total_idols'], 10)));
   $talents['idolatry'] = $idolatry_talent;
   $master_crafter_talent = new Talent('master_crafter', 6, -1, 900000000,1.28, $_POST['master_crafter'], '+', .01, $_POST['epic_recipes']);
   $talents['master_crafter'] = $master_crafter_talent;
@@ -346,7 +347,7 @@ if (!empty($_POST) || !empty($user)) {
   $future_damage = $future_talents_user->get_total_damage();
   for ($i = 0; $i < $user->talents_to_recommend; $i++) {
     $talent_to_buy = $future_talents_user->get_next_talent_to_buy();
-    $future_idols_remaining = $future_talents_user->total_idols - $future_talents_user->get_total_talent_cost();
+    $future_idols_remaining = bcsub($future_talents_user->total_idols, $future_talents_user->get_total_talent_cost());
     //Going to use this to keep track of leftover idols after making the larger idol purchases so you can spend the remainder if you want
     if (!isset($leftover_idols)) {
       $leftover_idols = $future_idols_remaining;

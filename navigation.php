@@ -51,6 +51,18 @@ table, th, td {
   background: yellow;
 }
 
+.purple {
+  background: #8f4aa5;
+}
+
+.brown {
+  background: #a6611a;
+}
+
+.blue {
+  background: #2c7bb6;
+}
+
 .legend {
   width: 350px;
 }
