@@ -3,6 +3,130 @@ include "user.php";
 if (!empty($_POST) || !empty($user)) {
   set_time_limit(600);
   $talents = array();
+  if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "http://idleps19.djartsgames.ca/~idle/post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    $json_response = json_decode($response);
+    //No need to hammer the server all the time, an update a day should be acceptable
+    if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600) {
+      $game_definitions_ch = curl_init();
+      curl_setopt($game_definitions_ch, CURLOPT_URL, "http://idleps19.djartsgames.ca/~idle/post.php?call=getDefinitions");
+      curl_setopt($game_definitions_ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+      curl_setopt($game_definitions_ch, CURLOPT_RETURNTRANSFER, true );
+
+      $game_info = curl_exec($game_definitions_ch);
+      file_put_contents('game_defines', $game_info);
+      curl_close($game_definitions_ch);
+    } else {
+      $game_info = file_get_contents('game_defines');
+    }
+    $game_json = json_decode($game_info);
+
+    //This allows for the math functions to work below
+    $_POST['cooldown_reduction'] = 0;
+    $legendaries = 0;
+    $golden_items = 0;
+    $loot_definition = array();
+    $crusaders_owned = 0;
+    $max_level_reached = 0;
+    $common_and_uncommon_recipes = 0;
+    $rare_recipes = 0;
+    $epic_recipes = 0;
+    $unknown_recipe = 0;
+    $talent_definition = array();
+
+    foreach($game_json->loot_defines AS $id => $loot) {
+      if ($loot->hero_id != 0) {
+        $loot_definition[$loot->id] = $loot;
+      }
+    }
+    foreach($game_json->talent_defines AS $id => $talent) {
+      $talent_definition[$talent->id] = $talent->name;
+    }
+    foreach ($json_response->details->loot AS $loot) {
+      //1 is brass rings, 245 primitive amulet, 249 wooden horn, 253 wooden lucky coin
+      switch ($loot->loot_id) {
+        case 1:
+          $_POST['brass_rings'] = $loot->count;
+          break;
+        case 2:
+          $_POST['silver_rings'] = $loot->count;
+          break;
+        case 3:
+          $_POST['golden_rings'] = $loot->count;
+          break;
+        case 4:
+          $_POST['diamond_rings'] = $loot->count;
+          break;
+        case 249:
+          $_POST['cooldown_reduction'] += ($loot->count * .5);
+          break;
+        case 250:
+          $_POST['cooldown_reduction'] += $loot->count;
+          break;
+        case 251:
+          $_POST['cooldown_reduction'] += ($loot->count * 1.5);
+          break;
+        case 252:
+          $_POST['cooldown_reduction'] += ($loot->count * 2);
+          break;
+      }
+      if (!empty($loot_definition[$loot->loot_id]) && $loot_definition[$loot->loot_id]->rarity == 5) {
+        $legendaries++;
+      }
+      if (!empty($loot_definition[$loot->loot_id]) && $loot_definition[$loot->loot_id]->golden == 1) {
+        $golden_items++;
+      }
+    }
+    foreach ($json_response->details->talents AS $talent_id => $talent_levels) {
+      if ($talent_levels > 0) {
+        $formatted_talent_name = str_replace(array(' ', '-', "'", '10', '!'), array('_', '_', '', 'ten', ''), strtolower($talent_definition[$talent_id]));
+        $_POST[$formatted_talent_name] = $talent_levels;
+      }
+    }
+    foreach ($json_response->details->owned_crafting_recipes AS $recipes_key => $recipes_value) {
+      if ($loot_definition[$recipes_value]->rarity < 3) {
+        $common_and_uncommon_recipes++;
+      } else if ($loot_definition[$recipes_value]->rarity == 3) {
+        $rare_recipes++;
+      } else if ($loot_definition[$recipes_value]->rarity == 4 && $loot_definition[$recipes_value]->golden == 0) {
+        $epic_recipes++;
+      } else if($loot_definition[$recipes_value]->rarity == 5) {
+        $legendaries++;
+      } else {
+        //Not used, maybe do something with this in the future? Should never really be reached
+        $unknown_recipe++;
+      }
+    }
+    foreach ($json_response->details->stats AS $stat_name => $stat_value) {
+      if (strpos($stat_name, 'highest_area_completed_ever_c') !== false) {
+        if ($max_level_reached < $stat_value) {
+          $max_level_reached = $stat_value;
+        }
+      }
+    }
+    foreach ($json_response->details->heroes AS $hero) {
+      if ($hero->owned == 1) {
+        $crusaders_owned++;
+      }
+    }
+
+    $_POST['missions_accomplished'] = $json_response->details->stats->missions_completed;
+    $_POST['total_idols'] = $json_response->details->reset_currency + $json_response->details->reset_currency_spent;
+    $_POST['common_and_uncommon_recipes'] = $common_and_uncommon_recipes/2;
+    $_POST['rare_recipes'] = $rare_recipes;
+    $_POST['epic_recipes'] = $epic_recipes;
+    $_POST['legendaries'] = $legendaries;
+    $_POST['golden_items'] = $golden_items;
+    $_POST['max_level_reached'] = $max_level_reached;
+    $_POST['taskmasters_owned'] = count($json_response->details->taskmasters->taskmasters);
+    $_POST['crusaders_owned'] = $crusaders_owned;
+  }
   $time_o_rama_talent = new Talent('time_o_rama', 1, 20, 25, 1.25, $_POST['time_o_rama']);
   $talents['time_o_rama'] = $time_o_rama_talent;
   $massive_criticals_talent = new Talent('massive_criticals', 1, 25, 50, 1.25, $_POST['massive_criticals']);
@@ -29,8 +153,8 @@ if (!empty($_POST) || !empty($user)) {
   $talents['higher_magnification'] = $higher_magnification_talent;
   $extended_spawns_talent = new Talent('extended_spawns', 4, 40, 10000, 1.13, $_POST['extended_spawns']);
   $talents['extended_spawns'] = $extended_spawns_talent;
-  $click_tastrophy_talent = new Talent('click_tastrophy', 4, 40, 2500,1.2, $_POST['click_tastrophy']);
-  $talents['click_tastrophy'] = $click_tastrophy_talent;
+  $click_tastrophe_talent = new Talent('click_tastrophe', 4, 40, 2500,1.2, $_POST['click_tastrophe']);
+  $talents['click_tastrophe'] = $click_tastrophe_talent;
   $instant_satisfaction_talent = new Talent('instant_satisfaction', 4, 21, 7500,1.3333, $_POST['instant_satisfaction']);
   $talents['instant_satisfaction'] = $instant_satisfaction_talent;
   $extra_healthy_talent = new Talent('extra_healthy', 4, 50, 1500,1.305, $_POST['extra_healthy']);
@@ -56,7 +180,7 @@ if (!empty($_POST) || !empty($user)) {
   $every_last_cent_talent = new Talent('every_last_cent', 1, 20, 50,1.25, $_POST['every_last_cent']);
   $talents['every_last_cent'] = $every_last_cent_talent;
   //Multiplier is .02 due to the fact that fanta reports them as a set since you get them as a set of C/UC with up to speed
-  $apprentice_crafter_talent = new Talent('apprentice_crafter', 1, -1, 200,1.1, $_POST['apprentice_crafter'], '+', $_POST['common_and_uncommon_recipies'],  .02);
+  $apprentice_crafter_talent = new Talent('apprentice_crafter', 1, -1, 200,1.1, $_POST['apprentice_crafter'], '+', $_POST['common_and_uncommon_recipes'],  .02);
   $talents['apprentice_crafter'] = $apprentice_crafter_talent;
   $overenchanted_talent = new Talent('overenchanted', 2, 50, 100,1.1, $_POST['overenchanted'], '+', $_POST['ep_from_main_dps'], .05);
   $talents['overenchanted'] = $overenchanted_talent;
@@ -68,8 +192,8 @@ if (!empty($_POST) || !empty($user)) {
   $talents['task_mastery'] = $task_mastery_talent;
   $fast_learners_talent = new Talent('fast_learners', 3, 18, 250,1.2, $_POST['fast_learners']);
   $talents['fast_learners'] = $fast_learners_talent;
-  $well_equiped_talent = new Talent('well_equiped', 3, 50, 500,1.075, $_POST['well_equiped'], '+', .20, $_POST['epics_on_main_dps']);
-  $talents['well_equiped'] = $well_equiped_talent;
+  $well_equipped_talent = new Talent('well_equipped', 3, 50, 500,1.075, $_POST['well_equipped'], '+', .20, $_POST['epics_on_main_dps']);
+  $talents['well_equipped'] = $well_equipped_talent;
   $swap_day_talent = new Talent('swap_day', 3, 50, 500,1.075, $_POST['swap_day'], '+', .20, $_POST['epics_on_benched_crusaders']);
   $talents['swap_day'] = $swap_day_talent;
   $synergy_talent = new Talent('synergy', 3, 20, 300,1.85, $_POST['synergy']);
@@ -80,7 +204,7 @@ if (!empty($_POST) || !empty($user)) {
   $talents['idols_over_time'] = $idols_over_time_talent;
   $golden_age_talent = new Talent('golden_age', 4, 50, 7500,1.12, $_POST['golden_age'], '+', $_POST['gold_bonus_provided_by_crusaders']);
   $talents['golden_age'] = $golden_age_talent;
-  $journeyman_crafter_talent = new Talent('journeyman_crafter', 4, -1, 200000,1.061, $_POST['journeyman_crafter'], '+', $_POST['rare_recipies'], .01);
+  $journeyman_crafter_talent = new Talent('journeyman_crafter', 4, -1, 200000,1.061, $_POST['journeyman_crafter'], '+', $_POST['rare_recipes'], .01);
   $talents['journeyman_crafter'] = $journeyman_crafter_talent;
   $cheer_squad_talent = new Talent('cheer_squad', 5, 50, 166000,1.165, $_POST['cheer_squad'], '+', ($_POST['crusaders_owned'] - $_POST['crusaders_in_formation']), .01);
   $talents['cheer_squad'] = $cheer_squad_talent;
@@ -96,7 +220,7 @@ if (!empty($_POST) || !empty($user)) {
   $talents['maxed_power'] = $maxed_power_talent;
   $idolatry_talent = new Talent('idolatry', 6, 20, 50000000,1.5, $_POST['idolatry'], '*', 20, $_POST['idolatry'], floor(log($_POST['total_idols'], 10)));
   $talents['idolatry'] = $idolatry_talent;
-  $master_crafter_talent = new Talent('master_crafter', 6, -1, 900000000,1.28, $_POST['master_crafter'], '+', .01, $_POST['epic_recipies']);
+  $master_crafter_talent = new Talent('master_crafter', 6, -1, 900000000,1.28, $_POST['master_crafter'], '+', .01, $_POST['epic_recipes']);
   $talents['master_crafter'] = $master_crafter_talent;
   $legendary_friendship_talent = new Talent('legendary_friendship', 7, 25, 7500000000, 1.56, $_POST['legendary_friendship'], '*', 5, $_POST['legendary_friendship'], $_POST['main_dps_benched_crusaders_legendaries']);
   $talents['legendary_friendship'] = $legendary_friendship_talent;
@@ -156,11 +280,13 @@ if (!empty($_POST) || !empty($user)) {
   $talents['sprint_for_the_finish'] = $sprint_for_the_finish_talent;
   $magical_training_talent = new Talent('magical_training', 7, -1, 20000000000, 1.285, $_POST['magical_training'], '*');
   $talents['magical_training'] = $magical_training_talent;
-  $user = new User($_POST['total_idols'],
+  $user = new User($_POST['user_id'],
+                   $_POST['user_hash'],
+                   $_POST['total_idols'],
                    $_POST['golden_items'],
-                   $_POST['common_and_uncommon_recipies'],
-                   $_POST['rare_recipies'],
-                   $_POST['epic_recipies'],
+                   $_POST['common_and_uncommon_recipes'],
+                   $_POST['rare_recipes'],
+                   $_POST['epic_recipes'],
                    $_POST['missions_accomplished'],
                    $_POST['legendaries'],
                    $_POST['brass_rings'],
@@ -192,11 +318,11 @@ if (!empty($_POST) || !empty($user)) {
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
   $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);
   $base_damage = 1;
-  //echo "golden_friendship: " . bcmul(bcsub($user->talents['golden_friendship']->get_current_damage(), 1, 10), 100, 10) . "<br>";
+  //echo "golden_benefits: " . bcmul(bcsub($user->talents['golden_benefits']->get_current_damage(), 1, 10), 100, 10) . "<br>";
   //echo "legendary_friendship: " . bcmul(bcsub($user->talents['legendary_friendship']->get_current_damage(), 1, 10), 100, 10) . "<br>";
   echo "total idols spent " . number_format($user->get_total_talent_cost()) . " total idols remaining: " . number_format($user->total_idols - $user->get_total_talent_cost()) . "<br>";
-  $results_legend = '<div class="green" style="float:right; clear: both;">Green means you can afford it</div><div class="yellow" style="float:right;clear: both;">Yellow means your leftover idols can afford it</div><div class="red" style="float:right;clear: both;">Red means you can\'t afford it</div>';
-  $results_to_print = $results_legend;
+  $results_legend = '<div class="green">Green means you can afford it</div><div class="yellow">Yellow means your leftover idols can afford it</div><div class="red">Red means you can\'t afford it</div>';
+  $results_to_print = '<div style="float: right; clear: right;">' . $results_legend;
   $results_to_print .= '<div style="float: right;clear: both;">';
   $results_to_print .= "Final Damage " . format(bcsub($user->get_total_damage(), 40)) . "% Increase<br>";
   //This is here to make a copy of the object so we aren't still accessing things by reference
@@ -232,7 +358,7 @@ if (!empty($_POST) || !empty($user)) {
   }
   $results_to_print .= "Future Damage " . format(bcsub($future_damage, 40)) . "% Increase<br>";
   $results_to_print .= $talents_to_buy;
-  $results_to_print .= '</div>';
+  $results_to_print .= '</div></div>';
 } else {
   $user = new User();
 }
