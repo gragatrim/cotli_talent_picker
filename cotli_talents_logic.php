@@ -10,8 +10,11 @@ if (!empty($_POST) || !empty($user)) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
 
     $response = curl_exec($ch);
-    curl_close($ch);
     $json_response = json_decode($response);
+    if ($json_response->success != true) {
+      error_log("json_response: " . $response, 0);
+    }
+    curl_close($ch);
     //No need to hammer the server all the time, an update a day should be acceptable
     if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600) {
       $game_definitions_ch = curl_init();
