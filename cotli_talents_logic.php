@@ -132,13 +132,17 @@ if (!empty($_POST) || !empty($user)) {
 
     $_POST['missions_accomplished'] = $json_response->details->stats->missions_completed;
 
+    //$json_response->details->reset_currency = '7733970127692300';
+    //$json_response->details->reset_currency_spent = '1.1856373031341E+17';
     error_log("======== idols ========\r\n", 0);
     error_log($json_response->details->reset_currency, 0);
     error_log($json_response->details->reset_currency_spent, 0);
     error_log("======== end idols ========\r\n", 0);
     if (!is_int($json_response->details->reset_currency_spent)) {
-        $e_idols = substr($json_response->details->reset_currency_spent, (strpos($json_response->details->reset_currency_spent, 'E') + 1));
-        $fake_total_idols = str_pad("1", $e_idols, "0");
+        $e_location = strpos($json_response->details->reset_currency_spent, 'E');
+        $e_idols = substr($json_response->details->reset_currency_spent, ($e_location + 1));
+        $base_fake_idols = str_replace('.', '', substr($json_response->details->reset_currency_spent, 0, $e_location));
+        $fake_total_idols = str_pad($base_fake_idols, $e_idols, "0");
         $unspent_idols = $json_response->details->reset_currency;
         $_POST['total_idols'] = $fake_total_idols;
         $_POST['idolatry_total_idols'] = $fake_total_idols;
