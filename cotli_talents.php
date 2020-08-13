@@ -119,7 +119,7 @@ If you fill in the user id and user hash in the left column below it'll populate
 <div style="float: left;padding-right: 5px; clear: left;">
   User Id: <input type="text" name="user_id" value="<?php echo (isset($user->user_id) ? $user->user_id : 0); ?>"><br>
   User Hash: <input type="text" name="user_hash" value="<?php echo (isset($user->user_hash) ? $user->user_hash : 0); ?>"><br>
-  Server : <input type="text" name="server" value="<?php echo (isset($user->server) ? $user->server : ''); ?>"><br>
+  Server(use idlemaster if you don't know): <input type="text" name="server" value="<?php echo (isset($user->server) ? $user->server : ''); ?>"><br>
   Talents to Recommend: <input type="text" name="talents_to_recommend" value="<?php echo (isset($user->talents_to_recommend) ? $user->talents_to_recommend : 0); ?>"><br>
   Average Mission Completion in 8h: <input type="text" name="average_mission_completion" value="<?php echo (isset($user->average_mission_completion) ? $user->average_mission_completion : 0); ?>"><br>
   Main DPS Slot: <input type="text" name="main_dps_slot" value="<?php echo (isset($user->main_dps_slot) ? $user->main_dps_slot : 0); ?>"><br>
