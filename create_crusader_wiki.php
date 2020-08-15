@@ -186,5 +186,7 @@ Force Game Detail Refresh: <input type="checkbox" name="game_details_refresh" va
 <input type="submit">
 <br>
 <?php
-echo "<pre>" . $wiki_text . "</pre>";
+if (!empty($wiki_text)) {
+  echo "<pre>" . $wiki_text . "</pre>";
+}
 ?>
