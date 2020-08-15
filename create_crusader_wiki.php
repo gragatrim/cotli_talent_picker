@@ -85,7 +85,6 @@ if ($_POST) {
     if ($upgrade->hero_id == $crusader_id) {
       $upgrade_effect = '';
       $upgrade_formation_ability = explode(',',$upgrade->effect);
-      echo '<pre>' . print_r($upgrade->effect, true) . '</pre>';
       if (stripos($upgrade->effect, 'hero_dps_multiplier_mult') !== false) {
         $effect = explode(',',$upgrade->effect);
         $upgrade_effect = "|{{IncDPS|" . $crusader_name . "|" . $effect[1] . "%}}";
