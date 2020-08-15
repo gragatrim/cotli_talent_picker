@@ -176,7 +176,7 @@ class User {
 
   public function get_dungeon_data($ledge) {
     $results = array();
-    if ($this->fp_areas_per_hour < 1 || $this->areas_sprintable < 1) {
+    if ($this->fp_areas_per_hour < 1 || $this->areas_sprintable < 1 || $this->time_to_complete_sprint < 1) {
       return $results;
     }
     $next_highest_idol_ledge = $this->dungeon_idol_increment[$ledge];
