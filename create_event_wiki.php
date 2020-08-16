@@ -1,29 +1,23 @@
 <?php
 
-if ($_POST) {
-  //No need to hammer the server all the time, an update a day should be acceptable
-  if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600 || !empty($_POST['game_details_refresh'])) {
-    $game_definitions_ch = curl_init();
-    curl_setopt($game_definitions_ch, CURLOPT_URL, "http://idleps19.djartsgames.ca/~idle/post.php?call=getDefinitions");
-    curl_setopt($game_definitions_ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    curl_setopt($game_definitions_ch, CURLOPT_RETURNTRANSFER, true );
+//No need to hammer the server all the time, an update a day should be acceptable
+if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600 || !empty($_POST['game_details_refresh'])) {
+  $game_definitions_ch = curl_init();
+  curl_setopt($game_definitions_ch, CURLOPT_URL, "http://idleps19.djartsgames.ca/~idle/post.php?call=getDefinitions");
+  curl_setopt($game_definitions_ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+  curl_setopt($game_definitions_ch, CURLOPT_RETURNTRANSFER, true );
 
-    $game_info = curl_exec($game_definitions_ch);
-    file_put_contents('game_defines', $game_info);
-    curl_close($game_definitions_ch);
-  } else {
-    $game_info = file_get_contents('game_defines');
-  }
-  $game_json = json_decode($game_info);
+  $game_info = curl_exec($game_definitions_ch);
+  file_put_contents('game_defines', $game_info);
+  curl_close($game_definitions_ch);
+} else {
+  $game_info = file_get_contents('game_defines');
+}
+$game_json = json_decode($game_info);
+if ($_POST) {
   $event_id = $_POST['event_id'];
   $tier = $_POST['tier'];
 
-  $objectives = array();
-  foreach($game_json->objective_defines AS $objective) {
-    if ($objective->campaign_id == $event_id && ($objective->tier == $tier || empty($tier))) {
-      $objectives[$objective->id] = $objective;
-    }
-  }
   $crusaders = [];
   foreach($game_json->hero_defines AS $hero) {
     $crusaders[$hero->id] = $hero;
@@ -34,9 +28,17 @@ if ($_POST) {
   }
 
   $wiki_campaign = [];
+  $all_campaigns = [];
   foreach($game_json->campaign_defines AS $campaign) {
     if (!empty($campaign->requirements[0]) && !empty($campaign->requirements[0]->event_id) && $campaign->requirements[0]->event_id == $event_id) {
       $wiki_campaign = $campaign;
+    }
+    $all_campaigns[] = $campaign;
+  }
+  $objectives = array();
+  foreach($game_json->objective_defines AS $objective) {
+    if (!empty($wiki_campaign) && $objective->campaign_id == $wiki_campaign->id && ($objective->tier == $tier || empty($tier))) {
+      $objectives[$objective->id] = $objective;
     }
   }
   $chests = [];
@@ -92,6 +94,12 @@ if ($_POST) {
     $event_objectives .= "}}\n\n";
   }
 }
+if (empty($all_campaigns)) {
+  $all_campaigns = [];
+  foreach($game_json->campaign_defines AS $campaign) {
+    $all_campaigns[] = $campaign;
+  }
+}
 ?>
 <html>
 <head>
@@ -99,15 +107,26 @@ if ($_POST) {
 </style>
 </head>
 <body>
-<form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
+<form style="float: left;" action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 Event Id: <input type="text" name="event_id" value="<?php echo (isset($_POST['event_id']) ? $_POST['event_id'] : 0); ?>"><br>
 Tier: <input type="text" name="tier" value="<?php echo (isset($_POST['tier']) ? $_POST['tier'] : 0); ?>"> (leave this empty for all tiers to be generated)<br>
 Force Game Detail Refresh: <input type="checkbox" name="game_details_refresh" value="1" not-checked><br>
 <input type="submit">
+</form>
 <br>
 <?php
+$all_events = '<table style="float:right;"><tr><th>Id</th><th>Event Name</th></tr>';
+foreach($all_campaigns AS $campaign) {
+  if (!empty($campaign->requirements[0]) && !empty($campaign->requirements[0]->event_id)) {
+    $all_events .= '<tr><td>' . $campaign->requirements[0]->event_id . '</td><td>' . $campaign->name . '</td></tr>';
+  }
+}
+$all_events .= '</table>';
+echo $all_events;
 if (!empty($event_objectives)) {
-  echo '<pre>' . $event_objectives . '</pre>';
+  echo '<pre style="float: left; clear: left;">' . $event_objectives . '</pre>';
+} else {
+  echo '<div style="float: left; clear: left;">No event/tier with that ID found';
 }
 ?>
 
