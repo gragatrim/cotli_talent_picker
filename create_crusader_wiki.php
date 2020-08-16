@@ -2,7 +2,7 @@
 
 if ($_POST) {
   //No need to hammer the server all the time, an update a day should be acceptable
-  if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600 || $_POST['game_details_refresh'] == 1) {
+  if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600 || !empty($_POST['game_details_refresh'])) {
     $game_definitions_ch = curl_init();
     curl_setopt($game_definitions_ch, CURLOPT_URL, "http://idleps19.djartsgames.ca/~idle/post.php?call=getDefinitions");
     curl_setopt($game_definitions_ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
