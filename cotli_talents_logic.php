@@ -3,6 +3,8 @@ include "user.php";
 if (!empty($_POST) || !empty($user)) {
   set_time_limit(600);
   $talents = array();
+  //This is an attempt to help with larger idol totals, e17+
+  $_POST['idolatry_total_idols'] = 0;
   if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server'])) {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, "http://" . urlencode($_POST['server']) . ".djartsgames.ca/~idle/post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
