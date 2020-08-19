@@ -498,7 +498,11 @@ class Talent {
     if ($level < $this->max_level || $this->max_level == -1) {
       if ($this->level_multiplier != 'arithmagician') {
         $unrounded_level_cost = bcmul($this->base_cost, bcpow($this->level_multiplier, $level, 40), 40);
-        $unrounded_level_cost_floored = substr($unrounded_level_cost, 0, strpos($unrounded_level_cost, '.'));
+        if (strpos($unrounded_level_cost, '.' !== false)) {
+          $unrounded_level_cost_floored = substr($unrounded_level_cost, 0, strpos($unrounded_level_cost, '.'));
+        } else {
+          $unrounded_level_cost_floored = $unrounded_level_cost;
+        }
         if (bccomp($unrounded_level_cost, $unrounded_level_cost_floored, 2) === 1) {
           $level_cost = bcadd($unrounded_level_cost_floored, 1);
         } else {
