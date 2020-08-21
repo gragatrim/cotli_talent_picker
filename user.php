@@ -1,7 +1,7 @@
 <?php
 
 class User {
-  function __construct($user_id = '', $user_hash = '', $server = '', $total_idols = '0', $golden_items = 0, $common_and_uncommon_recipes = 0, $rare_recipes = 0, $epic_recipes = 0, $missions_accomplished = 0, $legendaries = 0, $brass_rings = 0, $silver_rings = 0, $golden_rings = 0, $diamond_rings = 0, $average_mission_completion = 0, $main_dps_slot = 0, $cooldown_reduction = 0, $ep_from_main_dps = 0, $ep_from_benched_crusaders = 0, $epics_on_main_dps = 0, $epics_on_benched_crusaders = 0, $storm_rider_gear_bonus = 0, $main_dps_benched_crusaders_legendaries = 0, $main_dps_benched_crusaders_golden_gear = 0, $taskmasters_owned = 0, $clicks_per_second = 0, $crusaders_owned = 0, $crusaders_in_formation = 0, $critical_chance = 0, $click_damage_per_dps = 0, $gold_bonus_provided_by_crusaders = 0, $talents = 0, $talents_to_recommend = 0, $max_level_reached = 0, $debug = false, $t2_11ths_completed = 0, $max_area_reached = 0, $time_to_complete_fp = 0, $time_to_complete_sprint = 0, $areas_sprintable = 0, $fp_areas_per_hour = 0, $idol_buff = 1) {
+  function __construct($user_id = '', $user_hash = '', $server = '', $total_idols = '0', $golden_items = 0, $common_and_uncommon_recipes = 0, $rare_recipes = 0, $epic_recipes = 0, $missions_accomplished = 0, $legendaries = 0, $brass_rings = 0, $silver_rings = 0, $golden_rings = 0, $diamond_rings = 0, $average_mission_completion = 0, $main_dps_slot = 0, $cooldown_reduction = 0, $ep_from_main_dps = 0, $ep_from_benched_crusaders = 0, $epics_on_main_dps = 0, $epics_on_benched_crusaders = 0, $storm_rider_gear_bonus = 0, $main_dps_benched_crusaders_legendaries = 0, $main_dps_benched_crusaders_golden_gear = 0, $taskmasters_owned = 0, $clicks_per_second = 0, $crusaders_owned = 0, $crusaders_in_formation = 0, $critical_chance = 0, $click_damage_per_dps = 0, $gold_bonus_provided_by_crusaders = 0, $talents = 0, $talents_to_recommend = 0, $max_level_reached = 0, $debug = false, $t2_11ths_completed = 0, $max_area_reached = 0, $time_to_complete_fp = 0, $time_to_complete_sprint = 0, $areas_sprintable = 0, $dungeon_areas_per_hour = 0, $idol_buff = 1) {
     $this->user_id = $user_id;
     $this->user_hash = $user_hash;
     $this->server = $server;
@@ -42,7 +42,7 @@ class User {
     $this->time_to_complete_fp = $time_to_complete_fp;
     $this->time_to_complete_sprint = $time_to_complete_sprint;
     $this->areas_sprintable = $areas_sprintable;
-    $this->fp_areas_per_hour = $fp_areas_per_hour;
+    $this->dungeon_areas_per_hour = $dungeon_areas_per_hour;
     $this->idol_buff = $idol_buff;
     if (!empty($this->talents)) {
       $this->talents_at_max = $this->get_max_talents();
@@ -176,14 +176,14 @@ class User {
 
   public function get_dungeon_data($ledge) {
     $results = array();
-    if ($this->fp_areas_per_hour < 1 || $this->areas_sprintable < 1 || $this->time_to_complete_sprint < 1) {
+    if ($this->dungeon_areas_per_hour < 1 || $this->areas_sprintable < 1 || $this->time_to_complete_sprint < 1) {
       return $results;
     }
     $next_highest_idol_ledge = $this->dungeon_idol_increment[$ledge];
     if ($ledge < $this->areas_sprintable) {
       $total_time = $this->time_to_complete_sprint / $this->areas_sprintable * $ledge;
     } else {
-      $total_time = $this->time_to_complete_sprint + 60 * ($ledge - $this->areas_sprintable) / $this->fp_areas_per_hour;
+      $total_time = $this->time_to_complete_sprint + 60 * ($ledge - $this->areas_sprintable) / $this->dungeon_areas_per_hour;
     }
     //This is to properly handle that you only get an increase in BI every 5 areas and not for every area reached
     $floored_max_area_reached = floor($this->max_area_reached * 2 / 10) / 2 * 10;

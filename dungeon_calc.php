@@ -9,7 +9,7 @@ Max area completed in FP: <input type="text" name="max_area_reached" value="<?ph
 Time to complete FP(in minutes): <input type="text" name="time_to_complete_fp" value="<?php echo (isset($user->time_to_complete_fp) ? $user->time_to_complete_fp : 0); ?>"><br>
 Time to complete sprint(in minutes): <input type="text" name="time_to_complete_sprint" value="<?php echo (isset($user->time_to_complete_sprint) ? $user->time_to_complete_sprint : 0); ?>"><br>
 Areas sprintable: <input type="text" name="areas_sprintable" value="<?php echo (isset($user->areas_sprintable) ? $user->areas_sprintable : 0); ?>"><br>
-FP areas per hour: <input type="text" name="fp_areas_per_hour" value="<?php echo (isset($user->fp_areas_per_hour) ? $user->fp_areas_per_hour : 0); ?>"><br>
+Dungeon areas per hour: <input type="text" name="dungeon_areas_per_hour" value="<?php echo (isset($user->dungeon_areas_per_hour) ? $user->dungeon_areas_per_hour : 0); ?>"><br>
 Idol Buff(if you have none use 1): <input type="text" name="idol_buff" value="<?php echo (isset($user->idol_buff) ? $user->idol_buff : 1); ?>"><br>
 <input type="submit">
 </form>
