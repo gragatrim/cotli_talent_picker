@@ -69,7 +69,6 @@ table, th, td {
 </style>
 </head>
 <body>
-<a href="./dungeon_calc.php">Dungeon Calculator</a>
-<a href="./cotli_talents.php">Talent Picker</a>
+<a href="./dungeon_calc.php">Dungeon Calculator</a> | <a href="./cotli_talents.php">Talent Picker</a> | <a href="./player_history.php">Player History</a>
 <br>
 
