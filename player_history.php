@@ -57,6 +57,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
 }
 ?>
 <div style="color:red;">This is still very much a work in progress, don't be surprised to see raw json</div>
+<div>This doesn't show chest/bi drop entries so it's possible pages will have nothing on them</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? $_POST['user_id'] : ''); ?>"><br>
 User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? $_POST['user_hash'] : ''); ?>"><br>
