@@ -1,5 +1,6 @@
 <?php
 include "navigation.php";
+include "game_defines.php";
 if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server'])) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, "http://" . urlencode($_POST['server']) . ".djartsgames.ca/~idle/post.php?call=getPlayHistory&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']) . "&page=" . urlencode($_POST['page']));
@@ -23,37 +24,11 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
     error_log("json_response: " . $response, 0);
   }
   curl_close($ch);
-  //No need to hammer the server all the time, an update a day should be acceptable
-  if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600) {
-    $game_definitions_ch = curl_init();
-    curl_setopt($game_definitions_ch, CURLOPT_URL, "http://idleps19.djartsgames.ca/~idle/post.php?call=getDefinitions");
-    curl_setopt($game_definitions_ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    curl_setopt($game_definitions_ch, CURLOPT_RETURNTRANSFER, true );
-
-    $game_info = curl_exec($game_definitions_ch);
-    file_put_contents('game_defines', $game_info);
-    curl_close($game_definitions_ch);
-  } else {
-    $game_info = file_get_contents('game_defines');
-  }
-  $game_json = json_decode($game_info);
-  $loot_definition = array();
-  $crusaders = array();
-  $missions = array();
-  $chests = array();
-  foreach($game_json->loot_defines AS $id => $loot) {
-    $loot_definition[$loot->id] = $loot;
-  }
-  foreach($game_json->hero_defines AS $hero) {
-    $crusaders[$hero->id] = $hero;
-  }
-  foreach($game_json->mission_defines AS $mission) {
-    $missions[$mission->id] = $mission;
-  }
-  foreach($game_json->chest_type_defines AS $chest) {
-    $chests[$chest->id] = $chest;
-    //echo "<pre>" . print_r($chest, true) . "</pre>";
-  }
+  $game_defines = new GameDefines();
+  $loot_definition = $game_defines->loot;
+  $crusaders = $game_defines->crusaders;
+  $missions = $game_defines->missions;
+  $chests = $game_defines->chests;
 }
 ?>
 <div style="color:red;">This is still very much a work in progress, don't be surprised to see raw json</div>

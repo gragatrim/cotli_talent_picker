@@ -1,47 +1,22 @@
 <?php
-
-//No need to hammer the server all the time, an update a day should be acceptable
-if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600 || !empty($_POST['game_details_refresh'])) {
-  $game_definitions_ch = curl_init();
-  curl_setopt($game_definitions_ch, CURLOPT_URL, "http://idleps19.djartsgames.ca/~idle/post.php?call=getDefinitions");
-  curl_setopt($game_definitions_ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-  curl_setopt($game_definitions_ch, CURLOPT_RETURNTRANSFER, true );
-
-  $game_info = curl_exec($game_definitions_ch);
-  file_put_contents('game_defines', $game_info);
-  curl_close($game_definitions_ch);
-} else {
-  $game_info = file_get_contents('game_defines');
-}
-$game_json = json_decode($game_info);
+include "navigation.php";
+include "game_defines.php";
+$game_defines = new GameDefines();
 if ($_POST) {
-  $event_id = $_POST['event_id'];
+  $event_id = htmlspecialchars($_POST['event_id']);
 
   $crusaders = [];
-  foreach($game_json->hero_defines AS $hero) {
+  foreach($game_defines->crusaders AS $hero) {
     $crusaders[$hero->id] = $hero;
   }
 
-  $objectives = array();
   $wiki_campaign = [];
   $all_campaigns = [];
-  foreach($game_json->campaign_defines AS $campaign) {
+  foreach($game_defines->campaigns AS $campaign) {
     if (!empty($campaign->requirements[0]) && !empty($campaign->requirements[0]->event_id) && $campaign->requirements[0]->event_id == $event_id) {
       $wiki_campaign = $campaign;
     }
     $all_campaigns[] = $campaign;
-  }
-  foreach($game_json->objective_defines AS $objective) {
-    if (!empty($wiki_campaign) && $objective->campaign_id == $wiki_campaign->id) {
-      $objectives[$objective->id] = $objective;
-    }
-  }
-
-  $achievements = array();
-  foreach($game_json->achievement_defines AS $achievement) {
-    if (!empty($achievement->properties->for_event) && $achievement->properties->for_event == $event_id) {
-      $achievements[$achievement->id] = $achievement;
-    }
   }
 
   //This is used for image names
@@ -54,7 +29,10 @@ if ($_POST) {
   $event_achievements = '';
   $event_achievements_header_tier = 0;
   $achievement_count = 0.1;
-  foreach ($achievements AS $achievement) {
+  foreach ($game_defines->achievements AS $achievement) {
+    if (empty($achievement->properties->for_event) || $achievement->properties->for_event != $event_id) {
+      continue;
+    }
     if ($event_achievements_header_tier != ceil($achievement_count/6)) {
       $event_achievements_header_tier++;
       $event_achievements .= "==Tier " . $event_achievements_header_tier . "==\n[[File:" . $event_acronym . "AchievementsT" . $event_achievements_header_tier . ".png|400px]]\n\n";
@@ -67,7 +45,7 @@ if ($_POST) {
     } else if (strpos($achievement->requirements, 'Objective') !== false) {
       preg_match('/Objective([\d]+)/', $achievement->requirements, $matches);
       $objective_to_complete = $matches[1];
-      $event_achievements .= $achievement->name . ' by completing "' . $objectives[$objective_to_complete]->name . "\".\n\n{{IncDPS|All|1%}}\n\n";
+      $event_achievements .= $achievement->name . ' by completing "' . $game_defines->objectives[$objective_to_complete]->name . "\".\n\n{{IncDPS|All|1%}}\n\n";
     } else if (strpos($achievement->requirements, 'FreePlayHighestArea') !== false) {
       preg_match('/>([\d]+)/', $achievement->requirements, $matches);
       $free_play_highest_area = $matches[1];
@@ -88,28 +66,22 @@ if ($_POST) {
 }
 if (empty($all_campaigns)) {
   $all_campaigns = [];
-  foreach($game_json->campaign_defines AS $campaign) {
+  foreach($game_defines->campaigns AS $campaign) {
     $all_campaigns[] = $campaign;
   }
 }
 ?>
-<html>
-<head>
-<style>
-</style>
-</head>
-<body>
 <form style="float: left;" action="<?php $_SERVER['PHP_SELF'];?>" method="post">
-Event Id: <input type="text" name="event_id" value="<?php echo (isset($_POST['event_id']) ? $_POST['event_id'] : 0); ?>"><br>
+Event Id: <input type="text" name="event_id" value="<?php echo (isset($_POST['event_id']) ? htmlspecialchars($_POST['event_id']) : 0); ?>"><br>
 Force Game Detail Refresh: <input type="checkbox" name="game_details_refresh" value="1" not-checked><br>
 <input type="submit">
 </form>
 <br>
 <?php
-$all_events = '<table style="float:right;"><tr><th>Id</th><th>Event Name</th></tr>';
+$all_events = '<table style="float:right;" class="borderless"><tr><th class="borderless">Id</th><th class="borderless">Event Name</th></tr>';
 foreach($all_campaigns AS $campaign) {
   if (!empty($campaign->requirements[0]) && !empty($campaign->requirements[0]->event_id)) {
-    $all_events .= '<tr><td>' . $campaign->requirements[0]->event_id . '</td><td>' . $campaign->name . '</td></tr>';
+    $all_events .= '<tr><td class="borderless">' . $campaign->requirements[0]->event_id . '</td><td class="borderless">' . $campaign->name . '</td></tr>';
   }
 }
 $all_events .= '</table>';

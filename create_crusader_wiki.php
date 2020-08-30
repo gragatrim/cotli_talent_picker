@@ -1,40 +1,23 @@
 <?php
-
+include "navigation.php";
+include "game_defines.php";
 if ($_POST) {
-  //No need to hammer the server all the time, an update a day should be acceptable
-  if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600 || !empty($_POST['game_details_refresh'])) {
-    $game_definitions_ch = curl_init();
-    curl_setopt($game_definitions_ch, CURLOPT_URL, "http://idleps19.djartsgames.ca/~idle/post.php?call=getDefinitions");
-    curl_setopt($game_definitions_ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    curl_setopt($game_definitions_ch, CURLOPT_RETURNTRANSFER, true );
-
-    $game_info = curl_exec($game_definitions_ch);
-    file_put_contents('game_defines', $game_info);
-    curl_close($game_definitions_ch);
-  } else {
-    $game_info = file_get_contents('game_defines');
-  }
-  $game_json = json_decode($game_info);
-  $crusader_id = ($_POST['crusader_id']);
-  $crusader_upgrades = array();
-  foreach($game_json->upgrade_defines AS $upgrade) {
-    if ($upgrade->hero_id == $crusader_id) {
-      $crusader_upgrades[$upgrade->id] = $upgrade;
-    }
-  }
+  $game_defines = new GameDefines();
+  $crusader_id = htmlspecialchars($_POST['crusader_id']);
+  $crusader_upgrades = $game_defines->get_crusader_upgrades();
   $crusader_infobox = "{{Crusader_Infobox";
   $crusader_campaign = 0;
   $crusader_name = '';
   $crusader = [];
   //This is here as a lazy way to allow us to get the previous crusaders names in the next loop
-  foreach($game_json->hero_defines AS $hero) {
+  foreach($game_defines->crusaders AS $hero) {
     if ($hero->id == $crusader_id) {
       $crusader_name = $hero->name;
       $crusader = $hero;
     }
   }
   $alt_crusaders = array();
-  foreach($game_json->hero_defines AS $hero) {
+  foreach($game_defines->crusaders AS $hero) {
     if ($hero->seat_id == ($crusader->seat_id - 1) && empty($previous_crusader)) {
       $previous_crusader = $hero->name;
     }
@@ -71,17 +54,14 @@ if ($_POST) {
   $crusader_infobox .= "| Next_Crusader = " . $next_crusader . "\n";
   $crusader_infobox .= "}}";
   $campaign_name = '';
-  foreach($game_json->campaign_defines AS $campaign) {
+  foreach($game_defines->campaigns AS $campaign) {
     if (!empty($campaign->requirements[0]) && !empty($campaign->requirements[0]->event_id) && $campaign->requirements[0]->event_id == $crusader_campaign) {
       $campaign_name = $campaign->name;
     }
   }
-  $formation_abilities = array();
-  foreach($game_json->formation_ability_defines AS $formation_ability) {
-    $formation_abilities[$formation_ability->id] = $formation_ability;
-  }
+  $formation_abilities = $game_defines->formation_abilities;
   $crusader_upgrades_wiki = "==Upgrades==\n{{Upgrade|top}}\n";
-  foreach($game_json->upgrade_defines AS $upgrade) {
+  foreach($game_defines->crusader_upgrades AS $upgrade) {
     if ($upgrade->hero_id == $crusader_id) {
       $upgrade_effect = '';
       $upgrade_formation_ability = explode(',',$upgrade->effect);
@@ -157,8 +137,31 @@ if ($_POST) {
   foreach($crusader->properties->tags AS $crusader_tags) {
     $crusader_mission_tags .= '[[Category:Mission Tag ' . $crusader_tags . "]]\n";
   }
+  //If this runs out and the game is still being updated.... then good for CNE
+  $ordinal_numbers = array(1 => 'first',
+                           2 => 'second',
+                           3 => 'third',
+                           4 => 'fourth',
+                           5 => 'fifth',
+                           6 => 'sixth',
+                           7 => 'seventh',
+                           8 => 'eighth',
+                           9 => 'ninth',
+                           10 => 'tenth',
+                           11 => 'eleventh',
+                           12 => 'twelveth',
+                           13 => 'thirteenth',
+                           14 => 'fourteenth',
+                           15 => 'fifteenth');
+  //They just numerically index these, and they randomly change the order, so this will ensure we get the right tier
+  foreach ($crusader->properties->flavor_tags AS $tag) {
+    if (strpos($tag, 'tier') !== false) {
+      $tier = substr($tag, 4);
+      break;
+    }
+  }
   $wiki_text = $crusader_infobox . "
-  '''" . $crusader_name . "''' is the new Crusader in the fifth tier of the [[" . $campaign_name . "]] Event.
+  '''" . $crusader_name . "''' is the new Crusader in the " . $ordinal_numbers[$tier] . " tier of the [[" . $campaign_name . "]] Event.
   {{Clr}}
 
   " . $crusader_upgrades_wiki . "
@@ -174,14 +177,8 @@ if ($_POST) {
   [[Category:Crusaders]]\n" . $crusader_mission_tags;
 }
 ?>
-<html>
-<head>
-<style>
-</style>
-</head>
-<body>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
-Crusader Id: <input type="text" name="crusader_id" value="<?php echo (isset($_POST['crusader_id']) ? $_POST['crusader_id'] : 0); ?>"><br>
+Crusader Id: <input type="text" name="crusader_id" value="<?php echo (isset($_POST['crusader_id']) ? htmlspecialchars($_POST['crusader_id']) : 0); ?>"><br>
 Force Game Detail Refresh: <input type="checkbox" name="game_details_refresh" value="1" not-checked><br>
 <input type="submit">
 <br>
