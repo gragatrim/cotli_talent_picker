@@ -78,10 +78,28 @@ td.borderless {
 .legend {
   width: 350px;
 }
+
+.formation_div {
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 48px;
+}
+
+table.formation_table {
+  height: 336px;
+  width: 240px;
+  border: none;
+}
+td.formation_table {
+  background-repeat: no-repeat;
+  background-size: contain;
+  border: none;
+}
 </style>
 </head>
 <body>
 <a href="./dungeon_calc.php">Dungeon Calculator</a> | <a href="./cotli_talents.php">Talent Picker</a> | <a href="./player_history.php">Player History</a>
 | <a href="./create_achievement_wiki.php">Create achievement wiki text</a> | <a href="./create_crusader_wiki.php">Create crusader wiki text</a> | <a href="./create_event_wiki.php">Create event wiki text</a>
+| <a href="./player_saved_formations.php">View saved formations</a>
 <br>
 
