@@ -7,7 +7,21 @@ $game_json = $game_defines->game_json;
 if (!empty($_POST)) {
   $saved_form_html = '';
   $saved_form_html .= '<b style="float: left; clear: left;">' . $game_defines->objectives[$_POST['dungeon_id']]->name . '</b><br>';
-  $saved_form = array();
+  $saved_form = array(0 => -1,
+                      1 => -1,
+                      2 => -1,
+                      3 => -1,
+                      4 => -1,
+                      5 => -1,
+                      6 => -1,
+                      7 => -1,
+                      8 => -1,
+                      9 => -1,
+                      10 => -1,
+                      11 => -1,
+                      12 => -1,
+                      13 => -1,
+                      14 => -1);
   foreach($_POST AS $id => $input) {
     if (is_numeric($input) && $input > -1 && is_numeric($id)) {
       $slot_id = $input - 1;
