@@ -172,7 +172,7 @@ function generate_formation_image($saved_form, $objective, $all_crusaders) {
                             <td class="borderless"></td>
                             <td class="formation_table" style="background-image: url(\'' . $image8 .'\')"></td>
                             <td class="borderless"></td>
-                            <td class="formation_table" style="background-image: url(\'' . $image3 .'\')"></td>
+                            <td class="formation_table" style="background-image: url(\'' . $image2 .'\')"></td>
                             <td class="borderless"></td>
                           </tr>
                           <tr>
