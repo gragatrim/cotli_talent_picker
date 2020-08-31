@@ -594,6 +594,7 @@ function generate_formation_image($saved_form, $objective, $all_crusaders) {
 }
 
 ?>
+<div style="color:red;">This will only show dungeon formations</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 <div style="float: left;padding-right: 5px; clear: left;">
   User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
