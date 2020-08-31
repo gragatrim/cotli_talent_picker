@@ -6,23 +6,15 @@ $game_json = $game_defines->game_json;
 
 if (!empty($_POST)) {
   $saved_form_html = '';
-  $saved_form_html .= '<b>' . $game_defines->objectives[$_POST['dungeon_id']]->name . '</b><br>';
-  $saved_form = array(0 => $_POST['slot_1'],
-                  1 => $_POST['slot_2'],
-                  2 => $_POST['slot_3'],
-                  3 => $_POST['slot_4'],
-                  4 => $_POST['slot_5'],
-                  5 => $_POST['slot_6'],
-                  6 => $_POST['slot_7'],
-                  7 => $_POST['slot_8'],
-                  8 => $_POST['slot_9'],
-                  9 => $_POST['slot_10'],
-                  10 => $_POST['slot_11'],
-                  11 => $_POST['slot_12'],
-                  12 => $_POST['slot_13'],
-                  13 => $_POST['slot_14'],
-                  14 => $_POST['slot_15']);
-  $saved_form_html .= '<div style="float: left;margin-right:40px;">Generated form';
+  $saved_form_html .= '<b style="float: left; clear: left;">' . $game_defines->objectives[$_POST['dungeon_id']]->name . '</b><br>';
+  $saved_form = array();
+  foreach($_POST AS $id => $input) {
+    if (is_numeric($input) && $input > -1 && is_numeric($id)) {
+      $slot_id = $input - 1;
+      $saved_form[$slot_id] = $id;
+    }
+  }
+  $saved_form_html .= '<div style="float: left;margin-right:40px;clear: left;">';
   $saved_form_html .= generate_formation_image($saved_form, $game_defines->objectives[$_POST['dungeon_id']]->name, $game_defines->crusaders);
   $saved_form_html .= '</div>';
 }
@@ -579,28 +571,26 @@ function generate_formation_image($saved_form, $objective, $all_crusaders) {
   return $saved_form_image;
 }
 
+$all_crusaders = '<table style="float: left;clear: left;" class="borderless"><tr><th class="borderless">Id</th><th class="borderless">Crusader Name</th></tr><tr>';
+$column_count = 0;
+foreach($game_defines->crusaders AS $crusader) {
+  if ($column_count >= 6) {
+    $all_crusaders .= '</tr><tr>';
+    $column_count = 0;
+  }
+  $value = !empty($_POST[$crusader->id]) ? htmlspecialchars($_POST[$crusader->id]) : "";
+  $all_crusaders .= '<td class="borderless"><input style="width: 30px;" type="text" id="' . $crusader->id . '" name="' . $crusader->id . '" value="' . $value . '"></td><td class="borderless">' . $crusader->name . '</td>';
+  $column_count++;
+}
+$all_crusaders .= '</tr></table>';
 ?>
 <div style="color:red;">This will only show dungeon formations</div>
 <div style="color:red;">The slots count from the rightmost top slot down and to the left(sorry no images yet of empty forms)</div>
 <form style="float: left;" action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 <div style="float: left;padding-right: 5px; clear: left;">
   Dungeon Id: <input type="text" name="dungeon_id" value="<?php echo (isset($_POST['dungeon_id']) ? htmlspecialchars($_POST['dungeon_id']) : ''); ?>"><br>
-  Slot 1: <input type="text" name="slot_1" value="<?php echo (isset($_POST['slot_1']) ? htmlspecialchars($_POST['slot_1']) : ''); ?>"><br>
-  Slot 2: <input type="text" name="slot_2" value="<?php echo (isset($_POST['slot_2']) ? htmlspecialchars($_POST['slot_2']) : ''); ?>"><br>
-  Slot 3: <input type="text" name="slot_3" value="<?php echo (isset($_POST['slot_3']) ? htmlspecialchars($_POST['slot_3']) : ''); ?>"><br>
-  Slot 4: <input type="text" name="slot_4" value="<?php echo (isset($_POST['slot_4']) ? htmlspecialchars($_POST['slot_4']) : ''); ?>"><br>
-  Slot 5: <input type="text" name="slot_5" value="<?php echo (isset($_POST['slot_5']) ? htmlspecialchars($_POST['slot_5']) : ''); ?>"><br>
-  Slot 6: <input type="text" name="slot_6" value="<?php echo (isset($_POST['slot_6']) ? htmlspecialchars($_POST['slot_6']) : ''); ?>"><br>
-  Slot 7: <input type="text" name="slot_7" value="<?php echo (isset($_POST['slot_7']) ? htmlspecialchars($_POST['slot_7']) : ''); ?>"><br>
-  Slot 8: <input type="text" name="slot_8" value="<?php echo (isset($_POST['slot_8']) ? htmlspecialchars($_POST['slot_8']) : ''); ?>"><br>
-  Slot 9: <input type="text" name="slot_9" value="<?php echo (isset($_POST['slot_9']) ? htmlspecialchars($_POST['slot_9']) : ''); ?>"><br>
-  Slot 10: <input type="text" name="slot_10" value="<?php echo (isset($_POST['slot_10']) ? htmlspecialchars($_POST['slot_10']) : ''); ?>"><br>
-  Slot 11: <input type="text" name="slot_11" value="<?php echo (isset($_POST['slot_11']) ? htmlspecialchars($_POST['slot_11']) : ''); ?>"><br>
-  Slot 12: <input type="text" name="slot_12" value="<?php echo (isset($_POST['slot_12']) ? htmlspecialchars($_POST['slot_12']) : ''); ?>"><br>
-  Slot 13: <input type="text" name="slot_13" value="<?php echo (isset($_POST['slot_13']) ? htmlspecialchars($_POST['slot_13']) : ''); ?>"><br>
-  Slot 14: <input type="text" name="slot_14" value="<?php echo (isset($_POST['slot_14']) ? htmlspecialchars($_POST['slot_14']) : ''); ?>"><br>
-  Slot 15: <input type="text" name="slot_15" value="<?php echo (isset($_POST['slot_15']) ? htmlspecialchars($_POST['slot_15']) : ''); ?>"><br>
 </div>
+<?php echo $all_crusaders; ?>
 <input style="clear:both; float: left;" type="submit">
 </form>
 <?php
@@ -612,12 +602,6 @@ foreach ($game_defines->objectives AS $objective) {
 }
 $all_dungeons .= '</table>';
 echo $all_dungeons;
-$all_crusaders = '<table style="float:right;" class="borderless"><tr><th class="borderless">Id</th><th class="borderless">Crusader Name</th></tr>';
-foreach($game_defines->crusaders AS $crusader) {
-  $all_crusaders .= '<tr><td class="borderless">' . $crusader->id . '</td><td class="borderless">' . $crusader->name . '</td></tr>';
-}
-$all_crusaders .= '</table>';
-echo $all_crusaders;
 if (!empty($saved_form_html)) {
   echo $saved_form_html;
 }
