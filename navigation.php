@@ -89,6 +89,7 @@ table.formation_table {
   height: 336px;
   width: 240px;
   border: none;
+  background-color: #ccc;
 }
 td.formation_table {
   background-repeat: no-repeat;
