@@ -590,6 +590,7 @@ $all_crusaders .= '</tr></table>';
 <div style="float: left;padding-right: 5px; clear: left;">
   Dungeon Id: <input type="text" name="dungeon_id" value="<?php echo (isset($_POST['dungeon_id']) ? htmlspecialchars($_POST['dungeon_id']) : ''); ?>"><br>
 </div>
+<div style="float: left; clear: left;">Enter the slot you want the crusader in next to their name</div>
 <?php echo $all_crusaders; ?>
 <input style="clear:both; float: left;" type="submit">
 </form>
