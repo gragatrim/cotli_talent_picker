@@ -1,9 +1,19 @@
 <?php
 include "navigation.php";
 include "game_defines.php";
-$game_defines = new GameDefines();
 
 if ($_POST) {
+  if (!empty($_POST['force_refresh'])) {
+    $force_refresh = true;
+  } else {
+    $force_refresh = false;
+  }
+  if (!empty($_POST['use_dev_info'])) {
+    $use_dev_info = true;
+  } else {
+    $use_dev_info = false;
+  }
+  $game_defines = new GameDefines($force_refresh, $use_dev_info);
   $campaign_id = htmlspecialchars($_POST['campaign_id']);
   $tier = htmlspecialchars($_POST['tier']);
 
@@ -73,6 +83,7 @@ if ($_POST) {
   }
 }
 if (empty($all_campaigns)) {
+  $game_defines = new GameDefines();
   $all_campaigns = [];
   foreach($game_defines->campaigns AS $campaign) {
     $all_campaigns[] = $campaign;
@@ -83,6 +94,7 @@ if (empty($all_campaigns)) {
 Campaign Id: <input type="text" name="campaign_id" value="<?php echo (isset($_POST['campaign_id']) ? htmlspecialchars($_POST['campaign_id']) : 0); ?>"><br>
 Tier: <input type="text" name="tier" value="<?php echo (isset($_POST['tier']) ? htmlspecialchars($_POST['tier']) : 0); ?>"> (leave this empty for all tiers to be generated)<br>
 Force Game Detail Refresh: <input type="checkbox" name="game_details_refresh" value="1" not-checked><br>
+Use Dev Info?: <input type="checkbox" name="use_dev_info" value="1" not-checked><br>
 <input type="submit">
 </form>
 <br>

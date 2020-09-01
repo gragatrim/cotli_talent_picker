@@ -2,7 +2,17 @@
 include "navigation.php";
 include "game_defines.php";
 if ($_POST) {
-  $game_defines = new GameDefines();
+  if (!empty($_POST['force_refresh'])) {
+    $force_refresh = true;
+  } else {
+    $force_refresh = false;
+  }
+  if (!empty($_POST['use_dev_info'])) {
+    $use_dev_info = true;
+  } else {
+    $use_dev_info = false;
+  }
+  $game_defines = new GameDefines($force_refresh, $use_dev_info);
   $crusader_id = htmlspecialchars($_POST['crusader_id']);
   $crusader_upgrades = $game_defines->get_crusader_upgrades();
   $crusader_infobox = "{{Crusader_Infobox";
@@ -17,6 +27,7 @@ if ($_POST) {
     }
   }
   $alt_crusaders = array();
+  $next_crusader = '';
   foreach($game_defines->crusaders AS $hero) {
     if ($hero->seat_id == ($crusader->seat_id - 1) && empty($previous_crusader)) {
       $previous_crusader = $hero->name;
@@ -179,7 +190,8 @@ if ($_POST) {
 ?>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 Crusader Id: <input type="text" name="crusader_id" value="<?php echo (isset($_POST['crusader_id']) ? htmlspecialchars($_POST['crusader_id']) : 0); ?>"><br>
-Force Game Detail Refresh: <input type="checkbox" name="game_details_refresh" value="1" not-checked><br>
+Force Game Detail Refresh: <input type="checkbox" name="force_refresh" value="1" not-checked><br>
+Use Dev Data?: <input type="checkbox" name="use_dev_info" value="1" not-checked><br>
 <input type="submit">
 <br>
 <?php

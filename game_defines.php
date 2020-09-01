@@ -1,8 +1,8 @@
 <?php
 
 class GameDefines {
-  function __construct() {
-    if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600) {
+  function __construct($force_refresh = false, $use_dev_info = false) {
+    if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600 || $force_refresh !== false || $use_dev_info !== false) {
       $game_definitions_ch = curl_init();
       curl_setopt($game_definitions_ch, CURLOPT_URL, "http://idleps19.djartsgames.ca/~idle/post.php?call=getDefinitions");
       curl_setopt($game_definitions_ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
@@ -11,8 +11,21 @@ class GameDefines {
       $game_info = curl_exec($game_definitions_ch);
       file_put_contents('game_defines', $game_info);
       curl_close($game_definitions_ch);
+
+      $dev_definitions_ch = curl_init();
+      curl_setopt($dev_definitions_ch, CURLOPT_URL, "http://dev2.djartsgames.ca/~idle/post.php?call=getDefinitions");
+      curl_setopt($dev_definitions_ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+      curl_setopt($dev_definitions_ch, CURLOPT_RETURNTRANSFER, true );
+
+      $dev_info = curl_exec($dev_definitions_ch);
+      file_put_contents('dev_defines', $dev_info);
+      curl_close($dev_definitions_ch);
     } else {
       $game_info = file_get_contents('game_defines');
+      $dev_info = file_get_contents('dev_defines');
+    }
+    if ($use_dev_info !== false) {
+      $game_info = $dev_info;
     }
     $this->game_json = json_decode($game_info);
     $this->loot = $this->get_loot();
