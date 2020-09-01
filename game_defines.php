@@ -29,6 +29,7 @@ class GameDefines {
     }
     $this->game_json = json_decode($game_info);
     $this->loot = $this->get_loot();
+    $this->generate_crusader_loot();
     $this->crusaders = $this->get_crusaders();
     $this->missions = $this->get_missions();
     $this->chests = $this->get_chests();
@@ -118,6 +119,12 @@ class GameDefines {
       $crusader_skins[$hero_skin->id] = $hero_skin;
     }
     return $crusader_skins;
+  }
+
+  public function generate_crusader_loot() {
+    foreach ($this->loot AS $loot) {
+      $this->crusader_loot[$loot->hero_id][$loot->slot_id][] = $loot;
+    }
   }
 }
 
