@@ -59,6 +59,8 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
     }
   }
   $user_crusaders .= '</tr></table>';
+  $total_mats = get_total_mats($json_response->details->loot, $game_defines->crusader_loot, $game_defines->loot, $json_response->details->crafting_materials);
+  $total_mat_div = '<div style="float: left; clear: left;">Total Materials(including epic mats): ' . $total_mats . '</div>';
 }
 
 function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot) {
@@ -103,6 +105,40 @@ function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot)
   return $owned_crusader_gear;
 }
 
+function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_materials) {
+  $total_mats = 0;
+  foreach ($user_loot AS $id => $loot) {
+    foreach($all_crusader_loot[$all_loot[$loot->loot_id]->hero_id] AS $slot_id => $crusader_all_slot_loot) {
+      foreach ($crusader_all_slot_loot AS $crusader_slot_loot) {
+        if ($crusader_slot_loot->id == $loot->loot_id) {
+          if ($crusader_slot_loot->rarity == 5) {
+            for ($i = 1; $i < $loot->count; $i++) {
+              $total_mats += (250 * pow(2, ($i-1)));
+            }
+          }
+        }
+      }
+    }
+  }
+  foreach ($crafting_materials AS $id => $material) {
+    switch ($id) {
+      case 1:
+        $total_mats += $material;
+        break;
+      case 2:
+        $total_mats += $material * 2;
+        break;
+      case 3:
+        $total_mats += $material * 4;
+        break;
+      case 4:
+        $total_mats += $material * 8;
+        break;
+    }
+  }
+  return $total_mats;
+}
+
 ?>
 <div style="color:red;">This will only display your crusaders and thier gear</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
@@ -114,6 +150,9 @@ function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot)
 <input style="clear:both; float: left;" type="submit">
 </form>
 <?php
+if (!empty($total_mat_div)) {
+  echo $total_mat_div;
+}
 if (!empty($user_crusaders)) {
   echo $user_crusaders;
 }
