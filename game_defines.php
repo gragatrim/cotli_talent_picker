@@ -39,6 +39,8 @@ class GameDefines {
     $this->achievements = $this->get_achievements();
     $this->objectives = $this->get_objectives();
     $this->crusader_skins = $this->get_crusader_skins();
+    $this->taskmasters = $this->get_taskmasters();
+    $this->abilities = $this->get_abilities();
   }
 
   public function get_loot() {
@@ -125,6 +127,22 @@ class GameDefines {
     foreach ($this->loot AS $loot) {
       $this->crusader_loot[$loot->hero_id][$loot->slot_id][] = $loot;
     }
+  }
+
+  public function get_taskmasters() {
+    $taskmasters = array();
+    foreach($this->game_json->taskmaster_defines AS $taskmaster) {
+      $taskmasters[$taskmaster->taskmaster_id] = $taskmaster;
+    }
+    return $taskmasters;
+  }
+
+  public function get_abilities() {
+    $abilities = array();
+    foreach($this->game_json->ability_defines AS $ability) {
+      $abilities[$ability->id] = $ability;
+    }
+    return $abilities;
   }
 }
 

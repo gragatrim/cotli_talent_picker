@@ -30,10 +30,34 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
   $saved_form_html = '<div style="clear:both;"></div>';
   foreach ($json_response->details->formation_saves->challenges AS $id => $saved_forms) {
     if ($game_defines->objectives[$id]->campaign_id == 29) {
-      $saved_form_html .= '<b>' . $game_defines->objectives[$id]->name . '</b><br>';
+      $saved_form_html .= '<b style="font-size: 20px;">' . $game_defines->objectives[$id]->name . '</b><br>';
       foreach($saved_forms AS $saved_position => $saved_form) {
-        $saved_form_html .= '<div style="float: left;margin-right:40px;">Saved form ' . $saved_position;
+        if ($saved_position == 5 && !empty($_POST['show_taskmaster_location'])) {
+          $clear_left = 'clear: left;';
+        } else {
+          $clear_left = '';
+        }
+        $saved_form_html .= '<div style="float: left; margin-right: 40px;' . $clear_left . '"><b>Saved form ' . $saved_position . '</b>';
         $saved_form_html .= generate_formation_image($saved_form[0], $game_defines->objectives[$id]->name, $game_defines->crusaders);
+        //For the TMs index 1 is the area, 1 means the field, 2 means they are on a crusader, 3 means the abilities
+        //For the TMs index 2 is their position in the area(or seat id), not 0 indexed
+        if (!empty($_POST['show_taskmaster_location'])) {
+          $saved_form_html .= '<div style="float: left;">';
+          foreach ($saved_form[1] AS $taskmaster_saved_position) {
+            $taskmaster_location = '';
+            if ($taskmaster_saved_position[1] == 3) {
+              $taskmaster_location = 'activating the ability ' . $game_defines->abilities[$taskmaster_saved_position[2]]->name;
+            } else if ($taskmaster_saved_position[1] == 1) {
+              $taskmaster_location = 'clicking on the field';
+            } else if ($taskmaster_saved_position[1] == 2) {
+              $taskmaster_location = 'upgrading the active crusader in seat ' . $taskmaster_saved_position[2];
+            } else {
+              $taskmaster_location = 'clicking on a buff or auto-advance';
+            }
+            $saved_form_html .= $game_defines->taskmasters[$taskmaster_saved_position[0]]->name . ' is ' . $taskmaster_location . '<br/>';
+          }
+          $saved_form_html .= '</div>';
+        }
         $saved_form_html .= '</div>';
       }
       $saved_form_html .= '<div style="clear:both;"></div>';
@@ -593,6 +617,11 @@ function generate_formation_image($saved_form, $objective, $all_crusaders) {
   return $saved_form_image;
 }
 
+if (!empty($_POST['show_taskmaster_location'])) {
+  $checked = 'checked';
+} else {
+  $checked = 'not-checked';
+}
 ?>
 <div style="color:red;">This will only show dungeon formations</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
@@ -600,6 +629,7 @@ function generate_formation_image($saved_form, $objective, $all_crusaders) {
   User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
   User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
   Server(use idlemaster if you don't know): <input type="text" name="server" value="<?php echo (isset($_POST['server']) ? htmlspecialchars($_POST['server']) : ''); ?>"><br>
+  Show Taskmaster Location?: <input type="checkbox" name="show_taskmaster_location" value="1" <?php echo $checked;?>><br>
 </div>
 <input style="clear:both; float: left;" type="submit">
 </form>
