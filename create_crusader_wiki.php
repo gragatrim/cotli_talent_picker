@@ -139,7 +139,12 @@ if ($_POST) {
       } else {
         $upgrade_effect = "|" . $upgrade->effect;
       }
-      $crusader_upgrades_wiki .= "{{Upgrade|" . $upgrade->name . "|" . $upgrade->required_level . "|" . sprintf("%.2E", $upgrade->cost) . $upgrade_effect . "|" . $upgrade->description . "|image=" . str_replace(" ", "", ucwords($upgrade->name)) . ".png}}\n";
+      if ($upgrade->required_level == 200) {
+        //for some reason the wiki expects this in this order....
+        $crusader_upgrades_wiki .= "{{Upgrade|" . $upgrade->required_level . "|" . $upgrade->name . "|" . sprintf("%.2E", $upgrade->cost) . $upgrade_effect . "|" . $upgrade->description . "|image=" . str_replace(" ", "", ucwords($upgrade->name)) . ".png}}\n";
+      } else {
+        $crusader_upgrades_wiki .= "{{Upgrade|" . $upgrade->name . "|" . $upgrade->required_level . "|" . sprintf("%.2E", $upgrade->cost) . $upgrade_effect . "|" . $upgrade->description . "|image=" . str_replace(" ", "", ucwords($upgrade->name)) . ".png}}\n";
+      }
     }
   }
   $crusader_upgrades_wiki .= "{{Upgrade|end}}\n";
