@@ -4,7 +4,7 @@ include "game_defines.php";
 $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
 
-if (!empty($_POST)) {
+if (!empty($_POST) && !empty($_POST['formation_id'])) {
   $saved_form_html = '';
   $saved_form_html .= '<b style="float: left; clear: left;">' . $game_defines->campaign_formations[$_POST['formation_id']]['name'] . '</b><br>';
   $saved_form = array(0 => -1,
