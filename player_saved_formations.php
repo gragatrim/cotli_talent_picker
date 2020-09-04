@@ -79,18 +79,20 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
       //For the TMs index 2 is their position in the area(or seat id), not 0 indexed
       if (!empty($_POST['show_taskmaster_location'])) {
         $saved_form_html .= '<div style="float: left; position: relative; top: 325px;">';
-        foreach ($saved_form[1] AS $taskmaster_saved_position) {
-          $taskmaster_location = '';
-          if ($taskmaster_saved_position[1] == 3) {
-            $taskmaster_location = 'activating the ability ' . $game_defines->abilities[$taskmaster_saved_position[2]]->name;
-          } else if ($taskmaster_saved_position[1] == 1) {
-            $taskmaster_location = 'clicking on the field';
-          } else if ($taskmaster_saved_position[1] == 2) {
-            $taskmaster_location = 'upgrading the active crusader in seat ' . $taskmaster_saved_position[2];
-          } else {
-            $taskmaster_location = 'clicking on a buff or auto-advance';
+        if (!empty($saved_form[1])) {
+          foreach ($saved_form[1] AS $taskmaster_saved_position) {
+            $taskmaster_location = '';
+            if ($taskmaster_saved_position[1] == 3) {
+              $taskmaster_location = 'activating the ability ' . $game_defines->abilities[$taskmaster_saved_position[2]]->name;
+            } else if ($taskmaster_saved_position[1] == 1) {
+              $taskmaster_location = 'clicking on the field';
+            } else if ($taskmaster_saved_position[1] == 2) {
+              $taskmaster_location = 'upgrading the active crusader in seat ' . $taskmaster_saved_position[2];
+            } else {
+              $taskmaster_location = 'clicking on a buff or auto-advance';
+            }
+            $saved_form_html .= $game_defines->taskmasters[$taskmaster_saved_position[0]]->name . ' is ' . $taskmaster_location . '<br/>';
           }
-          $saved_form_html .= $game_defines->taskmasters[$taskmaster_saved_position[0]]->name . ' is ' . $taskmaster_location . '<br/>';
         }
         $saved_form_html .= '</div>';
       }
