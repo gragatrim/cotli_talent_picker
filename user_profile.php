@@ -64,7 +64,9 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
 }
 
 function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot) {
-  $owned_crusader_gear = array('<div style="background-color: black;"></div>', '<div style="background-color: black;"></div>', '<div style="background-color: black;"></div>');
+  $owned_crusader_gear = array(1 => '<div style="background-color: black;">N</div>',
+                               2 => '<div style="background-color: black;">N</div>',
+                               3 => '<div style="background-color: black;">N</div>');
   foreach ($user_loot AS $id => $loot) {
     if ($all_loot[$loot->loot_id]->hero_id == $crusader->id) {
       foreach($all_crusader_loot[$all_loot[$loot->loot_id]->hero_id] AS $slot_id => $crusader_all_slot_loot) {
