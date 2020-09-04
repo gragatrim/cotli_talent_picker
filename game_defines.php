@@ -41,6 +41,7 @@ class GameDefines {
     $this->crusader_skins = $this->get_crusader_skins();
     $this->taskmasters = $this->get_taskmasters();
     $this->abilities = $this->get_abilities();
+    $this->campaign_formations = $this->generate_campaign_maps();
   }
 
   public function get_loot() {
@@ -143,6 +144,71 @@ class GameDefines {
       $abilities[$ability->id] = $ability;
     }
     return $abilities;
+  }
+
+  public function generate_campaign_maps() {
+    $campaign_formations = array();
+    foreach($this->campaigns AS $campaign) {
+      if ($campaign->name == 'World\'s Wake') {
+				//For some reason this form isn't in the defines, so I had to manually create it
+        $campaign_formations[$campaign->id]['name'] =  $campaign->name;
+				$campaign_formations[$campaign->id][0]['x'] = 289;
+				$campaign_formations[$campaign->id][0]['y'] = 151;
+				$campaign_formations[$campaign->id][1]['x'] = 203;
+				$campaign_formations[$campaign->id][1]['y'] = 118;
+				$campaign_formations[$campaign->id][2]['x'] = 203;
+				$campaign_formations[$campaign->id][2]['y'] = 184;
+				$campaign_formations[$campaign->id][3]['x'] = 123;
+				$campaign_formations[$campaign->id][3]['y'] = 85;
+				$campaign_formations[$campaign->id][4]['x'] = 123;
+				$campaign_formations[$campaign->id][4]['y'] = 151;
+				$campaign_formations[$campaign->id][5]['x'] = 123;
+				$campaign_formations[$campaign->id][5]['y'] = 217;
+				$campaign_formations[$campaign->id][6]['x'] = 43;
+				$campaign_formations[$campaign->id][6]['y'] = 52;
+				$campaign_formations[$campaign->id][7]['x'] = 43;
+				$campaign_formations[$campaign->id][7]['y'] = 118;
+				$campaign_formations[$campaign->id][8]['x'] = 43;
+				$campaign_formations[$campaign->id][8]['y'] = 184;
+				$campaign_formations[$campaign->id][9]['x'] = 43;
+				$campaign_formations[$campaign->id][9]['y'] = 250;
+      } else if ($campaign->name != 'The Dungeons') {
+        $campaign_formations[$campaign->id]['name'] =  $campaign->name;
+        foreach ($campaign->game_changes[0]->formation AS $id => $node) {
+          $campaign_formations[$campaign->id][$id]['x'] = $node->x;
+          $campaign_formations[$campaign->id][$id]['y'] = $node->y;
+        }
+      }
+    }
+    foreach($this->objectives AS $objective) {
+      if ($objective->campaign_order == 100) {
+        if ($objective->name == 'All the Shapes') {
+          $campaign_formations[$objective->id]['name'] = $objective->name;
+          foreach ($objective->game_changes[3]->formation AS $id => $node) {
+            if ($node->x !== 0 && $node->y != 0) {
+              $campaign_formations[$objective->id][$id]['x'] = $node->x;
+              $campaign_formations[$objective->id][$id]['y'] = $node->y;
+            }
+          }
+        } else {
+          //These all use campaign maps, so grab the format based on campaign_id
+          $campaign_formations[$objective->id]['name'] = $objective->name;
+          foreach ($campaign_formations[$objective->campaign_id] AS $id => $node) {
+            if ($id !== 'name') {
+              $campaign_formations[$objective->id][$id]['x'] = $node['x'];
+              $campaign_formations[$objective->id][$id]['y'] = $node['y'];
+            }
+          }
+        }
+      } else if ($objective->campaign_id == 29) {
+        $campaign_formations[$objective->id]['name'] = $objective->name;
+        foreach ($objective->game_changes[2]->formation AS $id => $node) {
+          $campaign_formations[$objective->id][$id]['x'] = $node->x;
+          $campaign_formations[$objective->id][$id]['y'] = $node->y;
+        }
+      }
+    }
+    return $campaign_formations;
   }
 }
 
