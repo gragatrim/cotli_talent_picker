@@ -29,7 +29,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
   curl_close($ch);
   $saved_form_html = '<div style="clear:both;"></div>';
   foreach ($json_response->details->formation_saves->campaigns AS $id => $saved_forms) {
-    $saved_form_html .= '<b style="font-size: 20px;">' . $game_defines->campaigns[$id]->name . '</b><br>';
+    $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->campaigns[$id]->name) . '">' . $game_defines->campaigns[$id]->name . '</b><br>';
     foreach($saved_forms AS $saved_position => $saved_form) {
       if (!empty($_POST['show_taskmaster_location'])) {
         $height = 'height: 600px;';
@@ -66,37 +66,37 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
     $saved_form_html .= '<div style="clear:both;"></div>';
   }
   foreach ($json_response->details->formation_saves->challenges AS $id => $saved_forms) {
-		$saved_form_html .= '<b style="font-size: 20px;">' . $game_defines->objectives[$id]->name . '</b><br>';
-		foreach($saved_forms AS $saved_position => $saved_form) {
-		if (!empty($_POST['show_taskmaster_location'])) {
-			$height = 'height: 600px;';
-		} else {
-			$height = 'height: 400px;';
-		}
-			$saved_form_html .= '<div style="float: left; ' . $height . '; position: relative; height: 600px; width: 500px; background-color: lightgray; border: 1px solid;"><b>Saved form ' . $saved_position . '</b>';
-			$saved_form_html .= generate_formation_image($saved_form[0], $game_defines->objectives[$id]->name, $game_defines->crusaders, $game_defines->campaign_formations);
-			//For the TMs index 1 is the area, 1 means the field, 2 means they are on a crusader, 3 means the abilities
-			//For the TMs index 2 is their position in the area(or seat id), not 0 indexed
-			if (!empty($_POST['show_taskmaster_location'])) {
-				$saved_form_html .= '<div style="float: left; position: relative; top: 325px;">';
-				foreach ($saved_form[1] AS $taskmaster_saved_position) {
-					$taskmaster_location = '';
-					if ($taskmaster_saved_position[1] == 3) {
-						$taskmaster_location = 'activating the ability ' . $game_defines->abilities[$taskmaster_saved_position[2]]->name;
-					} else if ($taskmaster_saved_position[1] == 1) {
-						$taskmaster_location = 'clicking on the field';
-					} else if ($taskmaster_saved_position[1] == 2) {
-						$taskmaster_location = 'upgrading the active crusader in seat ' . $taskmaster_saved_position[2];
-					} else {
-						$taskmaster_location = 'clicking on a buff or auto-advance';
-					}
-					$saved_form_html .= $game_defines->taskmasters[$taskmaster_saved_position[0]]->name . ' is ' . $taskmaster_location . '<br/>';
-				}
-				$saved_form_html .= '</div>';
-			}
-			$saved_form_html .= '</div>';
-		}
-		$saved_form_html .= '<div style="clear:both;"></div>';
+    $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->objectives[$id]->name) . '">' . $game_defines->objectives[$id]->name . '</b><br>';
+    foreach($saved_forms AS $saved_position => $saved_form) {
+    if (!empty($_POST['show_taskmaster_location'])) {
+      $height = 'height: 600px;';
+    } else {
+      $height = 'height: 400px;';
+    }
+      $saved_form_html .= '<div style="float: left; ' . $height . '; position: relative; height: 600px; width: 500px; background-color: lightgray; border: 1px solid;"><b>Saved form ' . $saved_position . '</b>';
+      $saved_form_html .= generate_formation_image($saved_form[0], $game_defines->objectives[$id]->name, $game_defines->crusaders, $game_defines->campaign_formations);
+      //For the TMs index 1 is the area, 1 means the field, 2 means they are on a crusader, 3 means the abilities
+      //For the TMs index 2 is their position in the area(or seat id), not 0 indexed
+      if (!empty($_POST['show_taskmaster_location'])) {
+        $saved_form_html .= '<div style="float: left; position: relative; top: 325px;">';
+        foreach ($saved_form[1] AS $taskmaster_saved_position) {
+          $taskmaster_location = '';
+          if ($taskmaster_saved_position[1] == 3) {
+            $taskmaster_location = 'activating the ability ' . $game_defines->abilities[$taskmaster_saved_position[2]]->name;
+          } else if ($taskmaster_saved_position[1] == 1) {
+            $taskmaster_location = 'clicking on the field';
+          } else if ($taskmaster_saved_position[1] == 2) {
+            $taskmaster_location = 'upgrading the active crusader in seat ' . $taskmaster_saved_position[2];
+          } else {
+            $taskmaster_location = 'clicking on a buff or auto-advance';
+          }
+          $saved_form_html .= $game_defines->taskmasters[$taskmaster_saved_position[0]]->name . ' is ' . $taskmaster_location . '<br/>';
+        }
+        $saved_form_html .= '</div>';
+      }
+      $saved_form_html .= '</div>';
+    }
+    $saved_form_html .= '<div style="clear:both;"></div>';
   }
 }
 
@@ -148,6 +148,7 @@ if (!empty($_POST['show_taskmaster_location'])) {
 </div>
 <input style="clear:both; float: left;" type="submit">
 </form>
+<a style="float: left; clear: left;" href="#Playing it Old School">Jump to Dungeon Forms</a>
 <?php
 if (!empty($saved_form_html)) {
   echo $saved_form_html;
