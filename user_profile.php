@@ -4,32 +4,36 @@ include "game_defines.php";
 $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
 
-if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server'])) {
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, "http://" . urlencode($_POST['server']) . ".djartsgames.ca/~idle/post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
-
-  $response = curl_exec($ch);
-  $json_response = json_decode($response);
-  if (!empty($json_response->switch_play_server)) {
-    $curl_url = $json_response->switch_play_server;
+if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server']) || !empty($_POST['raw_user_data'])) {
+  if (empty($_POST['raw_user_data'])) {
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $curl_url . "post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
+    curl_setopt($ch, CURLOPT_URL, "http://" . urlencode($_POST['server']) . ".djartsgames.ca/~idle/post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
 
     $response = curl_exec($ch);
     $json_response = json_decode($response);
+    if (!empty($json_response->switch_play_server)) {
+      $curl_url = $json_response->switch_play_server;
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $curl_url . "post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
+
+      $response = curl_exec($ch);
+      $json_response = json_decode($response);
+    }
+    if (empty($json_response) || $json_response->success != true) {
+      error_log("curl_error: " . curl_error($ch), 0);
+      error_log("json_response: " . $response, 0);
+    }
+    curl_close($ch);
+  } else {
+    $json_response = json_decode ("{}");
+    $json_response->details = json_decode($_POST['raw_user_data']);
   }
-  if (empty($json_response) || $json_response->success != true) {
-    error_log("curl_error: " . curl_error($ch), 0);
-    error_log("json_response: " . $response, 0);
-  }
-  curl_close($ch);
   //debug($json_response);
   //debug($game_defines->crusader_loot);
-  //die();
  $user_crusaders = '<table style="float: left; clear:both;"><tr>';
  $column_count = 0;
   foreach ($json_response->details->heroes AS $id => $crusader) {
@@ -148,6 +152,7 @@ function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_mat
   User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
   User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
   Server(use idlemaster if you don't know): <input type="text" name="server" value="<?php echo (isset($_POST['server']) ? htmlspecialchars($_POST['server']) : ''); ?>"><br>
+  Raw User Data: <input type="text" name="raw_user_data" value="<?php echo (isset($_POST['raw_user_data']) ? htmlspecialchars($_POST['raw_user_data']) : ''); ?>"><br>
 </div>
 <input style="clear:both; float: left;" type="submit">
 </form>
