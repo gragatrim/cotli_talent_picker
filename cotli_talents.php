@@ -116,6 +116,7 @@ include "cotli_talents_logic.php";
 <div style="float: left; width: 800px; font-weight: bold;">
 If you fill in the user id and user hash in the left column below it'll populate the right column and your talents. If you want to fiddle with things, leave the user id and user hash fields empty and then the information in the right columns and your talents won't get overwritten with what is in your game.
 </div>
+<div style="float: left; clear: left; font-weight: bold;" class="red">Leave Raw User Data empty if using userid & hash, the raw user data only updates when you refresh the game</div>
 <div style="float: left;padding-right: 5px; clear: left;">
   User Id: <input type="text" name="user_id" value="<?php echo (isset($user->user_id) ? $user->user_id : 0); ?>"><br>
   User Hash: <input type="text" name="user_hash" value="<?php echo (isset($user->user_hash) ? $user->user_hash : 0); ?>"><br>

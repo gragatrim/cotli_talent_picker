@@ -1,7 +1,7 @@
 <?php
 
 class UserDefines {
-  function __construct($server, $user_id, $user_hash, $raw_user_data) {
+  function __construct($server, $user_id, $user_hash, $raw_user_data = '') {
     if (empty($raw_user_data)) {
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, "http://" . urlencode($server) . ".djartsgames.ca/~idle/post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($user_id) . "&hash=" . urlencode($user_hash));
