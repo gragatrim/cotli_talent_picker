@@ -192,7 +192,6 @@ class User {
     $idols_per_hour = $idols_gained / $total_time * 60;
     $idols_per_fp_time = $idols_per_hour / 60 * $this->time_to_complete_fp;
     $idol_over_fp = $idols_per_fp_time - $fp_idol_average * $this->idol_buff * 2 * 1.25;
-    //echo $total_time . " idols gained: " . $idols_gained . " idols_per_hour: " . $idols_per_hour . " idols_per_fp_time: " . $idols_per_fp_time . " idol_over_fp: " . $idol_over_fp . "<br>";
     $results['total_time'] = $total_time;
     $results['idols_gained'] = $idols_gained;
     $results['idols_per_hour'] = $idols_per_hour;

@@ -9,7 +9,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
   $user_info = new UserDefines($_POST['server'], $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
   $user_crusaders = '<table style="float: left; clear:both;"><tr>';
   $column_count = 0;
-  foreach ($json_response->details->heroes AS $id => $crusader) {
+  foreach ($user_info->crusaders AS $id => $crusader) {
     $crusader_name = '';
     if ($crusader->owned == 1) {
       $crusader_image_name = str_replace(array(' ', ',', "'", '"'), "", ucwords($game_defines->crusaders[$crusader->hero_id]->name));
@@ -26,7 +26,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
         $image = '';
         $crusader_name = $game_defines->crusaders[$crusader->hero_id]->name;
       }
-      $crusader_loot = get_crusader_loot($game_defines->crusaders[$crusader->hero_id], $json_response->details->loot, $game_defines->crusader_loot, $game_defines->loot);
+      $crusader_loot = get_crusader_loot($game_defines->crusaders[$crusader->hero_id], $user_info->loot, $game_defines->crusader_loot, $game_defines->loot);
       if ($column_count > 10) {
         $user_crusaders .= '</tr></tr>';
         $column_count = 0;
@@ -36,7 +36,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
     }
   }
   $user_crusaders .= '</tr></table>';
-  $total_mats = get_total_mats($json_response->details->loot, $game_defines->crusader_loot, $game_defines->loot, $json_response->details->crafting_materials);
+  $total_mats = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials);
   $total_mat_div = '<div style="float: left; clear: left;">Total Materials(including epic mats): ' . $total_mats . '</div>';
 }
 

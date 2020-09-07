@@ -1,34 +1,14 @@
 <?php
 include "navigation.php";
 include "game_defines.php";
+include "user_defines.php";
 $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
 
-if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server'])) {
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, "http://" . urlencode($_POST['server']) . ".djartsgames.ca/~idle/post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
-
-  $response = curl_exec($ch);
-  $json_response = json_decode($response);
-  if (!empty($json_response->switch_play_server)) {
-    $curl_url = $json_response->switch_play_server;
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $curl_url . "post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
-
-    $response = curl_exec($ch);
-    $json_response = json_decode($response);
-  }
-  if (empty($json_response) || $json_response->success != true) {
-    error_log("curl_error: " . curl_error($ch), 0);
-    error_log("json_response: " . $response, 0);
-  }
-  curl_close($ch);
+if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server']) || !empty($_POST['raw_user_data'])) {
+  $user_info = new UserDefines($_POST['server'], $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
   $saved_form_html = '<div style="clear:both;"></div>';
-  foreach ($json_response->details->formation_saves->campaigns AS $id => $saved_forms) {
+  foreach ($user_info->formation_saves['campaigns'] AS $id => $saved_forms) {
     $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->campaigns[$id]->name) . '">' . $game_defines->campaigns[$id]->name . '</b><br>';
     foreach($saved_forms AS $saved_position => $saved_form) {
       if (!empty($_POST['show_taskmaster_location'])) {
@@ -65,7 +45,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
     }
     $saved_form_html .= '<div style="clear:both;"></div>';
   }
-  foreach ($json_response->details->formation_saves->challenges AS $id => $saved_forms) {
+  foreach ($user_info->formation_saves['challenges'] AS $id => $saved_forms) {
     $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->objectives[$id]->name) . '">' . $game_defines->objectives[$id]->name . '</b><br>';
     foreach($saved_forms AS $saved_position => $saved_form) {
     if (!empty($_POST['show_taskmaster_location'])) {
@@ -146,6 +126,7 @@ if (!empty($_POST['show_taskmaster_location'])) {
   User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
   User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
   Server(use idlemaster if you don't know): <input type="text" name="server" value="<?php echo (isset($_POST['server']) ? htmlspecialchars($_POST['server']) : ''); ?>"><br>
+  Raw User Data: <input type="text" name="raw_user_data" value="<?php echo (isset($_POST['raw_user_data']) ? htmlspecialchars($_POST['raw_user_data']) : ''); ?>"><br>
   Show Taskmaster Location?: <input type="checkbox" name="show_taskmaster_location" value="1" <?php echo $checked;?>><br>
 </div>
 <input style="clear:both; float: left;" type="submit">

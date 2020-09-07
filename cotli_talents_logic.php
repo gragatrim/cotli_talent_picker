@@ -1,47 +1,16 @@
 <?php
 include "user.php";
+include "user_defines.php";
+include "game_defines.php";
+
 if (!empty($_POST) || !empty($user)) {
   set_time_limit(600);
   $talents = array();
   //This is an attempt to help with larger idol totals, e17+
   $_POST['idolatry_total_idols'] = 0;
-  if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server'])) {
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "http://" . urlencode($_POST['server']) . ".djartsgames.ca/~idle/post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
-
-    $response = curl_exec($ch);
-    $json_response = json_decode($response);
-    if (!empty($json_response->switch_play_server)) {
-      $curl_url = $json_response->switch_play_server;
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL, $curl_url . "post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']));
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
-
-      $response = curl_exec($ch);
-      $json_response = json_decode($response);
-    }
-    if (empty($json_response) || $json_response->success != true) {
-      error_log("curl_error: " . curl_error($ch), 0);
-      error_log("json_response: " . $response, 0);
-    }
-    curl_close($ch);
-    //No need to hammer the server all the time, an update a day should be acceptable
-    if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600) {
-      $game_definitions_ch = curl_init();
-      curl_setopt($game_definitions_ch, CURLOPT_URL, "http://idleps19.djartsgames.ca/~idle/post.php?call=getDefinitions");
-      curl_setopt($game_definitions_ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-      curl_setopt($game_definitions_ch, CURLOPT_RETURNTRANSFER, true );
-
-      $game_info = curl_exec($game_definitions_ch);
-      file_put_contents('game_defines', $game_info);
-      curl_close($game_definitions_ch);
-    } else {
-      $game_info = file_get_contents('game_defines');
-    }
-    $game_json = json_decode($game_info);
+  if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server']) || !empty($_POST['raw_user_data'])) {
+    $user_info = new UserDefines($_POST['server'], $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
+    $game_defines = new GameDefines();
 
     //This allows for the math functions to work below
     $_POST['cooldown_reduction'] = 0;
@@ -56,15 +25,15 @@ if (!empty($_POST) || !empty($user)) {
     $unknown_recipe = 0;
     $talent_definition = array();
 
-    foreach($game_json->loot_defines AS $id => $loot) {
+    foreach($game_defines->loot AS $id => $loot) {
       if ($loot->hero_id != 0) {
         $loot_definition[$loot->id] = $loot;
       }
     }
-    foreach($game_json->talent_defines AS $id => $talent) {
+    foreach($game_defines->talents AS $id => $talent) {
       $talent_definition[$talent->id] = $talent->name;
     }
-    foreach ($json_response->details->loot AS $loot) {
+    foreach ($user_info->loot AS $loot) {
       //1 is brass rings, 245 primitive amulet, 249 wooden horn, 253 wooden lucky coin
       switch ($loot->loot_id) {
         case 1:
@@ -99,13 +68,13 @@ if (!empty($_POST) || !empty($user)) {
         $golden_items++;
       }
     }
-    foreach ($json_response->details->talents AS $talent_id => $talent_levels) {
+    foreach ($user_info->talents AS $talent_id => $talent_levels) {
       if ($talent_levels > 0) {
         $formatted_talent_name = str_replace(array(' ', '-', "'", '10', '!'), array('_', '_', '', 'ten', ''), strtolower($talent_definition[$talent_id]));
         $_POST[$formatted_talent_name] = $talent_levels;
       }
     }
-    foreach ($json_response->details->owned_crafting_recipes AS $recipes_key => $recipes_value) {
+    foreach ($user_info->owned_crafting_recipes AS $recipes_key => $recipes_value) {
       if ($loot_definition[$recipes_value]->rarity < 3) {
         $common_and_uncommon_recipes++;
       } else if ($loot_definition[$recipes_value]->rarity == 3) {
@@ -119,38 +88,36 @@ if (!empty($_POST) || !empty($user)) {
         $unknown_recipe++;
       }
     }
-    foreach ($json_response->details->stats AS $stat_name => $stat_value) {
+    foreach ($user_info->stats AS $stat_name => $stat_value) {
       if (strpos($stat_name, 'highest_area_completed_ever_c') !== false) {
         if ($max_level_reached < $stat_value) {
           $max_level_reached = $stat_value;
         }
       }
     }
-    foreach ($json_response->details->heroes AS $hero) {
+    foreach ($user_info->crusaders AS $hero) {
       if ($hero->owned == 1) {
         $crusaders_owned++;
       }
     }
 
-    $_POST['missions_accomplished'] = $json_response->details->stats->missions_completed;
+    $_POST['missions_accomplished'] = $user_info->stats['missions_completed'];
 
-    //$json_response->details->reset_currency = '7733970127692300';
-    //$json_response->details->reset_currency_spent = '1.1856373031341E+17';
     error_log("======== idols ========\r\n", 0);
-    error_log($json_response->details->reset_currency, 0);
-    error_log($json_response->details->reset_currency_spent, 0);
+    error_log($user_info->reset_currency, 0);
+    error_log($user_info->reset_currency_spent, 0);
     error_log("======== end idols ========\r\n", 0);
-    if (!is_int($json_response->details->reset_currency_spent)) {
-        $e_location = strpos($json_response->details->reset_currency_spent, 'E');
-        $e_idols = substr($json_response->details->reset_currency_spent, ($e_location + 1));
-        $base_fake_idols = str_replace('.', '', substr($json_response->details->reset_currency_spent, 0, $e_location));
+    if (!is_int($user_info->reset_currency_spent)) {
+        $e_location = strpos($user_info->reset_currency_spent, 'E');
+        $e_idols = substr($user_info->reset_currency_spent, ($e_location + 1));
+        $base_fake_idols = str_replace('.', '', substr($user_info->reset_currency_spent, 0, $e_location));
         $fake_total_idols = str_pad($base_fake_idols, $e_idols, "0");
-        $unspent_idols = $json_response->details->reset_currency;
+        $unspent_idols = $user_info->reset_currency;
         $_POST['total_idols'] = $fake_total_idols;
         $_POST['idolatry_total_idols'] = $fake_total_idols;
     } else {
-      $_POST['total_idols'] = $json_response->details->reset_currency + $json_response->details->reset_currency_spent;
-      $_POST['idolatry_total_idols'] = $json_response->details->reset_currency + $json_response->details->reset_currency_spent;
+      $_POST['total_idols'] = $user_info->reset_currency + $user_info->reset_currency_spent;
+      $_POST['idolatry_total_idols'] = $user_info->reset_currency + $user_info->reset_currency_spent;
     }
     $_POST['common_and_uncommon_recipes'] = $common_and_uncommon_recipes/2;
     $_POST['rare_recipes'] = $rare_recipes;
@@ -158,7 +125,7 @@ if (!empty($_POST) || !empty($user)) {
     $_POST['legendaries'] = $legendaries;
     $_POST['golden_items'] = $golden_items;
     $_POST['max_level_reached'] = $max_level_reached;
-    $_POST['taskmasters_owned'] = count($json_response->details->taskmasters->taskmasters);
+    $_POST['taskmasters_owned'] = count($user_info->taskmasters);
     $_POST['crusaders_owned'] = $crusaders_owned;
   }
   $time_o_rama_talent = new Talent('time_o_rama', 1, 20, 25, 1.25, htmlspecialchars($_POST['time_o_rama']));

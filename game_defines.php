@@ -41,6 +41,7 @@ class GameDefines {
     $this->crusader_skins = $this->get_crusader_skins();
     $this->taskmasters = $this->get_taskmasters();
     $this->abilities = $this->get_abilities();
+    $this->talents = $this->get_talents();
     $this->campaign_formations = $this->generate_campaign_maps();
   }
 
@@ -144,6 +145,14 @@ class GameDefines {
       $abilities[$ability->id] = $ability;
     }
     return $abilities;
+  }
+
+  public function get_talents() {
+    $talents = array();
+    foreach($this->game_json->talent_defines AS $talent) {
+      $talents[$talent->id] = $talent;
+    }
+    return $talents;
   }
 
   public function generate_campaign_maps() {
