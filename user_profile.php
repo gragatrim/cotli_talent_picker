@@ -12,8 +12,8 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
   foreach ($user_info->crusaders AS $id => $crusader) {
     $crusader_name = '';
     if ($crusader->owned == 1) {
-      $crusader_image_name = str_replace(array(' ', ',', "'", '"'), "", ucwords($game_defines->crusaders[$crusader->hero_id]->name));
-      $crusader_image_name_short = str_replace(array(' ', ',', "'", '"'), "", strtolower(explode(' ', $game_defines->crusaders[$crusader->hero_id]->name)[0]));
+      $crusader_image_name = str_replace(array(' ', ',', "'", '"', '-'), "", ucwords($game_defines->crusaders[$crusader->hero_id]->name));
+      $crusader_image_name_short = str_replace(array(' ', ',', "'", '"', '-'), "", strtolower(explode(' ', $game_defines->crusaders[$crusader->hero_id]->name)[0]));
       if (file_exists('./images/' . $crusader_image_name . '_48.png')) {
         $image = './images/' . $crusader_image_name . '_48.png';
       } else if (file_exists('./images/' . $crusader_image_name . '_256.png')) {
