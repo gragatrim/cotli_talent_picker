@@ -119,7 +119,7 @@ function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_mat
 }
 
 ?>
-<div style="color:red;">This will only display your crusaders and thier gear</div>
+<div style="color:red;">This will only display your crusaders and their gear</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 <div style="float: left;padding-right: 5px; clear: left;">
   User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
