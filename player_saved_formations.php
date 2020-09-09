@@ -86,8 +86,8 @@ function generate_formation_image($saved_form, $objective, $all_crusaders, $camp
   $saved_form_image = '';
   foreach($saved_form AS $position => $crusader) {
     if ($crusader > -1) {
-      $crusader_image_name = str_replace(array(' ', ',', "'", '"'), "", ucwords($all_crusaders[$crusader]->name));
-      $crusader_image_name_short = str_replace(array(' ', ',', "'", '"'), "", strtolower(explode(' ', $all_crusaders[$crusader]->name)[0]));
+      $crusader_image_name = str_replace(array(' ', ',', "'", '"', '-'), "", ucwords($all_crusaders[$crusader]->name));
+      $crusader_image_name_short = str_replace(array(' ', ',', "'", '"', '-'), "", strtolower(explode(' ', $all_crusaders[$crusader]->name)[0]));
       if (file_exists('./images/' . $crusader_image_name . '_48.png')) {
         ${"image$position"} = './images/' . $crusader_image_name . '_48.png';
       } else if (file_exists('./images/' . $crusader_image_name . '_256.png')) {
