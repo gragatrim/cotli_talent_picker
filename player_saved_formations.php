@@ -9,14 +9,14 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
   $user_info = new UserDefines($_POST['server'], $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
   $saved_form_html = '<div style="clear:both;"></div>';
   foreach ($user_info->formation_saves['campaigns'] AS $id => $saved_forms) {
-    $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->campaigns[$id]->name) . '">' . $game_defines->campaigns[$id]->name . '</b><br>';
+    $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->campaigns[$id]->name) . '">' . $game_defines->campaigns[$id]->name . '</b><br><div style="transform: scale(0.7) translateX(-20%); width: 120%;")>';
     foreach($saved_forms AS $saved_position => $saved_form) {
       if (!empty($_POST['show_taskmaster_location'])) {
         $height = 'height: 600px;';
       } else {
         $height = 'height: 400px;';
       }
-      $saved_form_html .= '<div style="float: left; ' . $height . '; position: relative; width: 500px; background-color: lightgray; border: 1px solid;"><b>Saved form ' . $saved_position . '</b>';
+      $saved_form_html .= '<div style="float: left; ' . $height . '; width: 450px; background-color: lightgray; border: 1px solid; position: relative;"><b>Saved form ' . $saved_position . '</b>';
       $saved_form_html .= generate_formation_image($saved_form[0], $game_defines->campaigns[$id]->name, $game_defines->crusaders, $game_defines->campaign_formations);
       //For the TMs index 1 is the area, 1 means the field, 2 means they are on a crusader, 3 means the abilities
       //For the TMs index 2 is their position in the area(or seat id), not 0 indexed
@@ -43,17 +43,17 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
       }
       $saved_form_html .= '</div>';
     }
-    $saved_form_html .= '<div style="clear:both;"></div>';
+    $saved_form_html .= '</div><div style="clear:both;"></div>';
   }
   foreach ($user_info->formation_saves['challenges'] AS $id => $saved_forms) {
-    $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->objectives[$id]->name) . '">' . $game_defines->objectives[$id]->name . '</b><br>';
+    $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->objectives[$id]->name) . '">' . $game_defines->objectives[$id]->name . '</b><br><div style="transform: scale(0.7) translateX(-20%); width: 120%;")>';
     foreach($saved_forms AS $saved_position => $saved_form) {
     if (!empty($_POST['show_taskmaster_location'])) {
       $height = 'height: 600px;';
     } else {
       $height = 'height: 400px;';
     }
-      $saved_form_html .= '<div style="float: left; ' . $height . '; position: relative; height: 600px; width: 500px; background-color: lightgray; border: 1px solid;"><b>Saved form ' . $saved_position . '</b>';
+      $saved_form_html .= '<div style="float: left; ' . $height . '; width: 450px; position: relative; background-color: lightgray; border: 1px solid;"><b>Saved form ' . $saved_position . '</b>';
       $saved_form_html .= generate_formation_image($saved_form[0], $game_defines->objectives[$id]->name, $game_defines->crusaders, $game_defines->campaign_formations);
       //For the TMs index 1 is the area, 1 means the field, 2 means they are on a crusader, 3 means the abilities
       //For the TMs index 2 is their position in the area(or seat id), not 0 indexed
@@ -78,7 +78,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
       }
       $saved_form_html .= '</div>';
     }
-    $saved_form_html .= '<div style="clear:both;"></div>';
+    $saved_form_html .= '</div><div style="clear:both;"></div>';
   }
 }
 
@@ -107,7 +107,7 @@ function generate_formation_image($saved_form, $objective, $all_crusaders, $camp
     if ($formation['name'] == $objective) {
       foreach ($formation AS $id => $form) {
         if ($id !== 'name') {
-          $saved_form_image .= '<div style="width: 48px; height: 48px; float: left; position: absolute; left:' . $form['x'] .'px; top: ' . $form['y'] . 'px"><img src="' . ${"image$id"} . '" style="width: 48px; height: 48px;"/></div>';
+          $saved_form_image .= '<div style="width: 48px; height: 48px; float: left; position: absolute; left:' . ($form['x'] - 30) .'px; top: ' . $form['y'] . 'px"><img src="' . ${"image$id"} . '" style="width: 48px; height: 48px;"/></div>';
         }
       }
     }
