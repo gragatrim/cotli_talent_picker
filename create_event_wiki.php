@@ -1,6 +1,5 @@
 <?php
 include "navigation.php";
-include "game_defines.php";
 
 if ($_POST) {
   if (!empty($_POST['force_refresh'])) {

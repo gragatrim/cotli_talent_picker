@@ -1,7 +1,5 @@
 <?php
-include "navigation.php";
-include "game_defines.php";
-include "user_defines.php";
+include_once "navigation.php";
 $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
 
@@ -9,19 +7,19 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
   $user_info = new UserDefines($_POST['server'], $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
   $saved_form_html = '<div style="clear:both;"></div>';
   foreach ($user_info->formation_saves['campaigns'] AS $id => $saved_forms) {
-    $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->campaigns[$id]->name) . '">' . $game_defines->campaigns[$id]->name . '</b><br><div style="transform: scale(0.7) translateX(-20%); width: 120%;")>';
+    $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->campaigns[$id]->name) . '">' . $game_defines->campaigns[$id]->name . '</b><br><div>';
     foreach($saved_forms AS $saved_position => $saved_form) {
       if (!empty($_POST['show_taskmaster_location'])) {
         $height = 'height: 600px;';
       } else {
-        $height = 'height: 400px;';
+        $height = 'height: 300px;';
       }
-      $saved_form_html .= '<div style="float: left; ' . $height . '; width: 450px; background-color: lightgray; border: 1px solid; position: relative;"><b>Saved form ' . $saved_position . '</b>';
+      $saved_form_html .= '<div style="float: left; ' . $height . '; width: 330px; background-color: lightgray; border: 1px solid; position: relative;"><b>Saved form ' . $saved_position . '</b>';
       $saved_form_html .= generate_formation_image($saved_form[0], $game_defines->campaigns[$id]->name, $game_defines->crusaders, $game_defines->campaign_formations);
       //For the TMs index 1 is the area, 1 means the field, 2 means they are on a crusader, 3 means the abilities
       //For the TMs index 2 is their position in the area(or seat id), not 0 indexed
       if (!empty($_POST['show_taskmaster_location'])) {
-        $saved_form_html .= '<div style="float: left; position: relative; top: 325px;">';
+        $saved_form_html .= '<div style="float: left; position: relative; top: 200px;">';
         if (!empty($saved_form[1])) {
           foreach ($saved_form[1] AS $taskmaster_saved_position) {
             $taskmaster_location = '';
@@ -46,19 +44,25 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
     $saved_form_html .= '</div><div style="clear:both;"></div>';
   }
   foreach ($user_info->formation_saves['challenges'] AS $id => $saved_forms) {
-    $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->objectives[$id]->name) . '">' . $game_defines->objectives[$id]->name . '</b><br><div style="transform: scale(0.7) translateX(-20%); width: 120%;")>';
+    //debug($game_defines->objectives[$id]);
+    $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->objectives[$id]->name) . '">' . $game_defines->objectives[$id]->name . '</b><br><div>';
     foreach($saved_forms AS $saved_position => $saved_form) {
     if (!empty($_POST['show_taskmaster_location'])) {
       $height = 'height: 600px;';
     } else {
-      $height = 'height: 400px;';
+      $height = 'height: 300px;';
     }
-      $saved_form_html .= '<div style="float: left; ' . $height . '; width: 450px; position: relative; background-color: lightgray; border: 1px solid;"><b>Saved form ' . $saved_position . '</b>';
+    if ($game_defines->objectives[$id]->campaign_id == 29) {
+      $width = 'width: 270px;';
+    } else {
+      $width = 'width: 330px;';
+    }
+      $saved_form_html .= '<div style="float: left; ' . $height . '; ' . $width . ' position: relative; background-color: lightgray; border: 1px solid;"><b>Saved form ' . $saved_position . '</b>';
       $saved_form_html .= generate_formation_image($saved_form[0], $game_defines->objectives[$id]->name, $game_defines->crusaders, $game_defines->campaign_formations);
       //For the TMs index 1 is the area, 1 means the field, 2 means they are on a crusader, 3 means the abilities
       //For the TMs index 2 is their position in the area(or seat id), not 0 indexed
       if (!empty($_POST['show_taskmaster_location'])) {
-        $saved_form_html .= '<div style="float: left; position: relative; top: 325px;">';
+        $saved_form_html .= '<div style="float: left; position: relative; top: 200px;">';
         if (!empty($saved_form[1])) {
           foreach ($saved_form[1] AS $taskmaster_saved_position) {
             $taskmaster_location = '';
@@ -80,39 +84,6 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
     }
     $saved_form_html .= '</div><div style="clear:both;"></div>';
   }
-}
-
-function generate_formation_image($saved_form, $objective, $all_crusaders, $campaign_formations) {
-  $saved_form_image = '';
-  foreach($saved_form AS $position => $crusader) {
-    if ($crusader > -1) {
-      $crusader_image_name = str_replace(array(' ', ',', "'", '"', '-'), "", ucwords($all_crusaders[$crusader]->name));
-      $crusader_image_name_short = str_replace(array(' ', ',', "'", '"', '-'), "", strtolower(explode(' ', $all_crusaders[$crusader]->name)[0]));
-      if (file_exists('./images/' . $crusader_image_name . '_48.png')) {
-        ${"image$position"} = './images/' . $crusader_image_name . '_48.png';
-      } else if (file_exists('./images/' . $crusader_image_name . '_256.png')) {
-        ${"image$position"} = './images/' . $crusader_image_name . '_256.png';
-      } else if (file_exists('./images/' . $crusader_image_name_short . '.png')) {
-        ${"image$position"} = './images/' . $crusader_image_name_short . '.png';
-      } else if (file_exists('./images/' . $crusader_image_name_short . '_48.png')) {
-        ${"image$position"} = './images/' . $crusader_image_name_short . '_48.png';
-      } else {
-        ${"image$position"} = './images/empty_slot.png';
-      }
-    } else {
-      ${"image$position"} = './images/empty_slot.png';
-    }
-  }
-  foreach ($campaign_formations AS $formation) {
-    if ($formation['name'] == $objective) {
-      foreach ($formation AS $id => $form) {
-        if ($id !== 'name') {
-          $saved_form_image .= '<div style="width: 48px; height: 48px; float: left; position: absolute; left:' . ($form['x'] - 30) .'px; top: ' . $form['y'] . 'px"><img src="' . ${"image$id"} . '" style="width: 48px; height: 48px;"/></div>';
-        }
-      }
-    }
-  }
-  return $saved_form_image;
 }
 
 if (!empty($_POST['show_taskmaster_location'])) {

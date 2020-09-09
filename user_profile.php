@@ -1,7 +1,5 @@
 <?php
 include "navigation.php";
-include "game_defines.php";
-include "user_defines.php";
 $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
 

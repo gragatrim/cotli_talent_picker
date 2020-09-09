@@ -1,32 +1,7 @@
 <?php
-function format($number) {
-  $formatted_number = '';
-  $decimal_position = strpos($number, '.');
-  if (bccomp($number, '0', 40) === 0) {
-    $formatted_number = '0';
-  } else if (strpos($number, '0') === 0) {
-    $ltrim = ltrim($number, '0.');
-    $ltrim_strlen = strlen($ltrim);
-    $number_strlen = strlen($number);
-    $exponent = '-' . ($number_strlen - $ltrim_strlen - 1);
-    $base = substr($ltrim,0,1);
-    $decimal = substr($ltrim,1,2);
-    $formatted_number = $base . "." . $decimal . "E" . $exponent;
-  } else if ($decimal_position > 2 || ($decimal_position === false && strlen($number) > 3)) {
-    if ($decimal_position !== false) {
-      $exponent_value = (strlen(substr($number, 0, $decimal_position)) - 1);
-    } else {
-      $exponent_value = strlen($number) - 1;
-    }
-    $exponent = '+' . $exponent_value;
-    $base = substr($number,0,1);
-    $decimal = substr($number,1,2);
-    $formatted_number = $base . "." . $decimal . "E" . $exponent;
-  } else {
-    $formatted_number = sprintf("%.2E", $number);
-  }
-  return $formatted_number;
-}
+include_once "game_defines.php";
+include_once "user_defines.php";
+include_once "utility.php";
 ?>
 <html>
 <head>

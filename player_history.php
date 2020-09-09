@@ -1,6 +1,5 @@
 <?php
 include "navigation.php";
-include "game_defines.php";
 if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server'])) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, "http://" . urlencode($_POST['server']) . ".djartsgames.ca/~idle/post.php?call=getPlayHistory&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']) . "&page=" . urlencode($_POST['page']));

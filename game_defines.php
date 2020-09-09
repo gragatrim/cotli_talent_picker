@@ -220,8 +220,4 @@ class GameDefines {
     return $campaign_formations;
   }
 }
-
-function debug($value) {
-  echo '<pre>' . print_r($value, true) . '</pre>';
-}
 ?>

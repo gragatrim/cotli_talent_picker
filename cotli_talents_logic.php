@@ -1,7 +1,5 @@
 <?php
 include "user.php";
-include "user_defines.php";
-include "game_defines.php";
 
 if (!empty($_POST) || !empty($user)) {
   set_time_limit(600);

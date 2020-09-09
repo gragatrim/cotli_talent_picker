@@ -1,6 +1,5 @@
 <?php
 include "navigation.php";
-include "game_defines.php";
 $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
 
@@ -31,39 +30,6 @@ if (!empty($_POST) && !empty($_POST['formation_id'])) {
   $saved_form_html .= '<div style="float: left; clear: left; position: relative; height: 400px; width: 500px; background-color: lightgray; border: 1px solid;">';
   $saved_form_html .= generate_formation_image($saved_form, $game_defines->campaign_formations[$_POST['formation_id']]['name'], $game_defines->crusaders, $game_defines->campaign_formations);
   $saved_form_html .= '</div>';
-}
-
-function generate_formation_image($saved_form, $objective, $all_crusaders, $campaign_formations) {
-  $saved_form_image = '';
-  foreach($saved_form AS $position => $crusader) {
-    if ($crusader > -1) {
-      $crusader_image_name = str_replace(array(' ', ',', "'", '"', '-'), "", ucwords($all_crusaders[$crusader]->name));
-      $crusader_image_name_short = str_replace(array(' ', ',', "'", '"', '-'), "", strtolower(explode(' ', $all_crusaders[$crusader]->name)[0]));
-      if (file_exists('./images/' . $crusader_image_name . '_48.png')) {
-        ${"image$position"} = './images/' . $crusader_image_name . '_48.png';
-      } else if (file_exists('./images/' . $crusader_image_name . '_256.png')) {
-        ${"image$position"} = './images/' . $crusader_image_name . '_256.png';
-      } else if (file_exists('./images/' . $crusader_image_name_short . '.png')) {
-        ${"image$position"} = './images/' . $crusader_image_name_short . '.png';
-      } else if (file_exists('./images/' . $crusader_image_name_short . '_48.png')) {
-        ${"image$position"} = './images/' . $crusader_image_name_short . '_48.png';
-      } else {
-        ${"image$position"} = './images/empty_slot.png';
-      }
-    } else {
-      ${"image$position"} = './images/empty_slot.png';
-    }
-  }
-  foreach ($campaign_formations AS $formation) {
-    if ($formation['name'] == $objective) {
-      foreach ($formation AS $id => $form) {
-        if ($id !== 'name') {
-          $saved_form_image .= '<div style="width: 48px; height: 48px; float: left; position: absolute; left:' . $form['x'] .'px; top: ' . $form['y'] . 'px"><img src="' . ${"image$id"} . '" style="width: 48px; height: 48px;"/></div>';
-        }
-      }
-    }
-  }
-  return $saved_form_image;
 }
 
 $all_crusaders = '<table style="float: left;clear: left;" class="borderless"><tr><th class="borderless">Id</th><th class="borderless">Crusader Name</th></tr><tr>';

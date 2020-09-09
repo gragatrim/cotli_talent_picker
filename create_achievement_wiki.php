@@ -1,6 +1,5 @@
 <?php
 include "navigation.php";
-include "game_defines.php";
 $game_defines = new GameDefines();
 if ($_POST) {
   $event_id = htmlspecialchars($_POST['event_id']);
