@@ -2,27 +2,15 @@
 include "navigation.php";
 if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server'])) {
   $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, "http://" . urlencode($_POST['server']) . ".djartsgames.ca/~idle/post.php?call=getPlayHistory&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']) . "&page=" . urlencode($_POST['page']));
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
+  $response = call_cne($_POST['server'], $_POST['user_id'], $_POST['user_hash'], 'getPlayHistory', '&page=' . urlencode($_POST['page']));
 
-  $response = curl_exec($ch);
   $json_response = json_decode($response);
   if (!empty($json_response->switch_play_server)) {
     $curl_url = $json_response->switch_play_server;
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $curl_url . "post.php?call=getPlayHistory&instance_key=0&user_id=" . urlencode($_POST['user_id']) . "&hash=" . urlencode($_POST['user_hash']) . "&page=0");
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
-
-    $response = curl_exec($ch);
+    preg_match('@^(?:http[s]?://)?([^.]+)@i', $curl_url, $matches);
+    $response = call_cne($matches[1], $_POST['user_id'], $_POST['user_hash'], 'getPlayHistory', '&page=' . urlencode($_POST['page']));
     $json_response = json_decode($response);
   }
-  if (empty($json_response) || $json_response->success != true) {
-    error_log("curl_error: " . curl_error($ch), 0);
-    error_log("json_response: " . $response, 0);
-  }
-  curl_close($ch);
   $game_defines = new GameDefines();
   $loot_definition = $game_defines->loot;
   $crusaders = $game_defines->crusaders;
