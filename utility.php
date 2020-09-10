@@ -78,11 +78,85 @@ function generate_formation_image($saved_form, $objective, $all_crusaders, $camp
     if ($formation['name'] == $objective) {
       foreach ($formation AS $id => $form) {
         if ($id !== 'name') {
-          $saved_form_image .= '<div style="width: 40px; height: 40px; float: left; position: absolute; left:' . ($form['x'] - 30) * .6 .'px; top: ' . ($form['y'] * .6) . 'px"><img src="' . ${"image$id"} . '" style="width: 40px; height: 40px;"/></div>';
+          $saved_form_image .= '<div style="width: 40px; height: 40px; float: left; position: absolute; left:' . ($form['x'] - 30) * .6 .'px; top: ' . ($form['y'] * .64) . 'px"><img src="' . ${"image$id"} . '" style="width: 40px; height: 40px;"/></div>';
         }
       }
     }
   }
   return $saved_form_image;
+}
+
+function get_crusader_image($crusader_name) {
+  $crusader_info = array();
+  $crusader_image_name = str_replace(array(' ', ',', "'", '"', '-'), "", ucwords($crusader_name));
+  $crusader_image_name_short = str_replace(array(' ', ',', "'", '"', '-'), "", strtolower(explode(' ', $crusader_name)[0]));
+  if (file_exists('./images/' . $crusader_image_name . '_48.png')) {
+    $crusader_info['image'] = './images/' . $crusader_image_name . '_48.png';
+  } else if (file_exists('./images/' . $crusader_image_name . '_256.png')) {
+    $crusader_info['image'] = './images/' . $crusader_image_name . '_256.png';
+  } else if (file_exists('./images/' . $crusader_image_name_short . '.png')) {
+    $crusader_info['image'] = './images/' . $crusader_image_name_short . '.png';
+  } else if (file_exists('./images/' . $crusader_image_name_short . '_48.png')) {
+    $crusader_info['image'] = './images/' . $crusader_image_name_short . '_48.png';
+  } else {
+    $crusader_info['image'] = './images/empty_slot.png';
+    $crusader_info['name']  = $crusader_name;
+  }
+  return $crusader_info;
+}
+
+function generate_saved_forms($forms, $game_defines) {
+  $saved_form_html = '<div style="clear:both;"></div>';
+  foreach ($forms AS $id => $saved_forms) {
+    if (!empty($game_defines->campaigns[$id]->name)) {
+      $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->campaigns[$id]->name) . '">' . $game_defines->campaigns[$id]->name . '</b><br><div>';
+    } else {
+      $saved_form_html .= '<b style="font-size: 20px;" id="' . htmlentities($game_defines->objectives[$id]->name) . '">' . $game_defines->objectives[$id]->name . '</b><br><div>';
+    }
+    foreach($saved_forms AS $saved_position => $saved_form) {
+      if (!empty($_POST['show_taskmaster_location'])) {
+        $height = 'height: 600px;';
+      } else {
+        $height = 'height: 300px;';
+      }
+      if (!empty($game_defines->objectives[$id]->campaign_id) && $game_defines->objectives[$id]->campaign_id == 29) {
+        $width = 'width: 270px;';
+      } else {
+        $width = 'width: 330px;';
+      }
+        $saved_form_html .= '<div style="float: left; ' . $height . '; ' . $width . ' position: relative; background-color: lightgray; border: 1px solid;"><b>Saved form ' . $saved_position . '</b>';
+      if (!empty($game_defines->campaigns[$id]->name)) {
+        $saved_form_html .= generate_formation_image($saved_form[0], $game_defines->campaigns[$id]->name, $game_defines->crusaders, $game_defines->campaign_formations);
+      } else {
+        $saved_form_html .= generate_formation_image($saved_form[0], $game_defines->objectives[$id]->name, $game_defines->crusaders, $game_defines->campaign_formations);
+      }
+      //For the TMs index 1 is the area, 1 means the field, 2 means they are on a crusader, 3 means the abilities
+      //For the TMs index 2 is their position in the area(or seat id), not 0 indexed
+      if (!empty($_POST['show_taskmaster_location'])) {
+        $saved_form_html .= '<div style="float: left; position: relative; top: 200px;">';
+        if (!empty($saved_form[1])) {
+          foreach ($saved_form[1] AS $taskmaster_saved_position) {
+            $taskmaster_location = '';
+            if ($taskmaster_saved_position[1] == 3) {
+              $taskmaster_location = 'activating the ability ' . $game_defines->abilities[$taskmaster_saved_position[2]]->name;
+            } else if ($taskmaster_saved_position[1] == 1) {
+              $taskmaster_location = 'clicking on the field';
+            } else if ($taskmaster_saved_position[1] == 2) {
+              $taskmaster_location = 'upgrading the active crusader in seat ' . $taskmaster_saved_position[2];
+            } else if ($taskmaster_saved_position[1] == 4) {
+              $taskmaster_location = 'clicking on auto-advance';
+            } else {
+              $taskmaster_location = 'clicking on a buff';
+            }
+            $saved_form_html .= $game_defines->taskmasters[$taskmaster_saved_position[0]]->name . ' is ' . $taskmaster_location . '<br/>';
+          }
+        }
+        $saved_form_html .= '</div>';
+      }
+      $saved_form_html .= '</div>';
+    }
+    $saved_form_html .= '</div><div style="clear:both;"></div>';
+  }
+  return $saved_form_html;
 }
 ?>

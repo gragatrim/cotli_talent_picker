@@ -10,20 +10,9 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
   foreach ($user_info->crusaders AS $id => $crusader) {
     $crusader_name = '';
     if ($crusader->owned == 1) {
-      $crusader_image_name = str_replace(array(' ', ',', "'", '"', '-'), "", ucwords($game_defines->crusaders[$crusader->hero_id]->name));
-      $crusader_image_name_short = str_replace(array(' ', ',', "'", '"', '-'), "", strtolower(explode(' ', $game_defines->crusaders[$crusader->hero_id]->name)[0]));
-      if (file_exists('./images/' . $crusader_image_name . '_48.png')) {
-        $image = './images/' . $crusader_image_name . '_48.png';
-      } else if (file_exists('./images/' . $crusader_image_name . '_256.png')) {
-        $image = './images/' . $crusader_image_name . '_256.png';
-      } else if (file_exists('./images/' . $crusader_image_name_short . '.png')) {
-        $image = './images/' . $crusader_image_name_short . '.png';
-      } else if (file_exists('./images/' . $crusader_image_name_short . '_48.png')) {
-        $image = './images/' . $crusader_image_name_short . '_48.png';
-      } else {
-        $image = '';
-        $crusader_name = $game_defines->crusaders[$crusader->hero_id]->name;
-      }
+      $crusader_image_info = get_crusader_image($game_defines->crusaders[$crusader->hero_id]->name);
+      $image = $crusader_image_info['image'];
+      $crusader_name = $crusader_image_info['name'];
       $crusader_loot = get_crusader_loot($game_defines->crusaders[$crusader->hero_id], $user_info->loot, $game_defines->crusader_loot, $game_defines->loot);
       if ($column_count > 10) {
         $user_crusaders .= '</tr></tr>';
