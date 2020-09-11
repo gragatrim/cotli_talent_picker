@@ -69,7 +69,7 @@ if (!empty($json_response)) {
             echo "<pre>" . print_r($entry, true) . "</pre>";
           }
         }
-      } else if ($entry->info->action == 'use_normal' || $entry->info->action == 'use_rare' || $entry->info->action == 'use_generic_chest') {
+      } else if (!empty($entry->info->action) && ($entry->info->action == 'use_normal' || $entry->info->action == 'use_rare' || $entry->info->action == 'use_generic_chest')) {
         if (!empty($entry->info->normal_chests) || !empty($entry->info->rare_chests) || !empty($entry->info->chests)) {
           $chest_type = '';
           $chests_opened = 0;
