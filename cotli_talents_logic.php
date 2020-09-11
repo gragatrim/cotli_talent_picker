@@ -325,7 +325,7 @@ if (!empty($_POST) || !empty($user)) {
   //echo "legendary_friendship: " . bcmul(bcsub($user->talents['legendary_friendship']->get_current_damage(), 1, 10), 100, 10) . "<br>";
   echo "total idols spent " . number_format($user->get_total_talent_cost()) . " total idols remaining: " . number_format($user->total_idols - $user->get_total_talent_cost()) . "<br>";
   $results_legend = '<div class="green">Green means you can afford it</div><div class="yellow">Yellow means your leftover idols can afford it</div><div class="red">Red means you can\'t afford it</div>';
-  $results_to_print = '<div style="float: right;clear: both;">Future Damage only counts the increase from green or yellow talent suggestions</div>';
+  $results_to_print = '<div style="float: right;clear: both;">Final damage is current damage + green suggestions, future damage adds the increase from yellow talent suggestions</div>';
   $results_to_print .= '<div style="float: right; clear: right;">' . $results_legend;
   $results_to_print .= '<div style="float: right;clear: both;">';
   $results_to_print .= "Final Damage " . format(bcsub($user->get_total_damage(), 40)) . "% Increase<br>";
