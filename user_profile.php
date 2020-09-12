@@ -126,7 +126,7 @@ function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_mat
 <input style="clear:both; float: left;" type="submit">
 </form>
 <?php
-if (empty($_GET['saved_info'])) {
+if (empty($_GET['saved_info']) && !empty($user_crusaders)) {
   echo '<div style="float: left; clear: left;"><a href="?saved_info=' . $saved_user_info_filename . '">Share Profile</a>(Share this link to allow others to see your profile)</div>';
 }
 if (!empty($total_mat_div)) {
