@@ -5,12 +5,6 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
   $response = call_cne($_POST['server'], $_POST['user_id'], $_POST['user_hash'], 'getPlayHistory', '&page=' . urlencode($_POST['page']));
 
   $json_response = json_decode($response);
-  if (!empty($json_response->switch_play_server)) {
-    $curl_url = $json_response->switch_play_server;
-    preg_match('@^(?:http[s]?://)?([^.]+)@i', $curl_url, $matches);
-    $response = call_cne($matches[1], $_POST['user_id'], $_POST['user_hash'], 'getPlayHistory', '&page=' . urlencode($_POST['page']));
-    $json_response = json_decode($response);
-  }
   $game_defines = new GameDefines();
   $loot_definition = $game_defines->loot;
   $crusaders = $game_defines->crusaders;

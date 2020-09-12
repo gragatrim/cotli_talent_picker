@@ -3,23 +3,10 @@
 class GameDefines {
   function __construct($force_refresh = false, $use_dev_info = false) {
     if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600 || $force_refresh !== false || $use_dev_info !== false) {
-      $game_definitions_ch = curl_init();
-      curl_setopt($game_definitions_ch, CURLOPT_URL, "http://idleps19.djartsgames.ca/~idle/post.php?call=getDefinitions");
-      curl_setopt($game_definitions_ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-      curl_setopt($game_definitions_ch, CURLOPT_RETURNTRANSFER, true );
-
-      $game_info = curl_exec($game_definitions_ch);
+      $game_info = call_cne('idlemaster', '', '', 'getDefinitions', '');
+      $dev_info = call_cne('idlemaster', '', '', 'getDefinitions', '');
       file_put_contents('game_defines', $game_info);
-      curl_close($game_definitions_ch);
-
-      $dev_definitions_ch = curl_init();
-      curl_setopt($dev_definitions_ch, CURLOPT_URL, "http://dev2.djartsgames.ca/~idle/post.php?call=getDefinitions");
-      curl_setopt($dev_definitions_ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-      curl_setopt($dev_definitions_ch, CURLOPT_RETURNTRANSFER, true );
-
-      $dev_info = curl_exec($dev_definitions_ch);
       file_put_contents('dev_defines', $dev_info);
-      curl_close($dev_definitions_ch);
     } else {
       $game_info = file_get_contents('game_defines');
       $dev_info = file_get_contents('dev_defines');
@@ -159,28 +146,28 @@ class GameDefines {
     $campaign_formations = array();
     foreach($this->campaigns AS $campaign) {
       if ($campaign->name == 'World\'s Wake') {
-				//For some reason this form isn't in the defines, so I had to manually create it
+        //For some reason this form isn't in the defines, so I had to manually create it
         $campaign_formations[$campaign->id]['name'] =  $campaign->name;
-				$campaign_formations[$campaign->id][0]['x'] = 289;
-				$campaign_formations[$campaign->id][0]['y'] = 151;
-				$campaign_formations[$campaign->id][1]['x'] = 203;
-				$campaign_formations[$campaign->id][1]['y'] = 118;
-				$campaign_formations[$campaign->id][2]['x'] = 203;
-				$campaign_formations[$campaign->id][2]['y'] = 184;
-				$campaign_formations[$campaign->id][3]['x'] = 123;
-				$campaign_formations[$campaign->id][3]['y'] = 85;
-				$campaign_formations[$campaign->id][4]['x'] = 123;
-				$campaign_formations[$campaign->id][4]['y'] = 151;
-				$campaign_formations[$campaign->id][5]['x'] = 123;
-				$campaign_formations[$campaign->id][5]['y'] = 217;
-				$campaign_formations[$campaign->id][6]['x'] = 43;
-				$campaign_formations[$campaign->id][6]['y'] = 52;
-				$campaign_formations[$campaign->id][7]['x'] = 43;
-				$campaign_formations[$campaign->id][7]['y'] = 118;
-				$campaign_formations[$campaign->id][8]['x'] = 43;
-				$campaign_formations[$campaign->id][8]['y'] = 184;
-				$campaign_formations[$campaign->id][9]['x'] = 43;
-				$campaign_formations[$campaign->id][9]['y'] = 250;
+        $campaign_formations[$campaign->id][0]['x'] = 289;
+        $campaign_formations[$campaign->id][0]['y'] = 151;
+        $campaign_formations[$campaign->id][1]['x'] = 203;
+        $campaign_formations[$campaign->id][1]['y'] = 118;
+        $campaign_formations[$campaign->id][2]['x'] = 203;
+        $campaign_formations[$campaign->id][2]['y'] = 184;
+        $campaign_formations[$campaign->id][3]['x'] = 123;
+        $campaign_formations[$campaign->id][3]['y'] = 85;
+        $campaign_formations[$campaign->id][4]['x'] = 123;
+        $campaign_formations[$campaign->id][4]['y'] = 151;
+        $campaign_formations[$campaign->id][5]['x'] = 123;
+        $campaign_formations[$campaign->id][5]['y'] = 217;
+        $campaign_formations[$campaign->id][6]['x'] = 43;
+        $campaign_formations[$campaign->id][6]['y'] = 52;
+        $campaign_formations[$campaign->id][7]['x'] = 43;
+        $campaign_formations[$campaign->id][7]['y'] = 118;
+        $campaign_formations[$campaign->id][8]['x'] = 43;
+        $campaign_formations[$campaign->id][8]['y'] = 184;
+        $campaign_formations[$campaign->id][9]['x'] = 43;
+        $campaign_formations[$campaign->id][9]['y'] = 250;
       } else if ($campaign->name != 'The Dungeons') {
         $campaign_formations[$campaign->id]['name'] =  $campaign->name;
         foreach ($campaign->game_changes[0]->formation AS $id => $node) {

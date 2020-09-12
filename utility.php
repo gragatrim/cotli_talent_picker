@@ -15,7 +15,17 @@ function call_cne($server, $user_id, $user_hash, $call, $parameters) {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
 
   $response = curl_exec($ch);
+  $json_response = json_decode($response);
   curl_close($ch);
+  if (!empty($json_response->switch_play_server)) {
+		$ch = curl_init();
+    $curl_url = $json_response->switch_play_server;
+		curl_setopt($ch, CURLOPT_URL, $curl_url . "post.php?call=" . $call . $user_id_url . $user_hash_url . $parameters);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
+		$response = curl_exec($ch);
+		curl_close($ch);
+  }
   return $response;
 }
 
@@ -86,7 +96,7 @@ function generate_formation_image($saved_form, $objective, $all_crusaders, $camp
 }
 
 function get_crusader_image($crusader_name) {
-  $crusader_info = array();
+  $crusader_info = array('name' => '');
   $crusader_image_name = str_replace(array(' ', ',', "'", '"', '-'), "", ucwords($crusader_name));
   $crusader_image_name_short = str_replace(array(' ', ',', "'", '"', '-'), "", strtolower(explode(' ', $crusader_name)[0]));
   if (file_exists('./images/' . $crusader_image_name . '_48.png')) {

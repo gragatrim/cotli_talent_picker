@@ -3,23 +3,8 @@
 class UserDefines {
   function __construct($server, $user_id, $user_hash, $raw_user_data = '') {
     if (empty($raw_user_data)) {
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL, "http://" . urlencode($server) . ".djartsgames.ca/~idle/post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($user_id) . "&hash=" . urlencode($user_hash));
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
-
-      $response = curl_exec($ch);
+      $response = call_cne($server, $user_id, $user_hash, 'getUserDetails', $parameters);
       $json_response = json_decode($response);
-      if (!empty($json_response->switch_play_server)) {
-        $curl_url = $json_response->switch_play_server;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $curl_url . "post.php?call=getUserDetails&instance_key=0&user_id=" . urlencode($user_id) . "&hash=" . urlencode($user_hash));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
-
-        $response = curl_exec($ch);
-        $json_response = json_decode($response);
-      }
       if (empty($json_response) || $json_response->success != true) {
         error_log("curl_error: " . curl_error($ch), 0);
         error_log("json_response: " . $response, 0);
