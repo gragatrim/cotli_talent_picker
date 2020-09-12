@@ -3,13 +3,8 @@
 class UserDefines {
   function __construct($server, $user_id, $user_hash, $raw_user_data = '') {
     if (empty($raw_user_data)) {
-      $response = call_cne($server, $user_id, $user_hash, 'getUserDetails', $parameters);
+      $response = call_cne($server, $user_id, $user_hash, 'getUserDetails', '&instance_key=0');
       $json_response = json_decode($response);
-      if (empty($json_response) || $json_response->success != true) {
-        error_log("curl_error: " . curl_error($ch), 0);
-        error_log("json_response: " . $response, 0);
-      }
-      curl_close($ch);
     } else {
       $json_response = json_decode ("{}");
       $json_response->details = json_decode($raw_user_data);
