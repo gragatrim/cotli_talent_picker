@@ -2,9 +2,14 @@
 include "navigation.php";
 $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
-
-if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server']) || !empty($_POST['raw_user_data'])) {
-  $user_info = new UserDefines($_POST['server'], $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
+if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server']) || !empty($_POST['raw_user_data']) || !empty($_GET['saved_info'])) {
+  if (!empty($_GET['saved_info'])) {
+    $user_info = unserialize(file_get_contents('user_profiles/' . $_GET['saved_info']));
+  } else {
+    $user_info = new UserDefines($_POST['server'], $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
+    $saved_user_info_filename = md5($_POST['user_id'] . $_POST['user_hash']);
+    file_put_contents('user_profiles/' . $saved_user_info_filename, serialize($user_info));
+  }
   $user_crusaders = '<table style="float: left; clear:both;"><tr>';
   $column_count = 0;
   foreach ($user_info->crusaders AS $id => $crusader) {
@@ -117,6 +122,9 @@ function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_mat
 <input style="clear:both; float: left;" type="submit">
 </form>
 <?php
+if (empty($_GET['saved_info'])) {
+  echo '<div style="float: left; clear: left;"><a href="' . $_SERVER['PHP_SELF'] . '?saved_info=' . $saved_user_info_filename . '">Share Profile</a>(Share this link to allow others to see your profile)</div>';
+}
 if (!empty($total_mat_div)) {
   echo $total_mat_div;
 }
