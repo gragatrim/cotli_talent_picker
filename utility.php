@@ -18,13 +18,13 @@ function call_cne($server, $user_id, $user_hash, $call, $parameters) {
   $json_response = json_decode($response);
   curl_close($ch);
   if (!empty($json_response->switch_play_server)) {
-		$ch = curl_init();
+    $ch = curl_init();
     $curl_url = $json_response->switch_play_server;
-		curl_setopt($ch, CURLOPT_URL, $curl_url . "post.php?call=" . $call . $user_id_url . $user_hash_url . $parameters);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
-		$response = curl_exec($ch);
-		curl_close($ch);
+    curl_setopt($ch, CURLOPT_URL, $curl_url . "post.php?call=" . $call . $user_id_url . $user_hash_url . $parameters);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
+    $response = curl_exec($ch);
+    curl_close($ch);
   }
   return $response;
 }
@@ -167,5 +167,39 @@ function generate_saved_forms($forms, $game_defines) {
     $saved_form_html .= '</div><div style="clear:both;"></div>';
   }
   return $saved_form_html;
+}
+
+function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_materials) {
+  $total_mats = 0;
+  foreach ($user_loot AS $id => $loot) {
+    foreach($all_crusader_loot[$all_loot[$loot->loot_id]->hero_id] AS $slot_id => $crusader_all_slot_loot) {
+      foreach ($crusader_all_slot_loot AS $crusader_slot_loot) {
+        if ($crusader_slot_loot->id == $loot->loot_id) {
+          if ($crusader_slot_loot->rarity == 5) {
+            for ($i = 1; $i < $loot->count; $i++) {
+              $total_mats += (250 * pow(2, ($i-1)));
+            }
+          }
+        }
+      }
+    }
+  }
+  foreach ($crafting_materials AS $id => $material) {
+    switch ($id) {
+      case 1:
+        $total_mats += $material;
+        break;
+      case 2:
+        $total_mats += $material * 2;
+        break;
+      case 3:
+        $total_mats += $material * 4;
+        break;
+      case 4:
+        $total_mats += $material * 8;
+        break;
+    }
+  }
+  return $total_mats;
 }
 ?>

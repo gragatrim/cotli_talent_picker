@@ -321,9 +321,12 @@ if (!empty($_POST) || !empty($user)) {
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
   $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);
   $base_damage = 1;
-  //echo "golden_benefits: " . bcmul(bcsub($user->talents['golden_benefits']->get_current_damage(), 1, 10), 100, 10) . "<br>";
-  //echo "legendary_friendship: " . bcmul(bcsub($user->talents['legendary_friendship']->get_current_damage(), 1, 10), 100, 10) . "<br>";
+  $total_mats = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials);
+  $total_mat_div = '<div style="float: left; clear: left;">Total Materials(including epic mats): ' . $total_mats . '</div>';
   echo "total idols spent " . number_format($user->get_total_talent_cost()) . " total idols remaining: " . number_format($user->total_idols - $user->get_total_talent_cost()) . "<br>";
+  if (!empty($total_mat_div)) {
+    echo $total_mat_div;
+  }
   $results_legend = '<div class="green">Green means you can afford it</div><div class="yellow">Yellow means your leftover idols can afford it</div><div class="red">Red means you can\'t afford it</div>';
   $results_to_print = '<div style="float: right;clear: both;">Final damage is current damage + green suggestions, future damage adds the increase from yellow talent suggestions</div>';
   $results_to_print .= '<div style="float: right; clear: right;">' . $results_legend;

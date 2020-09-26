@@ -4,7 +4,7 @@ class GameDefines {
   function __construct($force_refresh = false, $use_dev_info = false) {
     if (!file_exists('game_defines') || time() - filemtime('game_defines') > 24 * 3600 || $force_refresh !== false || $use_dev_info !== false) {
       $game_info = call_cne('idlemaster', '', '', 'getDefinitions', '');
-      $dev_info = call_cne('idlemaster', '', '', 'getDefinitions', '');
+      $dev_info = call_cne('dev2', '', '', 'getDefinitions', '');
       file_put_contents('game_defines', $game_info);
       file_put_contents('dev_defines', $dev_info);
     } else {

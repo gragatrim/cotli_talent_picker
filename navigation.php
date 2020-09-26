@@ -1,7 +1,7 @@
 <?php
+include_once "utility.php";
 include_once "game_defines.php";
 include_once "user_defines.php";
-include_once "utility.php";
 ?>
 <html>
 <head>
@@ -40,6 +40,7 @@ td.borderless {
 
 .purple {
   background: #8f4aa5;
+  clear: left;
 }
 
 .brown {
