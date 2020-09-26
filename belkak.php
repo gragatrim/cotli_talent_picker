@@ -87,40 +87,6 @@ function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot)
   return $owned_crusader_gear;
 }
 
-function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_materials) {
-  $total_mats = 0;
-  foreach ($user_loot AS $id => $loot) {
-    foreach($all_crusader_loot[$all_loot[$loot->loot_id]->hero_id] AS $slot_id => $crusader_all_slot_loot) {
-      foreach ($crusader_all_slot_loot AS $crusader_slot_loot) {
-        if ($crusader_slot_loot->id == $loot->loot_id) {
-          if ($crusader_slot_loot->rarity == 5) {
-            for ($i = 1; $i < $loot->count; $i++) {
-              $total_mats += (250 * pow(2, ($i-1)));
-            }
-          }
-        }
-      }
-    }
-  }
-  foreach ($crafting_materials AS $id => $material) {
-    switch ($id) {
-      case 1:
-        $total_mats += $material;
-        break;
-      case 2:
-        $total_mats += $material * 2;
-        break;
-      case 3:
-        $total_mats += $material * 4;
-        break;
-      case 4:
-        $total_mats += $material * 8;
-        break;
-    }
-  }
-  return $total_mats;
-}
-
 ?>
 <div style="color:red;">This will only display your crusaders with legendary gear at level 2 or higher</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
