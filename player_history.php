@@ -24,20 +24,20 @@ Page: <input type="text" name="page" value="<?php echo (isset($_POST['page']) ? 
 <?php
 if (!empty($json_response)) {
   foreach($json_response->entries AS $entry) {
-    if ($entry->info->action !== 'add_normal') {
-      if ($entry->info->action == 'upgrade_legendary') {
+    if (isset($entry->info->action) && $entry->info->action !== 'add_normal') {
+      if (isset($entry->info->action) && $entry->info->action == 'upgrade_legendary') {
         echo "Upgraded crusader " . $crusaders[$loot_definition[$entry->info->loot_id]->hero_id]->name . ", gear " . $loot_definition[$entry->info->loot_id]->name . " to level " . $entry->info->level . "<br>";
-      } else if ($entry->info->action == 'craft_legendary') {
+      } else if (isset($entry->info->action) && $entry->info->action == 'craft_legendary') {
         echo "Crafted legendary item " . $loot_definition[$entry->info->loot_id]->name . ", for crusader " . $crusaders[$loot_definition[$entry->info->loot_id]->hero_id]->name . "<br>";
-      } else if ($entry->info->action == 'disenchant_legendary') {
+      } else if (isset($entry->info->action) && $entry->info->action == 'disenchant_legendary') {
         echo "Disenchanted legendary item " . $loot_definition[$entry->info->loot_id]->name . ", for crusader " . $crusaders[$loot_definition[$entry->info->loot_id]->hero_id]->name . "<br>";
-      } else if ($entry->info->action == 'start_mission') {
+      } else if (isset($entry->info->action) && $entry->info->action == 'start_mission') {
         $mission_crusaders = '';
         foreach($entry->info->hero_ids AS $hero) {
           $mission_crusaders .= ' ' . $crusaders[$hero]->name;
         }
         echo "Started mission " . $missions[$entry->info->mission_id]->name . ", sent crusaders" . $mission_crusaders . " with success chance of " . $entry->info->success_chance . "<br>";
-      } else if ($entry->info->action == 'complete_mission') {
+      } else if (isset($entry->info->action) && $entry->info->action == 'complete_mission') {
         if ($entry->info->successful == 1) {
           if (!empty($entry->info->rewards->enchantment)) {
             $mission_crusaders = '';
@@ -106,26 +106,28 @@ if (!empty($json_response)) {
         } else {
           echo "<pre>" . print_r($entry, true) . "</pre>";
         }
-      } else if (!empty($entry->info->idols)) {
-        $reset_reward = '';
-        if (!empty($entry->info->objective_awards->dungeon_progress)) {
-          $reset_reward .= ' also gained ' . $entry->info->objective_awards->dungeon_progress . ' dungeon points and ' . $entry->info->objective_awards->dungeon_coins . ' dungeon coins';
-        }
-        echo "Reset for " . $entry->info->idols->gained . " idols, in " . $entry->info->play_time/60 . " minutes" . $reset_reward . "<br>";
-      } else if (!empty($entry->info->reset_stats->rewards[0]->reward)) {
-        if ($entry->info->reset_stats->rewards[0]->reward == 'challenge_tokens') {
-          //The challenge rewards are split between 2 entries, so this fudges it so it reports on 1 line
-          echo "Reset for " . $entry->info->reset_stats->rewards[0]->amount . " challenge tokens and ";
-        } else {
-          echo "<pre>" . print_r($entry, true) . "</pre>";
-        }
-      } else if (!empty($entry->info->code)) {
-        echo "Redeemed code " . $entry->info->code . "<br>";
+      }
+    } else if (!empty($entry->info->idols)) {
+      $reset_reward = '';
+      if (!empty($entry->info->objective_awards->dungeon_progress)) {
+        $reset_reward .= ' also gained ' . $entry->info->objective_awards->dungeon_progress . ' dungeon points and ' . $entry->info->objective_awards->dungeon_coins . ' dungeon coins';
+      }
+      echo "Reset for " . $entry->info->idols->gained . " idols, in " . $entry->info->play_time/60 . " minutes" . $reset_reward . "<br>";
+    } else if (!empty($entry->info->reset_stats->rewards[0]->reward)) {
+      if ($entry->info->reset_stats->rewards[0]->reward == 'challenge_tokens') {
+        //The challenge rewards are split between 2 entries, so this fudges it so it reports on 1 line
+        echo "Reset for " . $entry->info->reset_stats->rewards[0]->amount . " challenge tokens and ";
       } else {
-        //I'm not going to bother printing out buff uses currently
-        if (empty($entry->info->buff_use_details)) {
-          echo "<pre>" . print_r($entry, true) . "</pre>";
-        }
+        echo "<pre>" . print_r($entry, true) . "</pre>";
+      }
+    } else if (!empty($entry->info->code)) {
+      echo "Redeemed code " . $entry->info->code . "<br>";
+    } else if (isset($entry->info->action) && $entry->info->action === 'add_normal') {
+      continue;
+    } else {
+      //I'm not going to bother printing out buff uses currently
+      if (empty($entry->info->buff_use_details)) {
+        echo "<pre>" . print_r($entry, true) . "</pre>";
       }
     }
   }
