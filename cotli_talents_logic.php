@@ -6,10 +6,10 @@ if (!empty($_POST) || !empty($user)) {
   $talents = array();
   //This is an attempt to help with larger idol totals, e17+
   $_POST['idolatry_total_idols'] = 0;
+  $game_defines = new GameDefines();
+  $game_json = $game_defines->game_json;
   if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server']) || !empty($_POST['raw_user_data'])) {
     $user_info = new UserDefines($_POST['server'], $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
-    $game_defines = new GameDefines();
-
     //This allows for the math functions to work below
     $_POST['cooldown_reduction'] = 0;
     $legendaries = 0;
@@ -125,6 +125,10 @@ if (!empty($_POST) || !empty($user)) {
     $_POST['max_level_reached'] = $max_level_reached;
     $_POST['taskmasters_owned'] = count($user_info->taskmasters);
     $_POST['crusaders_owned'] = $crusaders_owned;
+    $total_mats = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials);
+    $total_mat_div = '<div style="float: left; clear: left;">Total Materials(including epic mats): ' . $total_mats . '</div>';
+    $total_mats_with_chests = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials, true, $user_info->chests, $game_defines->chests);
+    $total_mat_div_with_chests = '<div style="float: left; clear: left;">Total Materials(including epic mats and all unopened chests): ' . $total_mats_with_chests . '</div>';
   }
   $time_o_rama_talent = new Talent('time_o_rama', 1, 20, 25, 1.25, htmlspecialchars($_POST['time_o_rama']));
   $talents['time_o_rama'] = $time_o_rama_talent;
@@ -263,7 +267,7 @@ if (!empty($_POST) || !empty($user)) {
   $talents['idol_champions'] = $idol_champions_talent;
   $tenk_training_talent = new Talent('tenk_training', 5, 80, 140000, 1.083, htmlspecialchars($_POST['tenk_training']), '*');
   $talents['tenk_training'] = $tenk_training_talent;
-  $bonus_training_talent = new Talent('bonus_training', 5, 34, 225000, 1.31, htmlspecialchars($_POST['bonus_training']), '*', 1, 1, 1, htmlspecialchars($_POST['main_dps_slot']));
+  $bonus_training_talent = new Talent('bonus_training', 5, $game_defines->max_bonus_training_level, 225000, 1.31, htmlspecialchars($_POST['bonus_training']), '*', 1, 1, 1, htmlspecialchars($_POST['main_dps_slot']));
   $talents['bonus_training'] = $bonus_training_talent;
   $scrap_hoarder_talent = new Talent('scrap_hoarder', 5, 3, 15000000, 2, htmlspecialchars($_POST['scrap_hoarder']));
   $talents['scrap_hoarder'] = $scrap_hoarder_talent;
@@ -321,10 +325,6 @@ if (!empty($_POST) || !empty($user)) {
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
   $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);
   $base_damage = 1;
-  $total_mats = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials);
-  $total_mat_div = '<div style="float: left; clear: left;">Total Materials(including epic mats): ' . $total_mats . '</div>';
-  $total_mats_with_chests = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials, true, $user_info->chests, $game_defines->chests);
-  $total_mat_div_with_chests = '<div style="float: left; clear: left;">Total Materials(including epic mats and all unopened chests): ' . $total_mats_with_chests . '</div>';
   echo "total idols spent " . number_format($user->get_total_talent_cost()) . " total idols remaining: " . number_format($user->total_idols - $user->get_total_talent_cost()) . "<br>";
   if (!empty($total_mat_div)) {
     echo $total_mat_div;

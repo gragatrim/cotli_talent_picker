@@ -17,7 +17,9 @@ class GameDefines {
     $this->game_json = json_decode($game_info);
     $this->loot = $this->get_loot();
     $this->generate_crusader_loot();
-    $this->crusaders = $this->get_crusaders();
+    $crusader_info = $this->get_crusaders();
+    $this->crusaders = $crusader_info['crusaders'];
+    $this->max_bonus_training_level = ($crusader_info['max_seat_id'] - 1);
     $this->missions = $this->get_missions();
     $this->chests = $this->get_chests();
     $this->crusader_upgrades = $this->get_crusader_upgrades();
@@ -41,11 +43,18 @@ class GameDefines {
   }
 
   public function get_crusaders() {
+    $return = array('crusaders' => array(), 'max_seat_id' => 0);
     $crusaders = array();
+    $max_seat_id = 0;
     foreach($this->game_json->hero_defines AS $hero) {
       $crusaders[$hero->id] = $hero;
+      if ($max_seat_id < $hero->seat_id) {
+        $max_seat_id = $hero->seat_id;
+      }
     }
-    return $crusaders;
+    $return['crusaders'] = $crusaders;
+    $return['max_seat_id'] = $max_seat_id;
+    return $return;
   }
 
   public function get_missions() {
