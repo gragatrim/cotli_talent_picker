@@ -10,6 +10,7 @@ class UserDefines {
       $json_response->details = json_decode($raw_user_data);
     }
     $this->user_json = $json_response->details;
+    $this->instance_id = $this->user_json->instance_id;
     $this->crafting_materials = $this->user_json->crafting_materials;
     $this->reset_currency_spent = $this->user_json->reset_currency_spent;
     $this->reset_currency = $this->user_json->reset_currency;
@@ -74,6 +75,8 @@ class UserDefines {
 
   public function get_chests() {
     $chests = array();
+    $chests[1] = $this->user_json->normal_loot_chests;
+    $chests[2] = $this->user_json->rare_loot_chests;
     foreach($this->user_json->chests AS $id => $chest) {
       $chests[$id] = $chest;
     }

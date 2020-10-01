@@ -172,7 +172,7 @@ function generate_saved_forms($forms, $game_defines) {
   return $saved_form_html;
 }
 
-function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_materials) {
+function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_materials, $include_unopened_chests = false, $user_chests = NULL, $chest_defines = NULL) {
   $total_mats = 0;
   foreach ($user_loot AS $id => $loot) {
     foreach($all_crusader_loot[$all_loot[$loot->loot_id]->hero_id] AS $slot_id => $crusader_all_slot_loot) {
@@ -203,6 +203,24 @@ function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_mat
         break;
     }
   }
+
+  if ($include_unopened_chests !== false) {
+    //Numbers taken from the work of @ryan92084 from discord in the sheet found here http://bit.ly/CotLI_Chest_Stats
+    $mats_per_sc = 7.82634045;
+    $mats_per_jc = 40.291578;
+    $total_silver_chests = 0;
+    $total_jeweled_chests = 0;
+    foreach ($user_chests AS $chest_id => $number_of_chests) {
+      if (stripos($chest_defines[$chest_id]->name, 'silver') !== false) {
+        $total_silver_chests += $number_of_chests;
+      } else if (stripos($chest_defines[$chest_id]->name, 'jeweled') !== false) {
+        $total_jeweled_chests += $number_of_chests;
+      }
+    }
+    //I don't think it matter if all that much, decided to floor it
+    $total_mats += floor($total_silver_chests * $mats_per_sc + $total_jeweled_chests * $mats_per_jc);
+  }
+
   return $total_mats;
 }
 ?>

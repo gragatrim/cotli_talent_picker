@@ -323,9 +323,14 @@ if (!empty($_POST) || !empty($user)) {
   $base_damage = 1;
   $total_mats = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials);
   $total_mat_div = '<div style="float: left; clear: left;">Total Materials(including epic mats): ' . $total_mats . '</div>';
+  $total_mats_with_chests = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials, true, $user_info->chests, $game_defines->chests);
+  $total_mat_div_with_chests = '<div style="float: left; clear: left;">Total Materials(including epic mats and all unopened chests): ' . $total_mats_with_chests . '</div>';
   echo "total idols spent " . number_format($user->get_total_talent_cost()) . " total idols remaining: " . number_format($user->total_idols - $user->get_total_talent_cost()) . "<br>";
   if (!empty($total_mat_div)) {
     echo $total_mat_div;
+  }
+  if (!empty($total_mat_div_with_chests)) {
+    echo $total_mat_div_with_chests;
   }
   $results_legend = '<div class="green">Green means you can afford it</div><div class="yellow">Yellow means your leftover idols can afford it</div><div class="red">Red means you can\'t afford it</div>';
   $results_to_print = '<div style="float: right;clear: both;">Final damage is current damage + green suggestions, future damage adds the increase from yellow talent suggestions</div>';
