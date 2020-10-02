@@ -32,6 +32,9 @@ class GameDefines {
     $this->abilities = $this->get_abilities();
     $this->talents = $this->get_talents();
     $this->campaign_formations = $this->generate_campaign_maps();
+    $this->gems = $this->get_gems();
+    $this->set_hero_gem_slots();
+    $this->hero_gem_effects = $this->get_hero_gem_effects();
   }
 
   public function get_loot() {
@@ -214,6 +217,30 @@ class GameDefines {
       }
     }
     return $campaign_formations;
+  }
+
+  public function get_gems() {
+    $gems = array();
+    foreach($this->game_json->gem_defines AS $gem) {
+      $gems[$gem->id] = $gem;
+    }
+    return $gems;
+  }
+
+  public function set_hero_gem_slots() {
+    $this->hero_gem_slots = array();
+    foreach($this->game_json->hero_gem_slot_defines AS $hero_gem_slot) {
+      $this->hero_gem_slots[$hero_gem_slot->hero_gem_slot_id] = $hero_gem_slot;
+      $this->crusaders[$hero_gem_slot->hero_id]->hero_gem_slots[$hero_gem_slot->slot_id] = $hero_gem_slot;
+    }
+  }
+
+  public function get_hero_gem_effects() {
+    $hero_gem_effects = array();
+    foreach($this->game_json->hero_gem_effect_defines AS $hero_gem_effect) {
+      $hero_gem_effects[$hero_gem_effect->id] = $hero_gem_effect;
+    }
+    return $hero_gem_effects;
   }
 }
 ?>
