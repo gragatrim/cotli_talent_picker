@@ -221,24 +221,30 @@ class GameDefines {
 
   public function get_gems() {
     $gems = array();
-    foreach($this->game_json->gem_defines AS $gem) {
-      $gems[$gem->id] = $gem;
+    if (isset($this->game_json->gem_defines)) {
+      foreach($this->game_json->gem_defines AS $gem) {
+        $gems[$gem->id] = $gem;
+      }
     }
     return $gems;
   }
 
   public function set_hero_gem_slots() {
     $this->hero_gem_slots = array();
-    foreach($this->game_json->hero_gem_slot_defines AS $hero_gem_slot) {
-      $this->hero_gem_slots[$hero_gem_slot->hero_gem_slot_id] = $hero_gem_slot;
-      $this->crusaders[$hero_gem_slot->hero_id]->hero_gem_slots[$hero_gem_slot->slot_id] = $hero_gem_slot;
+    if (isset($this->game_json->hero_gem_slot_defines)) {
+      foreach($this->game_json->hero_gem_slot_defines AS $hero_gem_slot) {
+        $this->hero_gem_slots[$hero_gem_slot->hero_gem_slot_id] = $hero_gem_slot;
+        $this->crusaders[$hero_gem_slot->hero_id]->hero_gem_slots[$hero_gem_slot->slot_id] = $hero_gem_slot;
+      }
     }
   }
 
   public function get_hero_gem_effects() {
     $hero_gem_effects = array();
-    foreach($this->game_json->hero_gem_effect_defines AS $hero_gem_effect) {
-      $hero_gem_effects[$hero_gem_effect->id] = $hero_gem_effect;
+    if (isset($this->game_json->hero_gem_effect_defines)) {
+      foreach($this->game_json->hero_gem_effect_defines AS $hero_gem_effect) {
+        $hero_gem_effects[$hero_gem_effect->id] = $hero_gem_effect;
+      }
     }
     return $hero_gem_effects;
   }
