@@ -3,6 +3,9 @@
 class UserDefines {
   function __construct($server, $user_id, $user_hash, $raw_user_data = '') {
     if (empty($raw_user_data)) {
+      if (empty($server)) {
+        $server = 'idlemaster';
+      }
       $response = call_cne($server, $user_id, $user_hash, 'getUserDetails', '&instance_key=0');
       $json_response = json_decode($response);
     } else {
