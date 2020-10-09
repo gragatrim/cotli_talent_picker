@@ -102,8 +102,8 @@ if (!empty($_POST) || !empty($user)) {
     $_POST['missions_accomplished'] = $user_info->stats['missions_completed'];
 
     error_log("======== idols ========\r\n", 0);
-    error_log($user_info->reset_currency, 0);
-    error_log($user_info->reset_currency_spent, 0);
+    error_log(sprintf('%f', $user_info->reset_currency, 0));
+    error_log(sprintf('%f', $user_info->reset_currency_spent, 0));
     error_log("======== end idols ========\r\n", 0);
     if (!is_int($user_info->reset_currency_spent)) {
         $e_location = strpos($user_info->reset_currency_spent, 'E');
