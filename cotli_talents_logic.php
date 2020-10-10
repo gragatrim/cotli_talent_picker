@@ -100,23 +100,8 @@ if (!empty($_POST) || !empty($user)) {
     }
 
     $_POST['missions_accomplished'] = $user_info->stats['missions_completed'];
-
-    error_log("======== idols ========\r\n", 0);
-    error_log(sprintf('%f', $user_info->reset_currency, 0));
-    error_log(sprintf('%f', $user_info->reset_currency_spent, 0));
-    error_log("======== end idols ========\r\n", 0);
-    if (!is_int($user_info->reset_currency_spent)) {
-        $e_location = strpos($user_info->reset_currency_spent, 'E');
-        $e_idols = substr($user_info->reset_currency_spent, ($e_location + 1));
-        $base_fake_idols = str_replace('.', '', substr($user_info->reset_currency_spent, 0, $e_location));
-        $fake_total_idols = str_pad($base_fake_idols, $e_idols, "0");
-        $unspent_idols = $user_info->reset_currency;
-        $_POST['total_idols'] = $fake_total_idols;
-        $_POST['idolatry_total_idols'] = $fake_total_idols;
-    } else {
-      $_POST['total_idols'] = $user_info->reset_currency + $user_info->reset_currency_spent;
-      $_POST['idolatry_total_idols'] = $user_info->reset_currency + $user_info->reset_currency_spent;
-    }
+    $_POST['total_idols'] = sprintf('%.0f', $user_info->reset_currency) + sprintf('%.0f', $user_info->reset_currency_spent);
+    $_POST['idolatry_total_idols'] = $_POST['total_idols'];
     $_POST['common_and_uncommon_recipes'] = $common_and_uncommon_recipes/2;
     $_POST['rare_recipes'] = $rare_recipes;
     $_POST['epic_recipes'] = $epic_recipes;
@@ -318,9 +303,6 @@ if (!empty($_POST) || !empty($user)) {
                    htmlspecialchars($_POST['talents_to_recommend']),
                    htmlspecialchars($_POST['max_level_reached']),
                    (isset($_POST['debug']) ? true: false));
-  if (!empty($unspent_idols)) {
-    $user->total_idols = bcadd($user->get_total_talent_cost(), $unspent_idols);
-  }
   $user->talents['maxed_power']->stacks = $user->talents_at_max;
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
   $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);

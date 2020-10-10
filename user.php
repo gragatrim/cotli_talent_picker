@@ -5,7 +5,7 @@ class User {
     $this->user_id = trim($user_id);
     $this->user_hash = trim($user_hash);
     $this->server = $server;
-    $this->total_idols = $total_idols;
+    $this->total_idols = sprintf('%.0f', $total_idols);
     $this->golden_items = $golden_items;
     $this->common_and_uncommon_recipes = $common_and_uncommon_recipes;
     $this->rare_recipes = $rare_recipes;
