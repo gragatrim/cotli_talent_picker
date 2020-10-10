@@ -2,6 +2,7 @@
 
 class UserDefines {
   function __construct($server, $user_id, $user_hash, $raw_user_data = '') {
+    $raw_user_data = trim($raw_user_data);
     if (empty($raw_user_data)) {
       if (empty($server)) {
         $server = 'idlemaster';
