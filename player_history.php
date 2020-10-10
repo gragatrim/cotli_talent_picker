@@ -22,7 +22,7 @@ Page: <input type="text" name="page" value="<?php echo (isset($_POST['page']) ? 
 <input type="submit">
 </form>
 <?php
-if (!empty($json_response)) {
+if (!empty($json_response->entries)) {
   foreach($json_response->entries AS $entry) {
     if (isset($entry->info->action) && $entry->info->action !== 'add_normal') {
       if (isset($entry->info->action) && $entry->info->action == 'upgrade_legendary') {
