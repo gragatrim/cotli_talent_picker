@@ -1,6 +1,8 @@
 <?php
 
 function call_cne($server, $user_id, $user_hash, $call, $parameters) {
+  $user_id = trim($user_id);
+  $user_hash = trim($user_hash);
   $ch = curl_init();
   $user_id_url = '';
   $user_hash_url = '';
@@ -29,7 +31,8 @@ function call_cne($server, $user_id, $user_hash, $call, $parameters) {
   return $response;
 }
 
-function debug($value) {
+function debug($value, $title = '') {
+  echo '<pre>================== ' . $title . '=============</pre>';
   echo '<pre>' . print_r($value, true) . '</pre>';
 }
 
