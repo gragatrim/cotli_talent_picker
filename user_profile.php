@@ -7,10 +7,16 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
     $user_info = unserialize(file_get_contents('user_profiles/' . $_GET['saved_info']));
   } else {
     $user_info = new UserDefines($_POST['server'], $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
-    $saved_user_info_filename = md5($_POST['user_id'] . $_POST['user_hash']);
+    if (empty($_POST['user_id']) || empty($_POST['user_hash'])) {
+      $hash = $user_info->user_json->challenge_details->last_challenge_started->user_id;
+    } else {
+      $hash = $_POST['user_id'] . $_POST['user_hash'];
+    }
+    $saved_user_info_filename = md5($hash);
     $shareable_user_info = json_decode("{}");
     $shareable_user_info->crusaders = $user_info->crusaders;
     $shareable_user_info->loot = $user_info->loot;
+    $shareable_user_info->chests = $user_info->chests;
     $shareable_user_info->crafting_materials = $user_info->crafting_materials;
     file_put_contents('user_profiles/' . $saved_user_info_filename, serialize($shareable_user_info));
   }
