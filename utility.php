@@ -12,6 +12,9 @@ function call_cne($server, $user_id, $user_hash, $call, $parameters) {
   if (!empty($user_hash)) {
     $user_hash_url = '&hash=' . htmlentities($user_hash);
   }
+  if (empty($server)) {
+    $server = 'idlemaster';
+  }
   curl_setopt($ch, CURLOPT_URL, "http://" . htmlentities($server) . ".djartsgames.ca/~idle/post.php?call=" . $call . $user_id_url . $user_hash_url . $parameters);
   curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );

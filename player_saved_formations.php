@@ -3,7 +3,7 @@ include_once "navigation.php";
 $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
 
-if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server']) || !empty($_POST['raw_user_data'])) {
+if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['raw_user_data'])) {
   $user_info = new UserDefines($_POST['server'], $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
   $saved_form_html = generate_saved_forms($user_info->formation_saves['campaigns'], $game_defines);
   $saved_form_html .= generate_saved_forms($user_info->formation_saves['challenges'], $game_defines);
