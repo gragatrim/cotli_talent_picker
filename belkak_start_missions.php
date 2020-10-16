@@ -45,7 +45,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
   //}
   foreach($user_info->missions['active_missions'] AS $active_mission) {
     $mission_crusaders = '109,1,60,111,7';
-    $parameters = "&crusaders=" . $mission_crusaders . "&mission_id=171";
+    $parameters = "&instance_id=" . $user_info->instance_id . "&crusaders=" . $mission_crusaders . "&mission_id=171";
     $mission_response = call_cne($_POST['server'], $_POST['user_id'], $_POST['user_hash'], 'startmission', $parameters);
     debug($mission_response, 'mission_response');
   }
