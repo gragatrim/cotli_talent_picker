@@ -1,4 +1,5 @@
 <?php
+die();
 include "navigation.php";
 
 $game_defines = new GameDefines();
