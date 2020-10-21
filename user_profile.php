@@ -17,6 +17,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     $shareable_user_info->crusaders = $user_info->crusaders;
     $shareable_user_info->loot = $user_info->loot;
     $shareable_user_info->buffs = $user_info->buffs;
+    $shareable_user_info->crafting_materials = $user_info->crafting_materials;
     $shareable_user_info->chests = $user_info->chests;
     $shareable_user_info->crafting_materials = $user_info->crafting_materials;
     file_put_contents('user_profiles/' . $saved_user_info_filename, serialize($shareable_user_info));
@@ -34,7 +35,25 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     }
   }
   $user_buffs .= '</tr></table>';
+  $user_trinkets = '<table style="float: left; clear:both;"><tr><th>Trinket</th><th>Amount</th><th>Buff</th><th>Amount</th><th>Buff</th><th>Amount</th><th>Buff</th><th>Amount</th></tr>';
+  $column = 0;
+  foreach ($user_info->loot AS $id => $loot) {
+    if ($column > 3) {
+      $user_trinkets .='</tr><tr>';
+      $column = 0;
+    }
+    if ($game_defines->loot[$id]->hero_id == 0) {
+      $user_trinkets .= '<td>' . $game_defines->loot[$id]->name . '</td><td>' . $loot->count . '</td>';
+      $column++;
+    }
+  }
+  $user_trinkets .= '</tr></table>';
   $user_crusaders = '<table style="float: left; clear:both;"><tr>';
+  $crafting_materials_table = '<table style="float: left; clear:both;"><tr><th>Crafting Material</th><th>Amount</th></tr>';
+  foreach ($game_defines->crafting_materials AS $crafting_material) {
+    $crafting_materials_table .= '<tr><td>' . $crafting_material->name . '</td><td>' .  $user_info->crafting_materials->{$crafting_material->crafting_material_id} . '</td></tr>';
+  }
+  $crafting_materials_table .= '</table>';
   $column_count = 0;
   foreach ($user_info->crusaders AS $id => $crusader) {
     $crusader_name = '';
@@ -129,6 +148,12 @@ if (!empty($user_crusaders)) {
 }
 if (!empty($user_buffs)) {
   echo $user_buffs;
+}
+if (!empty($user_trinkets)) {
+  echo $user_trinkets;
+}
+if (!empty($crafting_materials_table)) {
+  echo $crafting_materials_table;
 }
 ?>
 </html>

@@ -34,6 +34,7 @@ class GameDefines {
     $this->talents = $this->get_talents();
     $this->campaign_formations = $this->generate_campaign_maps();
     $this->gems = $this->get_gems();
+    $this->crafting_materials = $this->get_crafting_materials();
     $this->set_hero_gem_slots();
     $this->hero_gem_effects = $this->get_hero_gem_effects();
   }
@@ -226,6 +227,14 @@ class GameDefines {
       }
     }
     return $campaign_formations;
+  }
+
+  public function get_crafting_materials() {
+    $crafting_materials = array();
+    foreach($this->game_json->crafting_material_defines AS $crafting_material) {
+      $crafting_materials[$crafting_material->crafting_material_id] = $crafting_material;
+    }
+    return $crafting_materials;
   }
 
   public function get_gems() {

@@ -36,7 +36,7 @@ class UserDefines {
   public function get_loot() {
     $loot = array();
     foreach($this->user_json->loot AS $id => $item) {
-      $loot[$id] = $item;
+      $loot[$item->loot_id] = $item;
     }
     return $loot;
   }
