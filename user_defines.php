@@ -13,6 +13,7 @@ class UserDefines {
       $json_response = json_decode ("{}");
       $json_response->details = json_decode($raw_user_data);
     }
+    $this->json_response = $json_response;
     $this->user_json = $json_response->details;
     $this->instance_id = $this->user_json->instance_id;
     $this->crafting_materials = $this->user_json->crafting_materials;
@@ -21,6 +22,7 @@ class UserDefines {
     $this->taskmasters = $this->get_taskmasters();
     $this->talents = $this->get_talents();
     $this->loot = $this->get_loot();
+    $this->buffs = $this->get_buffs();
     $this->crusaders = $this->get_crusaders();
     $this->chests = $this->get_chests();
     $this->stats = $this->get_stats();
@@ -37,6 +39,14 @@ class UserDefines {
       $loot[$id] = $item;
     }
     return $loot;
+  }
+
+  public function get_buffs() {
+    $buffs = array();
+    foreach($this->user_json->buffs AS $item) {
+      $buffs[$item->buff_id] = $item;
+    }
+    return $buffs;
   }
 
   public function get_talents() {
@@ -64,7 +74,7 @@ class UserDefines {
   }
 
   public function get_missions() {
-    $missions = array();
+    $missions = array('available_missions' => []);
     foreach($this->user_json->mission_data AS $id => $mission) {
       if (is_array($mission)) {
         foreach ($mission AS $mission_info) {

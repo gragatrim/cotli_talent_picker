@@ -16,6 +16,7 @@ class GameDefines {
     }
     $this->game_json = json_decode($game_info);
     $this->loot = $this->get_loot();
+    $this->buffs = $this->get_buffs();
     $this->generate_crusader_loot();
     $crusader_info = $this->get_crusaders();
     $this->crusaders = $crusader_info['crusaders'];
@@ -43,6 +44,14 @@ class GameDefines {
       $loot[$item->id] = $item;
     }
     return $loot;
+  }
+
+  public function get_buffs() {
+    $buff = array();
+    foreach($this->game_json->buff_defines AS $id => $item) {
+      $buff[$item->id] = $item;
+    }
+    return $buff;
   }
 
   public function get_crusaders() {
