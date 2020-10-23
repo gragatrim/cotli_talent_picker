@@ -66,9 +66,15 @@ class UserDefines {
   }
 
   public function get_crusaders() {
+    $this->set_assigned_gems();
     $crusaders = array();
     foreach($this->user_json->heroes AS $hero) {
       $crusaders[$hero->hero_id] = $hero;
+      if (isset($this->assigned_gems[$hero->hero_id])) {
+        $crusaders[$hero->hero_id]->gems = $this->assigned_gems[$hero->hero_id];
+      } else {
+        $crusaders[$hero->hero_id]->gems = array();
+      }
     }
     return $crusaders;
   }
@@ -135,6 +141,13 @@ class UserDefines {
       $skins[$hero_skin->id] = $hero_skin;
     }
     return $skins;
+  }
+
+  private function set_assigned_gems() {
+    $this->assigned_gems = array();
+    foreach($this->user_json->gems->assigned AS $crusader_id => $crusader_gems) {
+      $this->assigned_gems[$crusader_id] = $crusader_gems;
+    }
   }
 
 }

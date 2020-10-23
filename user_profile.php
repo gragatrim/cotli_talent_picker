@@ -6,7 +6,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   if (!empty($_GET['saved_info'])) {
     $user_info = unserialize(file_get_contents('user_profiles/' . $_GET['saved_info']));
   } else {
-    $user_info = new UserDefines($_POST['server'], $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
+    $user_info = new UserDefines('', $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
     if (empty($_POST['user_id']) || empty($_POST['user_hash'])) {
       $hash = $user_info->user_json->challenge_details->last_challenge_started->user_id;
     } else {
@@ -61,12 +61,29 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
       $crusader_image_info = get_crusader_image($game_defines->crusaders[$crusader->hero_id]->name);
       $image = $crusader_image_info['image'];
       $crusader_name = $crusader_image_info['name'];
-      $crusader_loot = get_crusader_loot($game_defines->crusaders[$crusader->hero_id], $user_info->loot, $game_defines->crusader_loot, $game_defines->loot);
+      $crusader_loot = get_crusader_loot($crusader, $user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $crusader);
+      $crusader_gems = array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0);
+      foreach ($crusader->gems AS $slot => $crusader_gem) {
+        $crusader_gems[$slot] = $crusader_gem;
+      }
+      $crusader_gem_td = '';
+      $gem_css = array(1 => 'text-align: center;width: 15px; height: 15px;position: relative;top: 25px;',
+                       2 => 'text-align: center;width: 15px; height: 15px;position: relative;top: 30px; left: 10px;',
+                       3 => 'text-align: center;width: 15px; height: 15px;position: relative;top: 15px; left: 28px;',
+                       4 => 'text-align: center;width: 15px; height: 15px;position: relative;top: -20px; left: 34px;',
+                       5 => 'text-align: center;width: 15px; height: 15px;position: relative;top: -52px; left: 18px;');
+      foreach ($crusader_gems AS $slot => $crusader_gem) {
+        if (!empty($crusader_gem)) {
+          $crusader_gem_td .= '<div style="' . $gem_css[$slot] . '" class="' . strtok($game_defines->gems[$crusader_gem->gem_id]->name, " ") . '">' . $crusader_gem->level . '</div>';
+        } else {
+          $crusader_gem_td .= '<div style="' . $gem_css[$slot] . '">0</div>';
+        }
+      }
       if ($column_count > 10) {
         $user_crusaders .= '</tr></tr>';
         $column_count = 0;
       }
-      $user_crusaders .= '<td style="height: 48px; width: 48px;background-repeat: no-repeat; background-size: contain;background-image: url(\'' . $image .'\')">' . $crusader_name . '</td><td>' . implode('', $crusader_loot) . '</td>';
+      $user_crusaders .= '<td style="vertical-align: top"><img src="' . $image . '" width="48px" height="48x">' . $crusader_gem_td . '</td><td style="text-align: center; width: 15px;">' . implode('', $crusader_loot) . '</td>';
       $column_count++;
     }
   }
@@ -77,12 +94,13 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $total_mat_div_with_chests = '<div style="float: left; clear: left;">Total Materials(including epic mats and all unopened chests): ' . $total_mats_with_chests . '</div>';
 }
 
+//TODO this function is horrible it needs to be refactored, aka just removed and done better
 function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot) {
   $owned_crusader_gear = array(1 => '<div style="background-color: black;">N</div>',
                                2 => '<div style="background-color: black;">N</div>',
                                3 => '<div style="background-color: black;">N</div>');
   foreach ($user_loot AS $id => $loot) {
-    if ($all_loot[$loot->loot_id]->hero_id == $crusader->id) {
+    if ($all_loot[$loot->loot_id]->hero_id == $crusader->hero_id) {
       foreach($all_crusader_loot[$all_loot[$loot->loot_id]->hero_id] AS $slot_id => $crusader_all_slot_loot) {
         foreach ($crusader_all_slot_loot AS $crusader_slot_loot) {
           if ($crusader_slot_loot->id == $loot->loot_id) {
@@ -128,7 +146,6 @@ function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot)
 <div style="float: left;padding-right: 5px; clear: left;">
   User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
   User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
-  Server(use idlemaster if you don't know): <input type="text" name="server" value="<?php echo (isset($_POST['server']) ? htmlspecialchars($_POST['server']) : ''); ?>"><br>
   Raw User Data: <input autocomplete="off" type="text" name="raw_user_data" value="<?php echo (isset($_POST['raw_user_data']) ? htmlspecialchars($_POST['raw_user_data']) : ''); ?>"><br>
 </div>
 <input style="clear:both; float: left;" type="submit">
