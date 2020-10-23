@@ -61,6 +61,67 @@ td.borderless {
   height: 48px;
 }
 
+.Water {
+  background: #0bc0ff;
+}
+
+.Air {
+  background: #ffe00a;
+}
+
+.Earth {
+  background: #3df93d;
+}
+
+.Fire {
+  background: #d5100e;
+}
+
+.Soul {
+  background: #a14ffb;
+}
+
+.globalClick {
+  background: #54478c;
+}
+
+.selfDPS {
+  background: #2c699a;
+}
+
+.globalDPS {
+  background: #048ba8;
+}
+
+.maxLevel {
+  background: #0db39e;
+}
+
+.gold {
+  background: #16db93;
+}
+
+.missionEP {
+  background: #83e377 ;
+}
+
+.missionGold {
+  background: #b9e769;
+}
+
+.shareEP {
+  background: #efea5a;
+
+}
+
+.missionSpeed {
+  background: #f1c453;
+}
+
+.missionDouble {
+  background: #f29e4c;
+}
+
 table.formation_table {
   height: 336px;
   width: 240px;
