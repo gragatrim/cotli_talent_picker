@@ -55,6 +55,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   }
   $crafting_materials_table .= '</table>';
   $column_count = 0;
+  $hero_gem_slot_count = count($game_defines->crusaders[1]->hero_gem_slots);
   foreach ($user_info->crusaders AS $id => $crusader) {
     $crusader_name = '';
     if ($crusader->owned == 1) {
@@ -62,9 +63,14 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
       $image = $crusader_image_info['image'];
       $crusader_name = $crusader_image_info['name'];
       $crusader_loot = get_crusader_loot($crusader, $user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $crusader);
-      $crusader_gems = array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0);
-      foreach ($crusader->gems AS $slot => $crusader_gem) {
-        $crusader_gems[$slot] = $crusader_gem;
+      for ($slot = 1; $slot <= $hero_gem_slot_count; $slot++) {
+        if (!empty($crusader->gems->$slot)) {
+          $crusader_gems[$slot] = $crusader->gems->$slot;
+        } else {
+          $crusader_gems[$slot] = new \stdClass();
+          $crusader_gems[$slot]->gem_id = $game_defines->crusaders[$crusader->hero_id]->hero_gem_slots[$slot]->gem_id;
+          $crusader_gems[$slot]->level = 0;
+        }
       }
       $crusader_gem_td = '';
       $gem_css = array(1 => 'text-align: center;width: 15px; height: 15px;position: relative;top: 25px;',

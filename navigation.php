@@ -139,6 +139,6 @@ td.formation_table {
 <a href="./dungeon_calc.php">Dungeon Calculator</a> | <a href="./cotli_talents.php">Talent Picker</a> | <a href="./player_history.php">Player History</a>
 | <a href="./create_achievement_wiki.php">Create achievement wiki text</a> | <a href="./create_crusader_wiki.php">Create crusader wiki text</a> | <a href="./create_event_wiki.php">Create event wiki text</a>
 | <a href="./player_saved_formations.php">View saved formations</a> | <a href="./create_formations.php">Create formations</a> | <a href="./user_profile.php">User profile</a>
-| <a href="./gems.php">View Rune Info</a>
+| <a href="./runes.php">View Rune Info</a>
 <br>
 
