@@ -13,8 +13,8 @@ Dungeon areas per hour: <input type="text" name="dungeon_areas_per_hour" value="
 Idol Buff(if you have none use 1): <input type="text" name="idol_buff" value="<?php echo (isset($user->idol_buff) ? $user->idol_buff : 1); ?>"><br>
 <input type="submit">
 </form>
-<div>The rows highlighted in green mean running to that area will provide more idols than running a free play(over the same amount of time).</div>
-<div>The rows highlighted in red mean running a FP becomes a better use of time.</div>
+<div>The rows highlighted in <span class="colorblindblue">blue</span> mean running to that area will provide more idols than running a free play(over the same amount of time).</div>
+<div>The rows highlighted in <span class="colorblindred">red</span> mean running a FP becomes a better use of time.</div>
 <table>
   <tr>
     <th>Area reached</th>
@@ -37,7 +37,7 @@ Idol Buff(if you have none use 1): <input type="text" name="idol_buff" value="<?
             <td>0</td>
           </tr>';
     } else {
-      echo '<tr class="' . ($dungeon_results[$i]['idol_over_fp'] > 0 ? 'green' : 'red') . '">
+      echo '<tr class="' . ($dungeon_results[$i]['idol_over_fp'] > 0 ? 'colorblindblue' : 'colorblindred') . '">
               <td>' .  $i . '</td>
               <td>' .  $i / 5.16 . '</td>
               <td>' .  $dungeon_results[$i]['total_time'] . '</td>

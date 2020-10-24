@@ -26,6 +26,14 @@ td.borderless {
   display: none;
 }
 
+.colorblindblue {
+  background: #016ba5;
+}
+
+.colorblindred {
+  background: #ca4e0a;
+}
+
 .green {
   background: green;
 }
