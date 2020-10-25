@@ -19,6 +19,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     $shareable_user_info->buffs = $user_info->buffs;
     $shareable_user_info->crafting_materials = $user_info->crafting_materials;
     $shareable_user_info->chests = $user_info->chests;
+    $shareable_user_info->stats = $user_info->stats;
     $shareable_user_info->crafting_materials = $user_info->crafting_materials;
     file_put_contents('user_profiles/' . $saved_user_info_filename, serialize($shareable_user_info));
   }
@@ -98,6 +99,8 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $total_mats_with_chests = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials, true, $user_info->chests, $game_defines->chests);
   $total_mat_div = '<div style="float: left; clear: left;">Total Materials(including epic mats): ' . $total_mats . '</div>';
   $total_mat_div_with_chests = '<div style="float: left; clear: left;">Total Materials(including epic mats and all unopened chests): ' . $total_mats_with_chests . '</div>';
+  $chests_opened = '<div style="float: left; clear: left;">Total normal silver chests opened: ' . $user_info->stats['normal_chests_opened']. '</div>';
+  $chests_opened .= '<div style="float: left; clear: left;">Total normal jeweled chests opened: ' . $user_info->stats['rare_chests_opened'] . '</div>';
 }
 
 //TODO this function is horrible it needs to be refactored, aka just removed and done better
@@ -165,6 +168,9 @@ if (!empty($total_mat_div)) {
 }
 if (!empty($total_mat_div_with_chests)) {
   echo $total_mat_div_with_chests;
+}
+if (!empty($chests_opened)) {
+  echo $chests_opened;
 }
 if (!empty($user_crusaders)) {
   echo $user_crusaders;
