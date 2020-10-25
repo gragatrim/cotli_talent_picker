@@ -15,6 +15,8 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     $saved_user_info_filename = md5($hash);
     $shareable_user_info = json_decode("{}");
     $shareable_user_info->crusaders = $user_info->crusaders;
+    $shareable_user_info->reset_currency = $user_info->reset_currency;
+    $shareable_user_info->reset_currency_spent = $user_info->reset_currency_spent;
     $shareable_user_info->loot = $user_info->loot;
     $shareable_user_info->buffs = $user_info->buffs;
     $shareable_user_info->crafting_materials = $user_info->crafting_materials;
@@ -99,8 +101,9 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $total_mats_with_chests = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials, true, $user_info->chests, $game_defines->chests);
   $total_mat_div = '<div style="float: left; clear: left;">Total Materials(including epic mats): ' . $total_mats . '</div>';
   $total_mat_div_with_chests = '<div style="float: left; clear: left;">Total Materials(including epic mats and all unopened chests): ' . $total_mats_with_chests . '</div>';
-  $chests_opened = '<div style="float: left; clear: left;">Total normal silver chests opened: ' . $user_info->stats['normal_chests_opened']. '</div>';
+  $chests_opened = '<div style="float: left; clear: left;">Total normal silver chests opened: ' . $user_info->stats['normal_chests_opened'] . '</div>';
   $chests_opened .= '<div style="float: left; clear: left;">Total normal jeweled chests opened: ' . $user_info->stats['rare_chests_opened'] . '</div>';
+  $total_idols_div = '<div style="float: left; clear: left;">Total Idols: ' . (sprintf('%.0f', $user_info->reset_currency) + sprintf('%.0f', $user_info->reset_currency_spent)) . '</div>';
 }
 
 //TODO this function is horrible it needs to be refactored, aka just removed and done better
@@ -162,6 +165,9 @@ function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot)
 <?php
 if (empty($_GET['saved_info']) && !empty($user_crusaders)) {
   echo '<div style="float: left; clear: left;"><a href="?saved_info=' . $saved_user_info_filename . '">Share Profile</a>(Share this link to allow others to see your profile)</div>';
+}
+if (!empty($total_idols_div)) {
+  echo $total_idols_div;
 }
 if (!empty($total_mat_div)) {
   echo $total_mat_div;
