@@ -1,8 +1,8 @@
 <?php
 include "navigation.php";
-if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server'])) {
+if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
   $ch = curl_init();
-  $response = call_cne($_POST['server'], $_POST['user_id'], $_POST['user_hash'], 'getPlayHistory', '&page=' . urlencode($_POST['page']));
+  $response = call_cne('', $_POST['user_id'], $_POST['user_hash'], 'getPlayHistory', '&page=' . urlencode($_POST['page']));
 
   $json_response = json_decode($response);
   $game_defines = new GameDefines();
@@ -17,7 +17,6 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['s
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? $_POST['user_id'] : ''); ?>"><br>
 User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? $_POST['user_hash'] : ''); ?>"><br>
-Server(use idlemaster if you don't know): <input type="text" name="server" value="<?php echo (isset($_POST['server']) ? $_POST['server'] : ''); ?>"><br>
 Page: <input type="text" name="page" value="<?php echo (isset($_POST['page']) ? $_POST['page'] : ''); ?>"><br>
 <input type="submit">
 </form>
@@ -112,7 +111,7 @@ if (!empty($json_response->entries)) {
       if (!empty($entry->info->objective_awards->dungeon_progress)) {
         $reset_reward .= ' also gained ' . $entry->info->objective_awards->dungeon_progress . ' dungeon points and ' . $entry->info->objective_awards->dungeon_coins . ' dungeon coins';
       }
-      echo "Reset for " . $entry->info->idols->gained . " idols, in " . $entry->info->play_time/60 . " minutes" . $reset_reward . "<br>";
+      echo "Reset on objective " . $game_defines->campaign_formations[$entry->info->objective_id]['name'] . " for " . $entry->info->idols->gained . " idols, in " . $entry->info->play_time/60 . " minutes at area " . $entry->info->current_area . $reset_reward . "<br>";
     } else if (!empty($entry->info->reset_stats->rewards[0]->reward)) {
       if ($entry->info->reset_stats->rewards[0]->reward == 'challenge_tokens') {
         //The challenge rewards are split between 2 entries, so this fudges it so it reports on 1 line
@@ -124,6 +123,8 @@ if (!empty($json_response->entries)) {
       echo "Redeemed code " . $entry->info->code . "<br>";
     } else if (isset($entry->info->action) && $entry->info->action === 'add_normal') {
       continue;
+    } else if (isset($entry->info->objective_id)) {
+      echo "Started on objective " . $game_defines->campaign_formations[$entry->info->objective_id]['name'] . "<br>";
     } else {
       //I'm not going to bother printing out buff uses currently
       if (empty($entry->info->buff_use_details)) {
