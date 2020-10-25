@@ -199,13 +199,13 @@ function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_mat
         $total_mats += $material;
         break;
       case 2:
-        $total_mats += $material * 2;
+        $total_mats += $material * 2.5;
         break;
       case 3:
-        $total_mats += $material * 4;
+        $total_mats += $material * 5;
         break;
       case 4:
-        $total_mats += $material * 8;
+        $total_mats += $material * 10;
         break;
     }
   }
