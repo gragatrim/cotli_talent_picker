@@ -15,6 +15,8 @@ class UserDefines {
     }
     $this->json_response = $json_response;
     $this->user_json = $json_response->details;
+    $this->current_season_count = count(get_object_vars($this->user_json->seasons));
+    $this->current_season = $this->user_json->seasons->{$this->current_season_count}->user_data;
     $this->instance_id = $this->user_json->instance_id;
     $this->crafting_materials = $this->user_json->crafting_materials;
     $this->reset_currency_spent = $this->user_json->reset_currency_spent;
