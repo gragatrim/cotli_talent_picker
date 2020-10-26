@@ -23,7 +23,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     $shareable_user_info->chests = $user_info->chests;
     $shareable_user_info->stats = $user_info->stats;
     $shareable_user_info->crafting_materials = $user_info->crafting_materials;
-    $shareable_user_info->current_season = $user_info->current_season;
+    $shareable_user_info->all_season_data = $user_info->all_season_data;
     file_put_contents('user_profiles/' . $saved_user_info_filename, serialize($shareable_user_info));
   }
   $user_buffs = '<table style="float: left; clear:both;"><tr><th>Buff</th><th>Amount</th><th>Buff</th><th>Amount</th><th>Buff</th><th>Amount</th><th>Buff</th><th>Amount</th></tr>';
@@ -105,7 +105,10 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $chests_opened = '<div style="float: left; clear: left;">Total normal silver chests opened: ' . $user_info->stats['normal_chests_opened'] . '</div>';
   $chests_opened .= '<div style="float: left; clear: left;">Total normal jeweled chests opened: ' . $user_info->stats['rare_chests_opened'] . '</div>';
   $total_idols_div = '<div style="float: left; clear: left;">Total Idols: ' . (sprintf('%.0f', $user_info->reset_currency) + sprintf('%.0f', $user_info->reset_currency_spent)) . '</div>';
-  $current_season_points_div = '<div style="float: left; clear: left;">Total Dungeon Points: ' . $user_info->current_season->points . '</div>';
+  $current_season_points_div = '';
+  foreach ($user_info->all_season_data AS $season) {
+    $current_season_points_div .= '<div style="float: left; clear: left;">Season ' . $season->user_data->season_id . ' Dungeon Points: ' . $season->user_data->points . '</div>';
+  }
 }
 
 //TODO this function is horrible it needs to be refactored, aka just removed and done better
