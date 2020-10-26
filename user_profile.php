@@ -23,7 +23,13 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     $shareable_user_info->chests = $user_info->chests;
     $shareable_user_info->stats = $user_info->stats;
     $shareable_user_info->crafting_materials = $user_info->crafting_materials;
-    $shareable_user_info->all_season_data = $user_info->all_season_data;
+    $shareable_user_info->all_season_data = new \stdClass();
+    foreach ($user_info->all_season_data AS $season_id => $season_info) {
+      $shareable_user_info->all_season_data->$season_id = new \stdClass();
+      $shareable_user_info->all_season_data->$season_id->user_data = new \stdClass();
+      $shareable_user_info->all_season_data->$season_id->user_data->season_id = $season_info->user_data->season_id;
+      $shareable_user_info->all_season_data->$season_id->user_data->points = $season_info->user_data->points;
+    }
     file_put_contents('user_profiles/' . $saved_user_info_filename, serialize($shareable_user_info));
   }
   $user_buffs = '<table style="float: left; clear:both;"><tr><th>Buff</th><th>Amount</th><th>Buff</th><th>Amount</th><th>Buff</th><th>Amount</th><th>Buff</th><th>Amount</th></tr>';
@@ -105,9 +111,9 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $chests_opened = '<div style="float: left; clear: left;">Total normal silver chests opened: ' . $user_info->stats['normal_chests_opened'] . '</div>';
   $chests_opened .= '<div style="float: left; clear: left;">Total normal jeweled chests opened: ' . $user_info->stats['rare_chests_opened'] . '</div>';
   $total_idols_div = '<div style="float: left; clear: left;">Total Idols: ' . (sprintf('%.0f', $user_info->reset_currency) + sprintf('%.0f', $user_info->reset_currency_spent)) . '</div>';
-  $current_season_points_div = '';
+  $all_season_points_div = '';
   foreach ($user_info->all_season_data AS $season) {
-    $current_season_points_div .= '<div style="float: left; clear: left;">Season ' . $season->user_data->season_id . ' Dungeon Points: ' . $season->user_data->points . '</div>';
+    $all_season_points_div .= '<div style="float: left; clear: left;">Season ' . $season->user_data->season_id . ' Dungeon Points: ' . $season->user_data->points . '</div>';
   }
 }
 
@@ -174,8 +180,8 @@ if (empty($_GET['saved_info']) && !empty($user_crusaders)) {
 if (!empty($total_idols_div)) {
   echo $total_idols_div;
 }
-if (!empty($current_season_points_div)) {
-  echo $current_season_points_div;
+if (!empty($all_season_points_div)) {
+  echo $all_season_points_div;
 }
 if (!empty($total_mat_div)) {
   echo $total_mat_div;
