@@ -1,4 +1,5 @@
 <?php
+//TODO refactor this... it's trash
 include "user.php";
 
 if (!empty($_POST) || !empty($user)) {
@@ -302,7 +303,15 @@ if (!empty($_POST) || !empty($user)) {
                    $talents,
                    htmlspecialchars($_POST['talents_to_recommend']),
                    htmlspecialchars($_POST['max_level_reached']),
-                   (isset($_POST['debug']) ? true: false));
+                   (isset($_POST['debug']) ? true: false),
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+                   htmlspecialchars($_POST['main_dps_max_level_increase_from_runes']));
   $user->talents['maxed_power']->stacks = $user->talents_at_max;
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
   $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);

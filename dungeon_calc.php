@@ -27,7 +27,7 @@ Idol Buff(if you have none use 1): <input type="text" name="idol_buff" value="<?
   <?php
   for ($i = 500; $i <= 10000; $i += 500) {
     if (empty($dungeon_results[$i])) {
-    echo '<tr class="red">
+    echo '<tr class="colorblindred">
             <td>' .  $i . '</td>
             <td>' .  $i / 5.16 . '</td>
             <td>0</td>
