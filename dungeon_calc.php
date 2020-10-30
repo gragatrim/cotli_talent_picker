@@ -25,7 +25,7 @@ Idol Buff(if you have none use 1): <input type="text" name="idol_buff" value="<?
     <th>Idols per FP time</th>
     <th>Idols gained over FP</th>
   <?php
-  for ($i = 500; $i <= 10000; $i += 500) {
+  for ($i = 500; $i <= 14000; $i += 500) {
     if (empty($dungeon_results[$i])) {
     echo '<tr class="colorblindred">
             <td>' .  $i . '</td>
