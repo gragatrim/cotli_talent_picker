@@ -1,6 +1,19 @@
 <?php
 include "navigation.php";
 if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
+  if ($_POST['page'] < 1) {
+    $_POST['page'] = 1;
+  }
+  if (isset($_POST['next_page'])) {
+    $_POST['page']++;
+  }
+  if (isset($_POST['previous_page'])) {
+    if ($_POST['page'] > 1) {
+      $_POST['page']--;
+    } else {
+      $_POST['page'] = 1;
+    }
+  }
   $ch = curl_init();
   $response = call_cne('', $_POST['user_id'], $_POST['user_hash'], 'getPlayHistory', '&page=' . urlencode($_POST['page']));
 
@@ -17,8 +30,13 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? $_POST['user_id'] : ''); ?>"><br>
 User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? $_POST['user_hash'] : ''); ?>"><br>
-Page: <input type="text" name="page" value="<?php echo (isset($_POST['page']) ? $_POST['page'] : ''); ?>"><br>
+Page: <input type="text" name="page" value="<?php echo (isset($_POST['page']) ? $_POST['page'] : 1); ?>"><br>
 <input type="submit">
+<?php
+  if (!empty($json_response->entries)) {
+    echo '<input type="submit" name="previous_page" value="Previous Page"><input type="submit" name="next_page" value="Next Page">';
+  }
+?>
 </form>
 <?php
 if (!empty($json_response->entries)) {
