@@ -157,7 +157,10 @@ function drop(ev) {
   var previousImageTd = document.getElementById(data).parentNode;
   var previousImage = document.getElementById(data);
   var targetImage = ev.target;
-  ev.target.parentNode.replaceChild(document.getElementById(data), ev.target);
+  previousImage.setAttribute("width", 40);
+  previousImage.setAttribute("height", 40);
+  ev.target.parentNode.replaceChild(previousImage, ev.target);
+  console.log(ev.target);
   previousImageTd.appendChild(targetImage);
 }
 </script>
