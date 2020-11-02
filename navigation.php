@@ -142,11 +142,30 @@ td.formation_table {
   border: none;
 }
 </style>
+<script>
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  var previousImageTd = document.getElementById(data).parentNode;
+  var previousImage = document.getElementById(data);
+  var targetImage = ev.target;
+  ev.target.parentNode.replaceChild(document.getElementById(data), ev.target);
+  previousImageTd.appendChild(targetImage);
+}
+</script>
 </head>
 <body>
 <a href="./dungeon_calc.php">Dungeon Calculator</a> | <a href="./cotli_talents.php">Talent Picker</a> | <a href="./player_history.php">Player History</a>
 | <a href="./create_achievement_wiki.php">Create achievement wiki text</a> | <a href="./create_crusader_wiki.php">Create crusader wiki text</a> | <a href="./create_event_wiki.php">Create event wiki text</a>
-| <a href="./player_saved_formations.php">View saved formations</a> | <a href="./create_formations.php">Create formations</a> | <a href="./user_profile.php">User profile</a>
+| <a href="./player_saved_formations.php">View saved formations</a> | <a href="./create_formations.php">Create formations</a><a href="./create_formations_visual.php">(Visual editor)</a> | <a href="./user_profile.php">User profile</a>
 | <a href="./runes.php">View Rune Info</a>
 <br>
 

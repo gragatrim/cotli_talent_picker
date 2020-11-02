@@ -96,7 +96,7 @@ function generate_formation_image($saved_form, $objective, $all_crusaders, $camp
           if (!isset(${"image$id"})) {
             ${"image$id"} = './images/empty_slot.png';
           }
-          $saved_form_image .= '<div style="width: 40px; height: 40px; float: left; position: absolute; left:' . ($form['x'] - 30) * .6 .'px; top: ' . ($form['y'] * .64) . 'px"><img src="' . ${"image$id"} . '" style="width: 40px; height: 40px;"/></div>';
+          $saved_form_image .= '<div style="width: 40px; height: 40px; float: left; position: absolute; left:' . ($form['x'] - 30) * .6 .'px; top: ' . ($form['y'] * .64) . 'px" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="' . ${"image$id"} . '" style="width: 40px; height: 40px;" draggable="true"/></div>';
         }
       }
     }
