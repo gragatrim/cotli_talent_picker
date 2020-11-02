@@ -160,6 +160,10 @@ function drop(ev) {
   var previousImageElement = document.getElementById(data).parentNode;
   var previousImage = document.getElementById(data);
   var targetImage = ev.target;
+  var swappedSize = 40;
+  if (previousImage.width == 48) {
+    swappedSize = 48;
+  }
   previousImage.setAttribute("width", 40);
   previousImage.setAttribute("height", 40);
   ev.target.parentNode.replaceChild(previousImage, ev.target);
@@ -172,10 +176,13 @@ function drop(ev) {
     //This handles putting a red X in the seat where the crusader that was dropped came from
     var redX = document.createElement("img");
     redX.setAttribute("src", "./images/empty_slot.png");
-    redX.setAttribute("width", 40);
-    redX.setAttribute("height", 40);
+    redX.setAttribute("width", 48);
+    redX.setAttribute("height", 48);
     previousImageElement.appendChild(redX);
   } else {
+    targetImage.setAttribute("width", swappedSize);
+    targetImage.setAttribute("height", swappedSize);
+    targetImage.setAttribute("style", '');
     previousImageElement.appendChild(targetImage);
   }
 }

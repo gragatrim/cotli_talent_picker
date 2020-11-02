@@ -32,28 +32,28 @@ if (!empty($_POST) && !empty($_POST['formation_id'])) {
   $saved_form_html .= '</div>';
 }
 
-$all_crusaders = '<table style="float: left;clear: left;" class="borderless"><tr>';
-$column_count = 0;
-foreach($game_defines->crusaders AS $crusader) {
-    $crusader_image_info = get_crusader_image($crusader->name);
-    $image = $crusader_image_info['image'];
-  if ($column_count >= 20) {
-    $all_crusaders .= '</tr><tr>';
-    $column_count = 0;
+$all_crusaders_div = '<div style="float:left; clear: left; width: 75%;">';
+foreach($game_defines->crusaders_in_seat_order AS $crusader_seat) {
+  $all_crusaders_div .= '<div style="float: left;border: solid 2px; margin: 5px;">';
+  foreach($crusader_seat AS $crusader) {
+      $crusader_image_info = get_crusader_image($crusader->name);
+      $image = $crusader_image_info['image'];
+      if ($crusader_image_info['image'] != './images/empty_slot.png') {
+        $all_crusaders_div .= '<div id="td_crusader' . $crusader->id . '" style="float: left; padding: 1px;"><img id="crusader' . $crusader->id. '" src="' . $image . '" draggable="true" ondragstart="drag(event)" width="48px" height="48px"></div>';
+      }
   }
-  $all_crusaders .= '<td id="td_crusader' . $crusader->id . '" class="borderless"><img id="crusader' . $crusader->id. '" src="' . $image . '" draggable="true" ondragstart="drag(event)" width="48px" height="48px"></td>';
-  $column_count++;
+  $all_crusaders_div .= '</div>';
 }
-$all_crusaders .= '</tr></table>';
+$all_crusaders_div .= '</div>';
 ?>
 <div style="color:red;">This is still in "beta" some things might not work perfectly</div>
 <form style="float: left;" action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 <div style="float: left;padding-right: 5px; clear: left;">
 Formation Id: <input type="text" name="formation_id" value="<?php echo (isset($_POST['formation_id']) ? htmlspecialchars($_POST['formation_id']) : ''); ?>"><br>
 </div>
-<?php echo $all_crusaders; ?>
 <input style="clear:both; float: left;" type="submit">
 </form>
+<?php echo $all_crusaders_div; ?>
 <?php
 $all_formations = '<table style="float:right;" class="borderless"><tr><th class="borderless">Id</th><th class="borderless">Formation Name</th></tr>';
 foreach ($game_defines->campaign_formations AS $id => $campaign_formations) {

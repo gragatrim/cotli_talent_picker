@@ -20,6 +20,7 @@ class GameDefines {
     $this->generate_crusader_loot();
     $crusader_info = $this->get_crusaders();
     $this->crusaders = $crusader_info['crusaders'];
+    $this->crusaders_in_seat_order = $this->sort_crusaders_by_seat();
     $this->max_bonus_training_level = ($crusader_info['max_seat_id'] - 1);
     $this->missions = $this->get_missions();
     $this->chests = $this->get_chests();
@@ -265,6 +266,14 @@ class GameDefines {
       }
     }
     return $hero_gem_effects;
+  }
+
+  public function sort_crusaders_by_seat() {
+    $sorted_crusaders = array();
+    foreach ($this->crusaders AS $crusader) {
+      $sorted_crusaders[$crusader->seat_id][] = $crusader;
+    }
+    return $sorted_crusaders;
   }
 }
 ?>
