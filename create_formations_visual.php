@@ -32,9 +32,9 @@ if (!empty($_POST) && !empty($_POST['formation_id'])) {
   $saved_form_html .= '</div>';
 }
 
-$all_crusaders_div = '<div style="float:left; clear: left; width: 75%;">';
+$all_crusaders_div = '<div style="float:left; clear: left; width: 80%;">';
 foreach($game_defines->crusaders_in_seat_order AS $crusader_seat) {
-  $all_crusaders_div .= '<div style="float: left;border: solid 2px; margin: 5px;">';
+  $all_crusaders_div .= '<div style="float: left;border: solid 2px; margin: 5px;width: 250px;">';
   foreach($crusader_seat AS $crusader) {
       $crusader_image_info = get_crusader_image($crusader->name);
       $image = $crusader_image_info['image'];
