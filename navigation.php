@@ -154,14 +154,52 @@ function drag(ev) {
 function drop(ev) {
   ev.preventDefault();
   var data = ev.dataTransfer.getData("text");
-  var previousImageTd = document.getElementById(data).parentNode;
+  if (document.getElementById(data) === null) {
+    return;
+  }
+  var previousImageElement = document.getElementById(data).parentNode;
   var previousImage = document.getElementById(data);
   var targetImage = ev.target;
   previousImage.setAttribute("width", 40);
   previousImage.setAttribute("height", 40);
   ev.target.parentNode.replaceChild(previousImage, ev.target);
-  console.log(ev.target);
-  previousImageTd.appendChild(targetImage);
+  if (previousImageElement.id === "td_" + data && document.getElementById("td_" + ev.target.id) !== null) {
+    //This handles putting the crusader back where they should go in the seat order
+    var originalTd = document.getElementById("td_" + ev.target.id);
+    targetImage.setAttribute("width", 48);
+    targetImage.setAttribute("height", 48);
+    originalTd.replaceChild(targetImage, originalTd.childNodes[0]);
+    //This handles putting a red X in the seat where the crusader that was dropped came from
+    var redX = document.createElement("img");
+    redX.setAttribute("src", "./images/empty_slot.png");
+    redX.setAttribute("width", 40);
+    redX.setAttribute("height", 40);
+    previousImageElement.appendChild(redX);
+  } else {
+    previousImageElement.appendChild(targetImage);
+  }
+}
+
+function trashDrop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  if (document.getElementById(data) === null) {
+    return;
+  }
+  var redX = document.createElement("img");
+  redX.setAttribute("src", "./images/empty_slot.png");
+  redX.setAttribute("width", 40);
+  redX.setAttribute("height", 40);
+
+  var previousImageDiv = document.getElementById(data).parentNode;
+
+  var previousImage = document.getElementById(data);
+  previousImage.setAttribute("width", 48);
+  previousImage.setAttribute("height", 48);
+
+  var originalTd = document.getElementById("td_" + data);
+  previousImageDiv.replaceChild(redX, previousImageDiv.childNodes[0]);
+  originalTd.replaceChild(previousImage, originalTd.childNodes[0]);
 }
 </script>
 </head>

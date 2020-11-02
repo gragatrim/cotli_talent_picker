@@ -41,7 +41,7 @@ foreach($game_defines->crusaders AS $crusader) {
     $all_crusaders .= '</tr><tr>';
     $column_count = 0;
   }
-  $all_crusaders .= '<td class="borderless"><img id="crusader' . $crusader->id. '" src="' . $image . '" draggable="true" ondragstart="drag(event)" width="48px" height="48px"></td>';
+  $all_crusaders .= '<td id="td_crusader' . $crusader->id . '" class="borderless"><img id="crusader' . $crusader->id. '" src="' . $image . '" draggable="true" ondragstart="drag(event)" width="48px" height="48px"></td>';
   $column_count++;
 }
 $all_crusaders .= '</tr></table>';
@@ -65,4 +65,5 @@ if (!empty($saved_form_html)) {
   echo $saved_form_html;
 }
 ?>
+<img style="float: left" src="./images/trash_can.jpg" height="100px" width="100px" ondrop="trashDrop(event)" ondragover="allowDrop(event)">
 </html>
