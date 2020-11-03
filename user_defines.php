@@ -32,6 +32,7 @@ class UserDefines {
     $this->abilities = $this->get_abilities();
     $this->missions = $this->get_missions();
     $this->owned_crafting_recipes = $this->get_owned_crafting_recipes();
+    $this->total_gems = $this->get_total_level_one_gem_value();
   }
 
   public function get_loot() {
@@ -149,6 +150,17 @@ class UserDefines {
     foreach($this->user_json->gems->assigned AS $crusader_id => $crusader_gems) {
       $this->assigned_gems[$crusader_id] = $crusader_gems;
     }
+  }
+
+  public function get_total_level_one_gem_value() {
+    $total_gems = array();
+    foreach ($this->user_json->gems->owned AS $gem_id => $gem_info) {
+      $total_gems[$gem_id] = 0;
+      foreach ($gem_info AS $level => $gems) {
+        $total_gems[$gem_id] += pow(2, ($level - 1)) * $gems;
+      }
+    }
+    return $total_gems;
   }
 
 }
