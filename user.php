@@ -201,7 +201,7 @@ class User {
     $idols_gained = bcmul(bcmul($this->total_idols, $next_highest_idol_ledge), $this->idol_buff);
     $idols_per_hour = $idols_gained / $total_time * 60;
     $idols_per_fp_time = $idols_per_hour / 60 * $this->time_to_complete_fp;
-    $idol_over_fp = $idols_per_fp_time - $fp_idol_average * $this->idol_buff * 2 * 1.25;
+    $idol_over_fp = $idols_per_fp_time - $fp_idol_average * 2 * 1.25;
     $results['total_time'] = $total_time;
     $results['idols_gained'] = $idols_gained;
     $results['idols_per_hour'] = $idols_per_hour;
