@@ -157,33 +157,46 @@ function drop(ev) {
   if (document.getElementById(data) === null) {
     return;
   }
-  var previousImageElement = document.getElementById(data).parentNode;
-  var previousImage = document.getElementById(data);
   var targetImage = ev.target;
+  var replacingImage = document.getElementById(data);
+  var replacingImageParent = replacingImage.parentNode;
   var swappedSize = 40;
-  if (previousImage.width == 48) {
+  if (replacingImage.width == 48) {
     swappedSize = 48;
   }
-  previousImage.setAttribute("width", 40);
-  previousImage.setAttribute("height", 40);
-  ev.target.parentNode.replaceChild(previousImage, ev.target);
-  if (previousImageElement.id === "td_" + data && document.getElementById("td_" + ev.target.id) !== null) {
-    //This handles putting the crusader back where they should go in the seat order
-    var originalTd = document.getElementById("td_" + ev.target.id);
-    targetImage.setAttribute("width", 48);
-    targetImage.setAttribute("height", 48);
-    originalTd.replaceChild(targetImage, originalTd.childNodes[0]);
-    //This handles putting a red X in the seat where the crusader that was dropped came from
-    var redX = document.createElement("img");
-    redX.setAttribute("src", "./images/empty_slot.png");
-    redX.setAttribute("width", 48);
-    redX.setAttribute("height", 48);
-    previousImageElement.appendChild(redX);
+  replacingImage.setAttribute("width", 40);
+  replacingImage.setAttribute("height", 40);
+  var redX = document.createElement("img");
+  redX.setAttribute("src", "./images/empty_slot.png");
+  redX.setAttribute("width", 48);
+  redX.setAttribute("height", 48);
+  redX.id = data;
+  var originalTd = document.getElementById("td_" + targetImage.id);
+
+  replacingImage.id = "img_form_" + data.split("_").pop();
+  targetImage.parentNode.replaceChild(replacingImage, targetImage);
+
+  if(document.getElementById("td_" + targetImage.id.split("_").pop()) !== null && replacingImageParent.id.split("_")[0] == "td") {
+    var replacedCrusader = targetImage;
+    var replacedCrusaderOriginalElement = document.getElementById(targetImage.id.split("_").pop());
+    targetImage.setAttribute("width", swappedSize);
+    targetImage.setAttribute("height", swappedSize);
+    targetImage.setAttribute("style", '');
+
+    replacingImage.parentNode.replaceChild(replacingImage, replacingImage);
+
+    targetImage.id = targetImage.id.split("_").pop();
+    replacedCrusaderOriginalElement.parentNode.replaceChild(targetImage, replacedCrusaderOriginalElement);
+
+    replacingImageParent.appendChild(redX);
   } else {
     targetImage.setAttribute("width", swappedSize);
     targetImage.setAttribute("height", swappedSize);
     targetImage.setAttribute("style", '');
-    previousImageElement.appendChild(targetImage);
+    if (targetImage.src.split("/").pop() == 'empty_slot.png' && data.substring(0,8) !== 'img_form') {
+      targetImage.id = data;
+    }
+    replacingImageParent.appendChild(targetImage);
   }
 }
 
@@ -197,14 +210,20 @@ function trashDrop(ev) {
   redX.setAttribute("src", "./images/empty_slot.png");
   redX.setAttribute("width", 40);
   redX.setAttribute("height", 40);
+  redX.id = 'img_form_crusader';
 
   var previousImageDiv = document.getElementById(data).parentNode;
 
   var previousImage = document.getElementById(data);
+  previousImage.id = data.split("_").pop();
   previousImage.setAttribute("width", 48);
   previousImage.setAttribute("height", 48);
+  previousImage.setAttribute("style", '');
 
   var originalTd = document.getElementById("td_" + data);
+  if (originalTd === null) {
+    originalTd = document.getElementById("td_" + data.split("_").pop());
+  }
   previousImageDiv.replaceChild(redX, previousImageDiv.childNodes[0]);
   originalTd.replaceChild(previousImage, originalTd.childNodes[0]);
 }

@@ -68,7 +68,7 @@ function format($number) {
   return $formatted_number;
 }
 
-function generate_formation_image($saved_form, $objective, $all_crusaders, $campaign_formations) {
+function generate_formation_image($saved_form, $objective, $all_crusaders, $campaign_formations, $draggable = false) {
   $saved_form_image = '';
   foreach($saved_form AS $position => $crusader) {
     if ($crusader > -1) {
@@ -85,6 +85,7 @@ function generate_formation_image($saved_form, $objective, $all_crusaders, $camp
       } else {
         ${"image$position"} = './images/empty_slot.png';
       }
+        ${"crusader_id_$position"} = $crusader;
     } else {
       ${"image$position"} = './images/empty_slot.png';
     }
@@ -93,10 +94,14 @@ function generate_formation_image($saved_form, $objective, $all_crusaders, $camp
     if ($formation['name'] == $objective) {
       foreach ($formation AS $id => $form) {
         if ($id !== 'name') {
+          $img_id = '';
+          if (!empty(${"crusader_id_$id"})) {
+             $img_id = 'id="img_form_crusader' . ${"crusader_id_$id"} . '"';
+          }
           if (!isset(${"image$id"})) {
             ${"image$id"} = './images/empty_slot.png';
           }
-          $saved_form_image .= '<div style="width: 40px; height: 40px; float: left; position: absolute; left:' . ($form['x'] - 30) * .6 .'px; top: ' . ($form['y'] * .64) . 'px" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="' . ${"image$id"} . '" style="width: 40px; height: 40px;" draggable="true"/></div>';
+          $saved_form_image .= '<div style="width: 40px; height: 40px; float: left; position: absolute; left:' . ($form['x'] - 30) * .6 .'px; top: ' . ($form['y'] * .64) . 'px" ondrop="drop(event)" ondragover="allowDrop(event)"><img ' . $img_id . ' src="' . ${"image$id"} . '" style="width: 40px; height: 40px;" draggable="true" ondragstart="drag(event)"/></div>';
         }
       }
     }
