@@ -14,8 +14,6 @@ if (!empty($_POST) && !empty($_POST['formation_id'])) {
     } else {
       $saved_form = $user_info->formation_saves['challenges']->{$_POST['formation_id']}->{$_POST['save_slot']}[0];
     }
-  } else {
-    $saved_form = array();
   }
   $saved_form_html .= '<div style="float: left; clear: left; position: relative; height: 400px; width: 500px; background-color: lightgray; border: 1px solid;">';
   $saved_form_html .= generate_formation_image($saved_form, $game_defines->campaign_formations[$_POST['formation_id']]['name'], $game_defines->crusaders, $game_defines->campaign_formations);
