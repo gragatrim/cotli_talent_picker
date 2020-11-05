@@ -3,6 +3,7 @@ include "navigation.php";
 $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
 
+$saved_form = array();
 if (!empty($_POST) && !empty($_POST['formation_id'])) {
   $saved_form_html = '';
   $saved_form_html .= '<b style="float: left; clear: left;">' . $game_defines->campaign_formations[$_POST['formation_id']]['name'] . '</b><br>';
@@ -41,7 +42,6 @@ foreach($game_defines->crusaders_in_seat_order AS $crusader_seat) {
 }
 $all_crusaders_div .= '</div>';
 ?>
-<div style="color:red;">This is still in "beta" some things might not work perfectly</div>
 <form style="float: left;" action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 <div style="float: left;padding-right: 5px; clear: left;">
 Formation Id: <input type="text" name="formation_id" value="<?php echo (isset($_POST['formation_id']) ? htmlspecialchars($_POST['formation_id']) : ''); ?>"><br>
