@@ -40,20 +40,21 @@ Page: <input type="text" name="page" value="<?php echo (isset($_POST['page']) ? 
 </form>
 <?php
 if (!empty($json_response->entries)) {
+  echo "<div style='color: red;'>All times are in CNE time</div>";
   foreach($json_response->entries AS $entry) {
     if (isset($entry->info->action) && $entry->info->action !== 'add_normal') {
       if (isset($entry->info->action) && $entry->info->action == 'upgrade_legendary') {
-        echo "Upgraded crusader " . $crusaders[$loot_definition[$entry->info->loot_id]->hero_id]->name . ", gear " . $loot_definition[$entry->info->loot_id]->name . " to level " . $entry->info->level . "<br>";
+        echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Upgraded crusader " . $crusaders[$loot_definition[$entry->info->loot_id]->hero_id]->name . ", gear " . $loot_definition[$entry->info->loot_id]->name . " to level " . $entry->info->level . "<br>";
       } else if (isset($entry->info->action) && $entry->info->action == 'craft_legendary') {
-        echo "Crafted legendary item " . $loot_definition[$entry->info->loot_id]->name . ", for crusader " . $crusaders[$loot_definition[$entry->info->loot_id]->hero_id]->name . "<br>";
+        echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Crafted legendary item " . $loot_definition[$entry->info->loot_id]->name . ", for crusader " . $crusaders[$loot_definition[$entry->info->loot_id]->hero_id]->name . "<br>";
       } else if (isset($entry->info->action) && $entry->info->action == 'disenchant_legendary') {
-        echo "Disenchanted legendary item " . $loot_definition[$entry->info->loot_id]->name . ", for crusader " . $crusaders[$loot_definition[$entry->info->loot_id]->hero_id]->name . "<br>";
+        echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Disenchanted legendary item " . $loot_definition[$entry->info->loot_id]->name . ", for crusader " . $crusaders[$loot_definition[$entry->info->loot_id]->hero_id]->name . "<br>";
       } else if (isset($entry->info->action) && $entry->info->action == 'start_mission') {
         $mission_crusaders = '';
         foreach($entry->info->hero_ids AS $hero) {
           $mission_crusaders .= ' ' . $crusaders[$hero]->name;
         }
-        echo "Started mission " . $missions[$entry->info->mission_id]->name . ", sent crusaders" . $mission_crusaders . " with success chance of " . $entry->info->success_chance . "<br>";
+        echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Started mission " . $missions[$entry->info->mission_id]->name . ", sent crusaders" . $mission_crusaders . " with success chance of " . $entry->info->success_chance . "<br>";
       } else if (isset($entry->info->action) && $entry->info->action == 'complete_mission') {
         if ($entry->info->successful == 1) {
           if (!empty($entry->info->rewards->enchantment)) {
@@ -61,7 +62,7 @@ if (!empty($json_response->entries)) {
             foreach($entry->info->rewards->enchantment->hero_ids AS $hero) {
               $mission_crusaders .= ' ' . $crusaders[$hero]->name;
             }
-            echo "Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", sent crusaders" . $mission_crusaders . " each received " . $entry->info->rewards->enchantment->points . " ep<br>";
+            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", sent crusaders" . $mission_crusaders . " each received " . $entry->info->rewards->enchantment->points . " ep<br>";
         } else if (!empty($entry->info->rewards->crafting_recipes)) {
             $crafting_reward = '';
             $hero_crafting_reward = '';
@@ -69,13 +70,13 @@ if (!empty($json_response->entries)) {
               $crafting_reward .= ' ' . $loot_definition[$crafting_recipe]->name;
               $hero_crafting_reward .= ' ' . $crusaders[$loot_definition[$crafting_recipe]->hero_id]->name;
             }
-            echo "Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is crafting recipe(s) for" . $crafting_reward .  " for crusader(s)" . $hero_crafting_reward . "<br>";
+            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is crafting recipe(s) for" . $crafting_reward .  " for crusader(s)" . $hero_crafting_reward . "<br>";
           } else if (!empty($entry->info->rewards->gold_time)) {
-            echo "Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is gold equal to " . $entry->info->rewards->gold_time . " seconds of gold<br>";
+            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is gold equal to " . $entry->info->rewards->gold_time . " seconds of gold<br>";
           } else if (!empty($entry->info->rewards->idols)) {
-            echo "Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->idols . " idols<br>";
+            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->idols . " idols<br>";
           } else if (!empty($entry->info->rewards->red_rubies)) {
-            echo "Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->red_rubies . " rubies<br>";
+            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->red_rubies . " rubies<br>";
           } else {
             echo "<pre>" . print_r($entry, true) . "</pre>";
           }
@@ -119,7 +120,7 @@ if (!empty($json_response->entries)) {
               }
             }
           }
-          echo "Opened " . $chests_opened . " " . $chest_type . " gained " . $common_mats . " common materials, " . $uncommon_mats . " uncommon materials, " . $rare_mats . " rare materials, and " . $epic_mats . " epic materials<br>";
+          echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Opened " . $chests_opened . " " . $chest_type . " gained " . $common_mats . " common materials, " . $uncommon_mats . " uncommon materials, " . $rare_mats . " rare materials, and " . $epic_mats . " epic materials<br>";
         } else {
           echo "<pre>" . print_r($entry, true) . "</pre>";
         }
@@ -129,20 +130,20 @@ if (!empty($json_response->entries)) {
       if (!empty($entry->info->objective_awards->dungeon_progress)) {
         $reset_reward .= ' also gained ' . $entry->info->objective_awards->dungeon_progress . ' dungeon points and ' . $entry->info->objective_awards->dungeon_coins . ' dungeon coins';
       }
-      echo "Reset on objective " . $game_defines->campaign_formations[$entry->info->objective_id]['name'] . " for " . $entry->info->idols->gained . " idols, in " . $entry->info->play_time/60 . " minutes at area " . $entry->info->current_area . $reset_reward . "<br>";
+      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Reset on objective " . $game_defines->campaign_formations[$entry->info->objective_id]['name'] . " for " . $entry->info->idols->gained . " idols, in " . $entry->info->play_time/60 . " minutes at area " . $entry->info->current_area . $reset_reward . "<br>";
     } else if (!empty($entry->info->reset_stats->rewards[0]->reward)) {
       if ($entry->info->reset_stats->rewards[0]->reward == 'challenge_tokens') {
         //The challenge rewards are split between 2 entries, so this fudges it so it reports on 1 line
-        echo "Reset for " . $entry->info->reset_stats->rewards[0]->amount . " challenge tokens and ";
+        echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Reset for " . $entry->info->reset_stats->rewards[0]->amount . " challenge tokens and ";
       } else {
         echo "<pre>" . print_r($entry, true) . "</pre>";
       }
     } else if (!empty($entry->info->code)) {
-      echo "Redeemed code " . $entry->info->code . "<br>";
+      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Redeemed code " . $entry->info->code . "<br>";
     } else if (isset($entry->info->action) && $entry->info->action === 'add_normal') {
       continue;
     } else if (isset($entry->info->objective_id)) {
-      echo "Started on objective " . $game_defines->campaign_formations[$entry->info->objective_id]['name'] . "<br>";
+      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Started on objective " . $game_defines->campaign_formations[$entry->info->objective_id]['name'] . "<br>";
     } else {
       //I'm not going to bother printing out buff uses currently
       if (empty($entry->info->buff_use_details)) {
