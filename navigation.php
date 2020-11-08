@@ -141,6 +141,46 @@ td.formation_table {
   background-size: contain;
   border: none;
 }
+
+.mission_gear_upgrade {
+  color: goldenrod;
+}
+
+.mission_enchantment {
+  color: blue;
+}
+
+.mission_gold {
+  color: red;
+}
+
+.mission_red_rubies {
+  color: mediumvioletred;
+}
+
+.mission_chest {
+  color: coral;
+}
+
+.mission_buff {
+  color: dimgray;
+}
+
+.mission_idols {
+  color: #6a0499;
+}
+
+.mission_claim_crusader {
+  color: magenta;
+}
+
+.mission_crafting_recipe {
+  color: cadetblue;
+}
+
+.mission_crafting_materials {
+  color: green;
+}
 </style>
 <script>
 function allowDrop(ev) {

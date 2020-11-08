@@ -1,6 +1,8 @@
 <?php
 include "navigation.php";
 
+$mission_legend = '<table style="float: right;"><tr><th colspan="2">Mission Legend</th></tr> <tr><td class="mission_gear_upgrade">mission_gear_upgrade</td></tr> <tr><td class="mission_enchantment">mission_enchantment</td></tr> <tr><td class="mission_gold">mission_gold</td></tr> <tr><td class="mission_red_rubies">mission_red_rubies</td></tr> <tr><td class="mission_chest">mission_chest</td></tr> <tr><td class="mission_buff">mission_buff</td></tr> <tr><td class="mission_idols">mission_idols</td></tr> <tr><td class="mission_claim_crusader">mission_claim_crusader</td></tr> <tr><td class="mission_crafting_recipe">mission_crafting_recipe</td></tr> <tr><td class="mission_crafting_materials">mission_crafting_materials</td></tr> </table>';
+echo $mission_legend;
 $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
 if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
@@ -97,7 +99,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
       $crusader_names[] = $game_defines->crusaders[$crusader_id['id']]->name;
     }
     sort($crusader_names);
-    $mission_suggestions .= '<div style="float: left; clear: left;"><b>' . $mission->name . '</b> will result in ' . $simulation->high_score['score'] . '% chance of success with the following crusaders: ';
+    $mission_suggestions .= '<div style="float: left; clear: left;" ><b class="mission_' . $mission->reward[0]->reward . '">' . $mission->name . '</b> will result in ' . $simulation->high_score['score'] . '% chance of success with the following crusaders: ';
     $mission_crusader_names = '';
     foreach ($crusader_names AS $crusader_name) {
       $mission_crusader_names .= $crusader_name . ', ';
@@ -295,4 +297,4 @@ class Simulation {
 if (!empty($mission_suggestions)) {
   echo $mission_suggestions;
 }
-?>
+
