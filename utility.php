@@ -234,4 +234,14 @@ function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_mat
 
   return $total_mats;
 }
+
+function generate_formation_table($game_defines) {
+  $all_formations = '<table style="float:right;" class="borderless"><tr><th class="borderless">Id</th><th class="borderless">Formation Name</th></tr>';
+  foreach ($game_defines->campaign_formations AS $id => $campaign_formations) {
+    $all_formations .= '<tr><td class="borderless">' . $id . '</td><td class="borderless">' . $campaign_formations['name'] . '</td></tr>';
+  }
+  $all_formations .= '</table>';
+  return $all_formations;
+}
 ?>
+

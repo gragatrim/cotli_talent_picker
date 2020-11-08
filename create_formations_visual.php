@@ -52,12 +52,7 @@ Raw User Data: <input autocomplete="off" type="text" name="raw_user_data" value=
 </form>
 <?php echo $all_crusaders_div; ?>
 <?php
-$all_formations = '<table style="float:right;" class="borderless"><tr><th class="borderless">Id</th><th class="borderless">Formation Name</th></tr>';
-foreach ($game_defines->campaign_formations AS $id => $campaign_formations) {
-  $all_formations .= '<tr><td class="borderless">' . $id . '</td><td class="borderless">' . $campaign_formations['name'] . '</td></tr>';
-}
-$all_formations .= '</table>';
-echo $all_formations;
+echo generate_formation_table($game_defines);
 if (!empty($saved_form_html)) {
   echo $saved_form_html;
 }

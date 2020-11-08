@@ -10,7 +10,20 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
     if ($campaign == $user_info->user_json->current_campaign_id) {
       foreach ($saved_forms AS $saved_form_id => $saved_form) {
         foreach ($saved_form[0] AS $crusaders_in_form) {
-          $crusaders_in_saved_forms[$crusaders_in_form] = $crusaders_in_form;
+          if (empty($_POST["saved_slot_$saved_form_id"]) && $crusaders_in_form > 0) {
+            $crusaders_in_saved_forms[$crusaders_in_form] = $crusaders_in_form;
+          }
+        }
+      }
+    }
+  }
+  foreach ($user_info->formation_saves['challenges'] AS $campaign => $saved_forms) {
+    if ($campaign == $user_info->user_json->current_objective_id) {
+      foreach ($saved_forms AS $saved_form_id => $saved_form) {
+        foreach ($saved_form[0] AS $crusaders_in_form) {
+          if (empty($_POST["saved_slot_$saved_form_id"]) && $crusaders_in_form > 0) {
+            $crusaders_in_saved_forms[$crusaders_in_form] = $crusaders_in_form;
+          }
         }
       }
     }
@@ -63,21 +76,28 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
       foreach ($user_info->crusader_loot[$available_crusader->hero_id] AS $loot) {
         $crusader_loot[$loot->slot_id] = $loot->rarity;
       }
+      $crusader_runes = array();
+      foreach ($game_defines->crusaders[$available_crusader->hero_id]->hero_gem_slots AS $rune_slot => $runes) {
+        if (!empty($runes->effects[0])) {
+          $crusader_runes[$rune_slot] = $runes->effects[0];
+        }
+      }
       $mission_crusaders[$available_crusader->hero_id] = array('matching_tags' => $matching_tags_count,
                                                                'enchantment_points' => $available_crusader->disenchant,
                                                                'crusader' => $available_crusader,
                                                                'id' => $available_crusader->hero_id,
                                                                'loot' => $crusader_loot,
+                                                               'runes' => $crusader_runes,
                                                                'tags' => $tags);
     }
     $simulation = new Simulation($mission);
-    $runs = $simulation->run_search($mission_crusaders, $_POST['seconds_to_simulate']);
+    $runs = $simulation->run_search($mission_crusaders, $_POST['seconds_to_simulate'], $_POST['mission_ep_weighting'], $_POST['mission_rune_weighting']);
     $crusader_names = array();
     foreach ($simulation->results[0] AS $crusader_id) {
       $crusader_names[] = $game_defines->crusaders[$crusader_id['id']]->name;
     }
     sort($crusader_names);
-    $mission_suggestions .= '<div style="float: left; clear: both;"><b>' . $mission->name . '</b> will result in ' . $simulation->high_score . '% chance of success with the following crusaders: ';
+    $mission_suggestions .= '<div style="float: left; clear: left;"><b>' . $mission->name . '</b> will result in ' . $simulation->high_score['score'] . '% chance of success with the following crusaders: ';
     $mission_crusader_names = '';
     foreach ($crusader_names AS $crusader_name) {
       $mission_crusader_names .= $crusader_name . ', ';
@@ -140,10 +160,11 @@ class Mission {
     }
   }
 
-  public function evaluate_mission_score($crusaders) {
+  public function evaluate_mission_score($crusaders, $mission_ep_weighting = 1000, $mission_rune_weighting = 1) {
     $score = 100;
     $missing_ep = 0;
     $gear_points = 0;
+    $score_modifier = 0;
     $needed_tags = $this->required_tags;
     $crusader_tags = array();
     $needed_tag_count = array();
@@ -155,6 +176,15 @@ class Mission {
       }
     }
     foreach ($crusaders AS $crusader) {
+      //This will add a modifier(possibly raising the score over 100) for crusaders with special effects, as well as crusaders with the least amount of ep
+      if ($this->reward[0]->reward == 'enchantment') {
+        if ($crusader['runes'][4] == 'missionEP') {
+          if (!empty($crusader['crusader']->gems->{4})) {
+            $score_modifier += $mission_rune_weighting * (($crusader['crusader']->gems->{4}->level - 1) * 1.5 + 2);
+          }
+        }
+        $score_modifier += (1 / $crusader['enchantment_points']) * $mission_ep_weighting;
+      }
       foreach($crusader['tags'] AS $tag) {
         if (!empty($crusader_tags[$tag])) {
           $crusader_tags[$tag] += 1;
@@ -192,7 +222,8 @@ class Mission {
     if (!empty($this->properties->gear_check)) {
       $score -= ($this->gear_success * 8 * 3) - $gear_points;
     }
-    return $score;
+    $score_array = array('score' => $score, 'modified_score' => ($score + $score_modifier));
+    return $score_array;
   }
 }
 
@@ -200,11 +231,11 @@ class Simulation {
   function __construct($mission) {
     $this->mission = $mission;
     $this->results = array();
-    $this->high_score = 0;
+    $this->high_score = array('modified_score' => 0, 'score' => 0);
   }
 
   /** From given crusaders, repeatedly run simulations until timeout */
-  public function run_search($crusaders, $timeout = 1) {
+  public function run_search($crusaders, $timeout = 1, $mission_ep_weighting = 1000, $mission_rune_weighting = 1) {
     if ($timeout > 5) {
       $timeout = 5;
     }
@@ -216,12 +247,12 @@ class Simulation {
       foreach ($test_mission_keys AS $id) {
         $test_mission[] = $crusaders[$id];
       }
-      $test_mission_score = $this->mission->evaluate_mission_score($test_mission);
-      if ($test_mission_score > $this->high_score) {
+      $test_mission_score = $this->mission->evaluate_mission_score($test_mission, $mission_ep_weighting, $mission_rune_weighting);
+      if ($test_mission_score['modified_score'] > $this->high_score['modified_score']) {
         $this->results = array();
         $this->results[] = $test_mission;
         $this->high_score = $test_mission_score;
-      } else if ($test_mission_score == $this->high_score) {
+      } else if ($test_mission_score['modified_score'] == $this->high_score['modified_score']) {
         $this->results[] = $test_mission;
       }
       $total_sims++;
@@ -233,12 +264,30 @@ class Simulation {
 ?>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 <div style="color: red;">This is still in beta! I will be adding more features as time goes on, if you get results that don't make sense please let me know on discord</div>
-<div>This will suggest the best options for what crusaders to send out on missions. It currently ignores the crusaders in your saved formations, and who are already on missions. It also should correctly handle the current skins you have equipped.</div>
-<div> It's simulating different permutations of crusaders, so if you don't get 100% raise the time to simulate.</div>
+<div style="width: 1200px">
+  <ul>
+    <li>This will suggest a decent option for what crusaders to send out on your currently available missions.</li>
+    <li>It ignores the crusaders who are already on missions, as well as crusaders in your current objective's saved forms(with the option to allow crusaders in specific saved forms).</li>
+    <li>It also should correctly handle the current skins you have equipped.</li>
+    <li>It's simulating different permutations of crusaders, so if you don't get 100% raise the time to simulate.</li>
+    <li>For EP missions by default it will attempt to send out crusaders that have the lowest EP, and who will also end up generating the most EP from the mission.</li>
+    <li>You can modify the mission ep/rune weighting if you want it to prioritize certain crusaders for <b>EP missions only</b>.</li>
+    <li>The higher you put the ep weighting, the more it'll suggest sending out crusaders with lower EP(this could even possibly result in not being able to 100% the mission).</li>
+  </ul>
+</div>
 <div style="float: left;padding-right: 5px; clear: left;">
   User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
   User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
+  <div>Allow crusaders in save slots:
+  <input type="checkbox" value='1' id="saved_slot_1" name="saved_slot_1" <?php echo (isset($_POST['saved_slot_1']) ? 'checked' : ''); ?>><label for="saved_slot_1">1</label>
+  <input type="checkbox" value='1' id="saved_slot_2" name="saved_slot_2" <?php echo (isset($_POST['saved_slot_2']) ? 'checked' : ''); ?>><label for="saved_slot_2">2</label>
+  <input type="checkbox" value='1' id="saved_slot_3" name="saved_slot_3" <?php echo (isset($_POST['saved_slot_3']) ? 'checked' : ''); ?>><label for="saved_slot_3">3</label>
+  <input type="checkbox" value='1' id="saved_slot_4" name="saved_slot_4" <?php echo (isset($_POST['saved_slot_4']) ? 'checked' : ''); ?>><label for="saved_slot_4">4</label>
+  <input type="checkbox" value='1' id="saved_slot_5" name="saved_slot_5" <?php echo (isset($_POST['saved_slot_5']) ? 'checked' : ''); ?>><label for="saved_slot_5">5</label> (If a crusader is in multiple forms and you want them to be considered, you need to allow all forms they are in)</div>
+  <div style="color: red;"> Only change these if you know what you are doing!</div>
   Seconds to simulate each mission(pick a number <= 5): <input type="text" name="seconds_to_simulate" value="<?php echo (isset($_POST['seconds_to_simulate']) ? htmlspecialchars($_POST['seconds_to_simulate']) : .1); ?>"><br>
+  Mission EP Weighting: <input type="text" name="mission_ep_weighting" value="<?php echo (isset($_POST['mission_ep_weighting']) ? htmlspecialchars($_POST['mission_ep_weighting']) : 1000); ?>"><br>
+  Mission Rune Weighting: <input type="text" name="mission_rune_weighting" value="<?php echo (isset($_POST['mission_rune_weighting']) ? htmlspecialchars($_POST['mission_rune_weighting']) : 1); ?>"><br>
 </div>
 <input style="clear:both; float: left;" type="submit">
 </form>
@@ -247,4 +296,3 @@ if (!empty($mission_suggestions)) {
   echo $mission_suggestions;
 }
 ?>
-
