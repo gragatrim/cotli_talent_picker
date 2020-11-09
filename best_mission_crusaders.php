@@ -1,7 +1,18 @@
 <?php
 include "navigation.php";
 
-$mission_legend = '<table style="float: right;"><tr><th colspan="2">Mission Legend</th></tr> <tr><td class="mission_gear_upgrade">mission_gear_upgrade</td></tr> <tr><td class="mission_enchantment">mission_enchantment</td></tr> <tr><td class="mission_gold">mission_gold</td></tr> <tr><td class="mission_red_rubies">mission_red_rubies</td></tr> <tr><td class="mission_chest">mission_chest</td></tr> <tr><td class="mission_buff">mission_buff</td></tr> <tr><td class="mission_idols">mission_idols</td></tr> <tr><td class="mission_claim_crusader">mission_claim_crusader</td></tr> <tr><td class="mission_crafting_recipe">mission_crafting_recipe</td></tr> <tr><td class="mission_crafting_materials">mission_crafting_materials</td></tr> </table>';
+$mission_legend = '<table style="float: right;"><tr><th>Mission Legend</th></tr>
+                    <tr><td class="mission_gear_upgrade">Gear Upgrade Mission</td></tr>
+                    <tr><td class="mission_enchantment">Enchantment Mission</td></tr>
+                    <tr><td class="mission_gold">Gold Mission</td></tr>
+                    <tr><td class="mission_red_rubies">Red Ruby Mission</td></tr>
+                    <tr><td class="mission_chest">Chest Mission</td></tr>
+                    <tr><td class="mission_buff">Buff Mission</td></tr>
+                    <tr><td class="mission_idols">Idol Mission</td></tr>
+                    <tr><td class="mission_claim_crusader">Claim Crusader Mission</td></tr>
+                    <tr><td class="mission_crafting_recipe">Crafting Recipe Mission</td></tr>
+                    <tr><td class="mission_crafting_materials">Crafting Materials Mission</td></tr>
+                  </table>';
 echo $mission_legend;
 $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
@@ -198,7 +209,6 @@ class Mission {
         $missing_ep = max(($this->properties->required_level - $crusader['enchantment_points']), 0);
       }
       if (!empty($this->properties->gear_check)) {
-        $gear_points = 0;
         foreach ($crusader['loot'] AS $crusader_loot) {
           $gear_points += $this->gear_success * pow(2, min(($crusader_loot - 1), 3));
         }
@@ -222,7 +232,7 @@ class Mission {
     }
     //This adjusts the score based on missing gear levels
     if (!empty($this->properties->gear_check)) {
-      $score -= ($this->gear_success * 8 * 3) - $gear_points;
+      $score -= ($this->gear_success * 8 * 3 * $this->slots) - $gear_points;
     }
     $score_array = array('score' => $score, 'modified_score' => ($score + $score_modifier));
     return $score_array;

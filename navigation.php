@@ -144,42 +144,52 @@ td.formation_table {
 
 .mission_gear_upgrade {
   color: goldenrod;
+  font-weight: bold;
 }
 
 .mission_enchantment {
   color: blue;
+  font-weight: bold;
 }
 
 .mission_gold {
   color: red;
+  font-weight: bold;
 }
 
 .mission_red_rubies {
   color: mediumvioletred;
+  font-weight: bold;
 }
 
 .mission_chest {
   color: coral;
+  font-weight: bold;
 }
 
 .mission_buff {
   color: dimgray;
+  font-weight: bold;
 }
 
 .mission_idols {
   color: #6a0499;
+  font-weight: bold;
 }
 
 .mission_claim_crusader {
   color: magenta;
+  font-weight: bold;
 }
 
 .mission_crafting_recipe {
   color: cadetblue;
+  font-weight: bold;
 }
 
 .mission_crafting_materials {
   color: green;
+  font-weight: bold;
 }
 </style>
 <script>
