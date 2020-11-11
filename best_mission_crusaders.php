@@ -19,6 +19,7 @@ $game_json = $game_defines->game_json;
 if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
   $user_info = new UserDefines('', $_POST['user_id'], $_POST['user_hash']);
   $crusaders_in_saved_forms = array();
+  $speed_runner_modifier = (100 - $game_defines->talents[51]->effects[0]->per_level * $user_info->talents[51]) / 100;
   foreach ($user_info->formation_saves['campaigns'] AS $campaign => $saved_forms) {
     if ($campaign == $user_info->user_json->current_campaign_id) {
       foreach ($saved_forms AS $saved_form_id => $saved_form) {
@@ -68,7 +69,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
   }
   $missions = array();
   foreach ($user_info->missions['available_missions'] as $available_missions) {
-    $missions[] = new Mission($game_defines->missions[$available_missions->mission_id]);
+    $missions[] = new Mission($game_defines->missions[$available_missions->mission_id], $speed_runner_modifier);
   }
   $mission_suggestions = '';
   foreach ($missions AS $mission) {
@@ -104,7 +105,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
                                                                'tags' => $tags);
     }
     $simulation = new Simulation($mission);
-    $runs = $simulation->run_search($mission_crusaders, $_POST['seconds_to_simulate'], $_POST['mission_ep_weighting'], $_POST['mission_rune_weighting']);
+    $runs = $simulation->run_search($mission_crusaders, $_POST['seconds_to_simulate'], $_POST['mission_ep_weighting'], $_POST['mission_rune_weighting'], $_POST['speed_rune_weighting']);
     $crusader_names = array();
     foreach ($simulation->results[0] AS $crusader_id) {
       $crusader_names[] = $game_defines->crusaders[$crusader_id['id']]->name;
@@ -120,12 +121,14 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
 }
 
 class Mission {
-  function __construct($mission) {
+  function __construct($mission, $speed_runner_modifier) {
     $this->id = $mission->id;
+    $this->speed_runner_modifier = $speed_runner_modifier;
     $this->base_success = $mission->base_success;
     $this->name = $mission->name;
     $this->description = $mission->description;
     $this->slots = $mission->slots;
+    $this->duration = $mission->duration * $speed_runner_modifier;
     if (isset($mission->required_tags)) {
       $this->required_tags = $mission->required_tags;
     } else {
@@ -173,7 +176,7 @@ class Mission {
     }
   }
 
-  public function evaluate_mission_score($crusaders, $mission_ep_weighting = 1000, $mission_rune_weighting = 1) {
+  public function evaluate_mission_score($crusaders, $mission_ep_weighting = 1000, $mission_rune_weighting = 1, $speed_rune_weighting = 1) {
     $score = 100;
     $missing_ep = 0;
     $gear_points = 0;
@@ -197,6 +200,9 @@ class Mission {
           }
         }
         $score_modifier += (1 / $crusader['enchantment_points']) * $mission_ep_weighting;
+      }
+      if ($crusader['runes'][4] == 'missionSpeed' && $this->duration >= 10800) {
+        $score_modifier += $speed_rune_weighting / 1000000 * ($crusader['crusader']->gems->{4}->level) * $this->duration;
       }
       foreach($crusader['tags'] AS $tag) {
         if (!empty($crusader_tags[$tag])) {
@@ -247,7 +253,7 @@ class Simulation {
   }
 
   /** From given crusaders, repeatedly run simulations until timeout */
-  public function run_search($crusaders, $timeout = 1, $mission_ep_weighting = 1000, $mission_rune_weighting = 1) {
+  public function run_search($crusaders, $timeout = 1, $mission_ep_weighting = 1000, $mission_rune_weighting = 1, $speed_rune_weighting = 1) {
     if ($timeout > 5) {
       $timeout = 5;
     }
@@ -259,7 +265,7 @@ class Simulation {
       foreach ($test_mission_keys AS $id) {
         $test_mission[] = $crusaders[$id];
       }
-      $test_mission_score = $this->mission->evaluate_mission_score($test_mission, $mission_ep_weighting, $mission_rune_weighting);
+      $test_mission_score = $this->mission->evaluate_mission_score($test_mission, $mission_ep_weighting, $mission_rune_weighting, $speed_rune_weighting);
       if ($test_mission_score['modified_score'] > $this->high_score['modified_score']) {
         $this->results = array();
         $this->results[] = $test_mission;
@@ -300,6 +306,7 @@ class Simulation {
   Seconds to simulate each mission(pick a number <= 5): <input type="text" name="seconds_to_simulate" value="<?php echo (isset($_POST['seconds_to_simulate']) ? htmlspecialchars($_POST['seconds_to_simulate']) : .1); ?>"><br>
   Mission EP Weighting: <input type="text" name="mission_ep_weighting" value="<?php echo (isset($_POST['mission_ep_weighting']) ? htmlspecialchars($_POST['mission_ep_weighting']) : 1000); ?>"><br>
   Mission Rune Weighting: <input type="text" name="mission_rune_weighting" value="<?php echo (isset($_POST['mission_rune_weighting']) ? htmlspecialchars($_POST['mission_rune_weighting']) : 1); ?>"><br>
+  Mission Speed Rune Weighting: <input type="text" name="speed_rune_weighting" value="<?php echo (isset($_POST['speed_rune_weighting']) ? htmlspecialchars($_POST['speed_rune_weighting']) : 1); ?>"><br>
 </div>
 <input style="clear:both; float: left;" type="submit">
 </form>
