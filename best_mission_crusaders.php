@@ -199,10 +199,10 @@ class Mission {
             $score_modifier += $mission_rune_weighting * (($crusader['crusader']->gems->{4}->level - 1) * 1.5 + 2);
           }
         }
-        $score_modifier += (1 / $crusader['enchantment_points']) * $mission_ep_weighting;
+        $score_modifier += (1 / $crusader['enchantment_points']) * $mission_ep_weighting * 1000;
       }
       if ($crusader['runes'][4] == 'missionSpeed' && $this->duration >= 10800) {
-        $score_modifier += $speed_rune_weighting / 1000000 * ($crusader['crusader']->gems->{4}->level) * $this->duration;
+        $score_modifier += $speed_rune_weighting * ($crusader['crusader']->gems->{4}->level) * (1 + $this->duration / 1000000);
       }
       foreach($crusader['tags'] AS $tag) {
         if (!empty($crusader_tags[$tag])) {
@@ -302,9 +302,9 @@ class Simulation {
   <input type="checkbox" value='1' id="saved_slot_3" name="saved_slot_3" <?php echo (isset($_POST['saved_slot_3']) ? 'checked' : ''); ?>><label for="saved_slot_3">3</label>
   <input type="checkbox" value='1' id="saved_slot_4" name="saved_slot_4" <?php echo (isset($_POST['saved_slot_4']) ? 'checked' : ''); ?>><label for="saved_slot_4">4</label>
   <input type="checkbox" value='1' id="saved_slot_5" name="saved_slot_5" <?php echo (isset($_POST['saved_slot_5']) ? 'checked' : ''); ?>><label for="saved_slot_5">5</label> (If a crusader is in multiple forms and you want them to be considered, you need to allow all forms they are in)</div>
-  <div style="color: red;"> Only change these if you know what you are doing!</div>
+  <div style="color: red;"> Only change these if you know what you are doing!(values should generally be between 0-100, if 0 it won't give any special weighting)</div>
   Seconds to simulate each mission(pick a number <= 5): <input type="text" name="seconds_to_simulate" value="<?php echo (isset($_POST['seconds_to_simulate']) ? htmlspecialchars($_POST['seconds_to_simulate']) : .1); ?>"><br>
-  Mission EP Weighting: <input type="text" name="mission_ep_weighting" value="<?php echo (isset($_POST['mission_ep_weighting']) ? htmlspecialchars($_POST['mission_ep_weighting']) : 1000); ?>"><br>
+  Mission EP Weighting: <input type="text" name="mission_ep_weighting" value="<?php echo (isset($_POST['mission_ep_weighting']) ? htmlspecialchars($_POST['mission_ep_weighting']) : 1); ?>"><br>
   Mission Rune Weighting: <input type="text" name="mission_rune_weighting" value="<?php echo (isset($_POST['mission_rune_weighting']) ? htmlspecialchars($_POST['mission_rune_weighting']) : 1); ?>"><br>
   Mission Speed Rune Weighting: <input type="text" name="speed_rune_weighting" value="<?php echo (isset($_POST['speed_rune_weighting']) ? htmlspecialchars($_POST['speed_rune_weighting']) : 1); ?>"><br>
 </div>
