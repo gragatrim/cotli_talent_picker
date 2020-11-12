@@ -1,6 +1,5 @@
 <?php
 include "navigation.php";
-
 $mission_legend = '<table style="float: right;"><tr><th>Mission Legend</th></tr>
                     <tr><td class="mission_gear_upgrade">Gear Upgrade Mission</td></tr>
                     <tr><td class="mission_enchantment">Enchantment Mission</td></tr>
@@ -57,7 +56,12 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
   }
   $available_crusaders = array();
   foreach ($user_info->crusaders AS $crusader) {
-    if (!in_array($crusader->hero_id, $crusaders_on_mission) && $crusader->owned == 1 && !in_array($crusader->hero_id, $user_info->user_json->formation) && !in_array($crusader->hero_id, $crusaders_in_saved_forms)) {
+    if (!empty($_POST['allow_crusaders_in_play'])) {
+      $allow_crusaders_in_play = true;
+    } else {
+      $allow_crusaders_in_play = !in_array($crusader->hero_id, $user_info->user_json->formation);
+    }
+    if (!in_array($crusader->hero_id, $crusaders_on_mission) && $crusader->owned == 1 && $allow_crusaders_in_play && !in_array($crusader->hero_id, $crusaders_in_saved_forms)) {
       $available_crusaders[$crusader->hero_id] = $user_info->crusaders[$crusader->hero_id];
       $available_crusaders[$crusader->hero_id]->properties = new \stdClass();
       $available_crusaders[$crusader->hero_id]->properties->tags = new \stdClass();
@@ -106,7 +110,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
                                                                'tags' => $tags);
     }
     $simulation = new Simulation($mission);
-    $runs = $simulation->run_search($mission_crusaders, $_POST['seconds_to_simulate'], $_POST['mission_ep_weighting'], $_POST['mission_rune_weighting'], $_POST['speed_rune_weighting']);
+    $runs = $simulation->run_search($mission_crusaders, $_POST['seconds_to_simulate'], $_POST['mission_ep_weighting'], $_POST['mission_rune_weighting'], $_POST['speed_rune_weighting'], $_POST['double_reward_rune_weighting']);
     $crusader_names = array();
     foreach ($simulation->results[0] AS $crusader_id) {
       $crusader_names[] = $game_defines->crusaders[$crusader_id['id']]->name;
@@ -177,7 +181,7 @@ class Mission {
     }
   }
 
-  public function evaluate_mission_score($crusaders, $mission_ep_weighting = 1000, $mission_rune_weighting = 1, $speed_rune_weighting = 1) {
+  public function evaluate_mission_score($crusaders, $mission_ep_weighting = 1000, $mission_rune_weighting = 1, $speed_rune_weighting = 1, $double_reward_rune_weighting = 1) {
     $score = 100;
     $missing_ep = 0;
     $gear_points = 0;
@@ -204,6 +208,9 @@ class Mission {
       }
       if ($crusader['runes'][4] == 'missionSpeed' && $this->duration >= 10800) {
         $score_modifier += $speed_rune_weighting * ($crusader['crusader']->gems->{4}->level) * (1 + $this->duration / 1000000);
+      }
+      if ($crusader['runes'][4] == 'missionDouble' && $this->reward[0]->reward != 'mission_claim_crusader') {
+        $score_modifier += $double_reward_rune_weighting * (1 + $crusader['crusader']->gems->{4}->level * .25);
       }
       foreach($crusader['tags'] AS $tag) {
         if (!empty($crusader_tags[$tag])) {
@@ -254,7 +261,7 @@ class Simulation {
   }
 
   /** From given crusaders, repeatedly run simulations until timeout */
-  public function run_search($crusaders, $timeout = 1, $mission_ep_weighting = 1000, $mission_rune_weighting = 1, $speed_rune_weighting = 1) {
+  public function run_search($crusaders, $timeout = 1, $mission_ep_weighting = 1000, $mission_rune_weighting = 1, $speed_rune_weighting = 1, $double_reward_rune_weighting = 1) {
     if ($timeout > 5) {
       $timeout = 5;
     }
@@ -266,7 +273,7 @@ class Simulation {
       foreach ($test_mission_keys AS $id) {
         $test_mission[] = $crusaders[$id];
       }
-      $test_mission_score = $this->mission->evaluate_mission_score($test_mission, $mission_ep_weighting, $mission_rune_weighting, $speed_rune_weighting);
+      $test_mission_score = $this->mission->evaluate_mission_score($test_mission, $mission_ep_weighting, $mission_rune_weighting, $speed_rune_weighting, $double_reward_rune_weighting);
       if ($test_mission_score['modified_score'] > $this->high_score['modified_score']) {
         $this->results = array();
         $this->results[] = $test_mission;
@@ -303,11 +310,13 @@ class Simulation {
   <input type="checkbox" value='1' id="saved_slot_3" name="saved_slot_3" <?php echo (isset($_POST['saved_slot_3']) ? 'checked' : ''); ?>><label for="saved_slot_3">3</label>
   <input type="checkbox" value='1' id="saved_slot_4" name="saved_slot_4" <?php echo (isset($_POST['saved_slot_4']) ? 'checked' : ''); ?>><label for="saved_slot_4">4</label>
   <input type="checkbox" value='1' id="saved_slot_5" name="saved_slot_5" <?php echo (isset($_POST['saved_slot_5']) ? 'checked' : ''); ?>><label for="saved_slot_5">5</label> (If a crusader is in multiple forms and you want them to be considered, you need to allow all forms they are in)</div>
+  Allow Crusaders currently in play<input type="checkbox" value='1' id="allow_crusaders_in_play" name="allow_crusaders_in_play" <?php echo (isset($_POST['allow_crusaders_in_play']) ? 'checked' : ''); ?>><label for="saved_slot_1">Yes</label>
   <div style="color: red;"> Only change these if you know what you are doing!(values should generally be between 0-100, if 0 it won't give any special weighting)</div>
   Seconds to simulate each mission(pick a number <= 5): <input type="text" name="seconds_to_simulate" value="<?php echo (isset($_POST['seconds_to_simulate']) ? htmlspecialchars($_POST['seconds_to_simulate']) : .1); ?>"><br>
   Mission EP Weighting: <input type="text" name="mission_ep_weighting" value="<?php echo (isset($_POST['mission_ep_weighting']) ? htmlspecialchars($_POST['mission_ep_weighting']) : 1); ?>"><br>
   Mission Rune Weighting: <input type="text" name="mission_rune_weighting" value="<?php echo (isset($_POST['mission_rune_weighting']) ? htmlspecialchars($_POST['mission_rune_weighting']) : 1); ?>"><br>
   Mission Speed Rune Weighting: <input type="text" name="speed_rune_weighting" value="<?php echo (isset($_POST['speed_rune_weighting']) ? htmlspecialchars($_POST['speed_rune_weighting']) : 1); ?>"><br>
+  Double Reward Rune Weighting: <input type="text" name="double_reward_rune_weighting" value="<?php echo (isset($_POST['double_reward_rune_weighting']) ? htmlspecialchars($_POST['double_reward_rune_weighting']) : 1); ?>"><br>
 </div>
 <input style="clear:both; float: left;" type="submit">
 </form>
