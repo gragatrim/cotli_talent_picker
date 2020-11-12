@@ -191,6 +191,11 @@ td.formation_table {
   color: green;
   font-weight: bold;
 }
+
+.gem_solvent {
+  color: navy;
+  font-weight: bold;
+}
 </style>
 <script>
 function allowDrop(ev) {

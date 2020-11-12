@@ -12,6 +12,7 @@ $mission_legend = '<table style="float: right;"><tr><th>Mission Legend</th></tr>
                     <tr><td class="mission_claim_crusader">Claim Crusader Mission</td></tr>
                     <tr><td class="mission_crafting_recipe">Crafting Recipe Mission</td></tr>
                     <tr><td class="mission_crafting_materials">Crafting Materials Mission</td></tr>
+                    <tr><td class="gem_solvent">Rune Solvent</td></tr>
                   </table>';
 echo $mission_legend;
 $game_defines = new GameDefines();
