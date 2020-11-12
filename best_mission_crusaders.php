@@ -112,8 +112,10 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
     $simulation = new Simulation($mission);
     $runs = $simulation->run_search($mission_crusaders, $_POST['seconds_to_simulate'], $_POST['mission_ep_weighting'], $_POST['mission_rune_weighting'], $_POST['speed_rune_weighting'], $_POST['double_reward_rune_weighting']);
     $crusader_names = array();
-    foreach ($simulation->results[0] AS $crusader_id) {
-      $crusader_names[] = $game_defines->crusaders[$crusader_id['id']]->name;
+    foreach ($simulation->results[0] AS $id => $crusader_id) {
+      if ($id !== 'modified_time') {
+        $crusader_names[] = $game_defines->crusaders[$crusader_id['id']]->name;
+      }
     }
     sort($crusader_names);
     $mission_suggestions .= '<div style="float: left; clear: left;" ><b class="mission_' . $mission->reward[0]->reward . '">' . $mission->name . '</b> will result in ' . $simulation->high_score['score'] . '% chance of success with the following crusaders: ';
@@ -121,7 +123,11 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
     foreach ($crusader_names AS $crusader_name) {
       $mission_crusader_names .= $crusader_name . ', ';
     }
-    $mission_suggestions .= trim($mission_crusader_names, ', ') . '</div>';
+    $mission_suggestions .= trim($mission_crusader_names, ', ');
+    if ($mission->duration >= 10800 && $simulation->results[0]['modified_time'] != $mission->duration) {
+      $mission_suggestions .= ' it will now take only ' . seconds_to_time($simulation->results[0]['modified_time']);
+    }
+    $mission_suggestions .= '</div>';
   }
 }
 
@@ -186,6 +192,7 @@ class Mission {
     $missing_ep = 0;
     $gear_points = 0;
     $score_modifier = 0;
+    $time_modifier = 1;
     $needed_tags = $this->required_tags;
     $crusader_tags = array();
     $needed_tag_count = array();
@@ -206,10 +213,11 @@ class Mission {
         }
         $score_modifier += (1 / $crusader['enchantment_points']) * $mission_ep_weighting * 1000;
       }
-      if ($crusader['runes'][4] == 'missionSpeed' && $this->duration >= 10800) {
+      if ($crusader['runes'][4] == 'missionSpeed' && $this->duration >= 10800 && !empty($crusader['crusader']->gems->{4})) {
         $score_modifier += $speed_rune_weighting * ($crusader['crusader']->gems->{4}->level) * (1 + $this->duration / 1000000);
+        $time_modifier *= (1 - ($crusader['crusader']->gems->{4}->level * .05));
       }
-      if ($crusader['runes'][4] == 'missionDouble' && $this->reward[0]->reward != 'mission_claim_crusader') {
+      if ($crusader['runes'][4] == 'missionDouble' && $this->reward[0]->reward != 'mission_claim_crusader' && !empty($crusader['crusader']->gems->{4})) {
         $score_modifier += $double_reward_rune_weighting * (1 + $crusader['crusader']->gems->{4}->level * .25);
       }
       foreach($crusader['tags'] AS $tag) {
@@ -248,7 +256,7 @@ class Mission {
     if (!empty($this->properties->gear_check)) {
       $score -= ($this->gear_success * 8 * 3 * $this->slots) - $gear_points;
     }
-    $score_array = array('score' => $score, 'modified_score' => ($score + $score_modifier));
+    $score_array = array('score' => $score, 'modified_score' => ($score + $score_modifier), 'modified_time' => ($time_modifier * $this->duration));
     return $score_array;
   }
 }
@@ -276,15 +284,24 @@ class Simulation {
       $test_mission_score = $this->mission->evaluate_mission_score($test_mission, $mission_ep_weighting, $mission_rune_weighting, $speed_rune_weighting, $double_reward_rune_weighting);
       if ($test_mission_score['modified_score'] > $this->high_score['modified_score']) {
         $this->results = array();
+        $test_mission['modified_time'] = $test_mission_score['modified_time'];
         $this->results[] = $test_mission;
         $this->high_score = $test_mission_score;
       } else if ($test_mission_score['modified_score'] == $this->high_score['modified_score']) {
+        $test_mission['modified_time'] = $test_mission_score['modified_time'];
         $this->results[] = $test_mission;
       }
       $total_sims++;
     }
     return $total_sims;
   }
+}
+
+
+function seconds_to_time($seconds) {
+  $dtF = new \DateTime('@0');
+  $dtT = new \DateTime("@$seconds");
+  return $dtF->diff($dtT)->format('%a days, %h hours, %i minutes and %s seconds');
 }
 
 ?>
