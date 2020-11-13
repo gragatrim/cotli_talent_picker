@@ -1,5 +1,6 @@
 <?php
 include "navigation.php";
+set_time_limit(600);
 $mission_legend = '<table style="float: right;"><tr><th>Mission Legend</th></tr>
                     <tr><td class="mission_gear_upgrade">Gear Upgrade Mission</td></tr>
                     <tr><td class="mission_enchantment">Enchantment Mission</td></tr>
@@ -125,7 +126,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
     }
     $mission_suggestions .= trim($mission_crusader_names, ', ');
     if ($mission->duration >= 10800 && $simulation->results[0]['modified_time'] != $mission->duration) {
-      $mission_suggestions .= ' it will now take only ' . seconds_to_time($simulation->results[0]['modified_time']);
+      $mission_suggestions .= ' it will now take only ' . seconds_to_time(floor($simulation->results[0]['modified_time']));
     }
     $mission_suggestions .= '</div>';
   }
