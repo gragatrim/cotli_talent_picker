@@ -135,6 +135,7 @@ If you fill in the user id and user hash in the left column below it'll populate
   Crusaders in formation: <input type="text" name="crusaders_in_formation" value="<?php echo (isset($user->crusaders_in_formation) ? $user->crusaders_in_formation : 0); ?>"><br>
   Critical chance: <input type="text" name="critical_chance" value="<?php echo (isset($user->critical_chance) ? $user->critical_chance : 0); ?>"><br>
   Gold bonus provided by crusaders: <input type="text" name="gold_bonus_provided_by_crusaders" value="<?php echo (isset($user->gold_bonus_provided_by_crusaders) ? $user->gold_bonus_provided_by_crusaders : 0); ?>"><br>
+  Hitting Level Cap on Crusaders: <input type="checkbox" name="hitting_level_cap" value="true" <?php echo ((isset($user->hitting_level_cap) && $user->hitting_level_cap == false) ? '' : 'checked'); ?>><br>
 </div>
 <div style="float: left;">
   Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : '0'); ?>"> <label for="debug">Debug: </label><input type="checkbox" id="debug" name="debug" value="true" <?php echo (isset($_POST['debug']) ? "checked" : ''); ?>><br>
