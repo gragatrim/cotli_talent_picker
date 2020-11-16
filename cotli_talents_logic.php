@@ -324,7 +324,7 @@ if (!empty($_POST) || !empty($user)) {
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
   $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);
   $base_damage = 1;
-  echo "total idols spent " . number_format($user->get_total_talent_cost()) . " total idols remaining: " . number_format($user->total_idols - $user->get_total_talent_cost()) . "<br>";
+  echo "total idols spent " . number_format(sprintf('%.0f', $user_info->reset_currency_spent)) . " total idols remaining: " . number_format(sprintf('%.0f', $user_info->reset_currency)) . "<br>";
   if (!empty($total_mat_div)) {
     echo $total_mat_div;
   }
