@@ -10,6 +10,9 @@ if (!empty($_POST) || !empty($user)) {
   if (!isset($_POST['hitting_level_cap'])) {
     $_POST['hitting_level_cap'] = false;
   }
+  if (!isset($_POST['ignore_impatience'])) {
+    $_POST['ignore_impatience'] = false;
+  }
   $game_defines = new GameDefines();
   $game_json = $game_defines->game_json;
   if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) && !empty($_POST['server']) || !empty($_POST['raw_user_data'])) {
@@ -315,7 +318,8 @@ if (!empty($_POST) || !empty($user)) {
                    0,
                    0,
                    htmlspecialchars($_POST['main_dps_max_level_increase_from_runes']),
-                   htmlspecialchars($_POST['hitting_level_cap']));
+                   htmlspecialchars($_POST['hitting_level_cap']),
+                   htmlspecialchars($_POST['ignore_impatience']));
   $user->talents['maxed_power']->stacks = $user->talents_at_max;
   $user->talents['level_all_the_way']->damage_base_multiplier = $user->total_talent_levels;
   $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);
