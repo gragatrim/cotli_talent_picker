@@ -34,15 +34,31 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     file_put_contents('user_profiles/' . $saved_user_info_filename, serialize($shareable_user_info));
   }
   $user_buffs = '<table style="float: left; clear:both;"><tr><th>Buff</th><th>Amount</th><th>Buff</th><th>Amount</th><th>Buff</th><th>Amount</th><th>Buff</th><th>Amount</th></tr>';
+  $user_buff_table_array = array(0 => array());
   $column = 0;
+  $row = 0;
   foreach ($user_info->buffs AS $id => $buff) {
     if ($column > 3) {
-      $user_buffs .='</tr><tr>';
+      $row++;
+      $user_buff_table_array[$row] = array();
       $column = 0;
     }
     if ($buff->inventory_amount > 0) {
-      $user_buffs .= '<td>' . $game_defines->buffs[$id]->name . '</td><td>' . $buff->inventory_amount . '</td>';
+      //There is no common warp, so this leaves the cells empty
+      if ($game_defines->buffs[$id]->name == 'Delorean') {
+        $user_buff_table_array[$row][] = '<td></td><td></td>';
+        $column++;
+      }
+      $user_buff_table_array[$row][] .= '<td>' . $game_defines->buffs[$id]->name . '</td><td>' . $buff->inventory_amount . '</td>';
       $column++;
+    }
+  }
+  //To make the buffs display in the same order as in game I need to reverse the array
+  $user_buff_table_array_reverse = array_reverse($user_buff_table_array);
+  foreach ($user_buff_table_array_reverse AS $row) {
+    $user_buffs .='</tr><tr>';
+    foreach ($row AS $td) {
+      $user_buffs .= $td;
     }
   }
   $user_buffs .= '</tr></table>';
