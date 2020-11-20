@@ -2,15 +2,17 @@
 include "navigation.php";
 include "dungeon_calc_logic.php";
 ?>
+<div>This is updated to work for Season 2 of the dungeons, aka the Clocktower.</div>
+<div style="color: red;">If you know your actual times, update the default values, the default values assume active/optimal play</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : 0); ?>"><br>
-T2 11ths Completed: <input type="text" name="t2_11ths_completed" value="<?php echo (isset($user->t2_11ths_completed) ? $user->t2_11ths_completed : 0); ?>"><br>
-Max area completed in FP: <input type="text" name="max_area_reached" value="<?php echo (isset($user->max_area_reached) ? $user->max_area_reached : 0); ?>"><br>
-Time to complete FP(in minutes): <input type="text" name="time_to_complete_fp" value="<?php echo (isset($user->time_to_complete_fp) ? $user->time_to_complete_fp : 0); ?>"><br>
-Time to complete sprint(in minutes): <input type="text" name="time_to_complete_sprint" value="<?php echo (isset($user->time_to_complete_sprint) ? $user->time_to_complete_sprint : 0); ?>"><br>
-Areas sprintable: <input type="text" name="areas_sprintable" value="<?php echo (isset($user->areas_sprintable) ? $user->areas_sprintable : 0); ?>"><br>
-Dungeon areas per hour: <input type="text" name="dungeon_areas_per_hour" value="<?php echo (isset($user->dungeon_areas_per_hour) ? $user->dungeon_areas_per_hour : 0); ?>"><br>
-Dungeon only Idol Buff(Check your bonuses one is dungeon only for the entire season): <input type="text" name="idol_buff" value="<?php echo (isset($user->idol_buff) ? $user->idol_buff : 1); ?>"><br>
+T2 11ths Completed: <input type="text" name="t2_11ths_completed" value="<?php echo (isset($user->t2_11ths_completed) ? $user->t2_11ths_completed : 9); ?>"><br>
+Max area completed in FP: <input type="text" name="max_area_reached" value="<?php echo (isset($user->max_area_reached) ? $user->max_area_reached : 5761); ?>"><br>
+Time to complete FP(in minutes): <input type="text" name="time_to_complete_fp" value="<?php echo (isset($user->time_to_complete_fp) ? $user->time_to_complete_fp : 220); ?>"><br>
+Time to complete sprint(in minutes): <input type="text" name="time_to_complete_sprint" value="<?php echo (isset($user->time_to_complete_sprint) ? $user->time_to_complete_sprint : 37); ?>"><br>
+Areas sprintable: <input type="text" name="areas_sprintable" value="<?php echo (isset($user->areas_sprintable) ? $user->areas_sprintable : 3500); ?>"><br>
+Dungeon areas per hour: <input type="text" name="dungeon_areas_per_hour" value="<?php echo (isset($user->dungeon_areas_per_hour) ? $user->dungeon_areas_per_hour : 1100); ?>"><br>
+Dungeon only Idol Buff(Check your bonuses one is dungeon only for the entire season): <input type="text" name="idol_buff" value="<?php echo (isset($user->idol_buff) ? $user->idol_buff : 1.1); ?>"><br>
 <input type="submit">
 </form>
 <div>The rows highlighted in <span class="colorblindblue">blue</span> mean running to that area will provide more idols than running a free play(over the same amount of time).</div>
