@@ -100,6 +100,8 @@ if (!empty($json_response->entries)) {
           $uncommon_mats = 0;
           $rare_mats = 0;
           $epic_mats = 0;
+          $rune_array = array();
+          $rune_gain = '';
           foreach($entry->info->loot AS $chest) {
             if (!empty($chest->crafting_materials)) {
               foreach ($chest->crafting_materials AS $type => $amount) {
@@ -119,8 +121,28 @@ if (!empty($json_response->entries)) {
                 }
               }
             }
+            if (!empty($chest->gems)) {
+              foreach ($chest->gems AS $rune) {
+                if (empty($rune_array[$rune->id][$rune->level])) {
+                  $rune_array[$rune->id][$rune->level] = 0;
+                }
+                $rune_array[$rune->id][$rune->level] += $rune->count;
+              }
+            }
           }
-          echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Opened " . $chests_opened . " " . $chest_type . " gained " . $common_mats . " common materials, " . $uncommon_mats . " uncommon materials, " . $rare_mats . " rare materials, and " . $epic_mats . " epic materials<br>";
+          foreach ($rune_array AS $rune_id => $runes_gained) {
+            foreach ($runes_gained AS $rune_level => $gain) {
+              $rune_gain .= $gain . " lvl " . $rune_level . " " . $game_defines->gems[$rune_id]->name . ", ";
+            }
+          }
+          $rune_gain = rtrim($rune_gain, ", ");
+
+          if (empty($rune_gain)) {
+            $chest_contents = $common_mats . " common materials, " . $uncommon_mats . " uncommon materials, " . $rare_mats . " rare materials, and " . $epic_mats . " epic materials<br>";
+          } else {
+            $chest_contents = $rune_gain . "<br>";
+          }
+          echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Opened " . $chests_opened . " " . $chest_type . " gained " . $chest_contents;
         } else {
           echo "<pre>" . print_r($entry, true) . "</pre>";
         }
