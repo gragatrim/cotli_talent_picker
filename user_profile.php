@@ -127,6 +127,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $total_mat_div_with_chests = '<div style="float: left; clear: left;">Total Materials(including epic mats and all unopened chests): ' . $total_mats_with_chests . '</div>';
   $chests_opened = '<div style="float: left; clear: left;">Total normal silver chests opened: ' . $user_info->stats['normal_chests_opened'] . '</div>';
   $chests_opened .= '<div style="float: left; clear: left;">Total normal jeweled chests opened: ' . $user_info->stats['rare_chests_opened'] . '</div>';
+  $gold_missions_completed = '<div style="float: left; clear: left;">Total gold missions completed: ' . $user_info->stats['gold_missions_completed'] . '</div>';
   $total_idols_div = '<div style="float: left; clear: left;">Total Idols: ' . (sprintf('%.0f', $user_info->reset_currency) + sprintf('%.0f', $user_info->reset_currency_spent)) . '</div>';
   $all_season_points_div = '';
   foreach ($user_info->all_season_data AS $season) {
@@ -216,6 +217,9 @@ if (!empty($total_mat_div_with_chests)) {
 }
 if (!empty($chests_opened)) {
   echo $chests_opened;
+}
+if (!empty($gold_missions_completed)) {
+  echo $gold_missions_completed;
 }
 if (!empty($user_crusaders)) {
   echo $user_crusaders;
