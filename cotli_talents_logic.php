@@ -263,9 +263,13 @@ if (!empty($_POST)) {
   $user = new User($_POST, $talents);
   $user->talents['maxed_power']->stacks = $user->talents_at_max;
   $user->talents['level_all_the_way']->stacks = $user->total_talent_levels;
-  $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);
+  if ($user->hitting_level_cap != false) {
+    $user->talents['kilo_leveling']->stacks = floor($user->main_dps_max_levels/1000);
+  }
   $base_damage = 1;
-  echo "total idols spent " . number_format(sprintf('%.0f', $user_info->reset_currency_spent)) . " total idols remaining: " . number_format(sprintf('%.0f', $user_info->reset_currency)) . "<br>";
+  if (!empty($user_info)) {
+    echo "total idols spent " . number_format(sprintf('%.0f', $user_info->reset_currency_spent)) . " total idols remaining: " . number_format(sprintf('%.0f', $user_info->reset_currency)) . "<br>";
+  }
   if (!empty($total_mat_div)) {
     echo $total_mat_div;
   }
