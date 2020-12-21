@@ -139,6 +139,10 @@ if (!empty($_POST)) {
       }
     }
     foreach ($talents_to_generate AS $talent_id => $talent_levels) {
+      if (!isset($game_defines->talents[$talent_id])
+       || !empty($game_defines->talents[$talent_id]->properties->removed)) {
+        continue;
+      }
       $talent = $game_defines->talents[$talent_id];
       $formatted_talent_name = str_replace(array(' ', '-', "'", '10', '!'), array('_', '_', '', 'ten', ''), strtolower($game_defines->talents[$talent_id]->name));
       $_POST[$formatted_talent_name] = $talent_levels;
