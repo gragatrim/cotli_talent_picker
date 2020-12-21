@@ -139,37 +139,37 @@ if (!empty($_POST)) {
       }
     }
     foreach ($talents_to_generate AS $talent_id => $talent_levels) {
+      $talent = $game_defines->talents[$talent_id];
+      $formatted_talent_name = str_replace(array(' ', '-', "'", '10', '!'), array('_', '_', '', 'ten', ''), strtolower($game_defines->talents[$talent_id]->name));
+      $_POST[$formatted_talent_name] = $talent_levels;
+      $damage_type = '+';
+      $level_multiplier = 1;
+      $damage_base_multiplier = 0;
+      $damage_base = 0;
+      $stacks = 0;
+      $main_dps_slot = 0;
+      if (!empty($talent->effects[0]->base_amount)){
+        $damage_base = $talent->effects[0]->base_amount;
+        $damage_base_multiplier = $talent->effects[0]->per_level;
+      } else if(!empty($talent->effects[0]->per_level)) {
+        $damage_base = $talent->effects[0]->per_level;
+        $damage_base_multiplier = $damage_base;
+      }
+      //Just bossing around, which we don't care about anyway in this iteration of the calc
+      if (empty($talent->cost->base_cost)) {
+        $base_cost = 4000000;
+      } else {
+        $base_cost = $talent->cost->base_cost;
+      }
+      if (!empty($talent->cost->factor)) {
+        $level_multiplier = $talent->cost->factor;
+      }
+      if ((!empty($talent->effects) && !empty($talent->effects[0]->multiplicative))
+        || in_array($formatted_talent_name, array('dressing_for_success', 'trinket_hoarder', 'synergy', 'kilo_leveling', 'idolatry', 'maxed_power', 'legendary_friendship', 'golden_friendship', 'friendly_helpers', 'extra_training', 'superior_training', 'tenk_training', 'bonus_training', 'montage_training', 'magical_training'))){
+        $damage_type = '*';
+      }
       if ($talent_levels > 0) {
-        $talent = $game_defines->talents[$talent_id];
-        $formatted_talent_name = str_replace(array(' ', '-', "'", '10', '!'), array('_', '_', '', 'ten', ''), strtolower($game_defines->talents[$talent_id]->name));
-        $_POST[$formatted_talent_name] = $talent_levels;
-        $damage_type = '+';
-        $stacks = $_POST[$formatted_talent_name];
-        $level_multiplier = 1;
-        $damage_base_multiplier = 0;
-        $damage_base = 0;
-        $main_dps_slot = 0;
-        //Just bossing around, which we don't care about anyway in this iteration of the calc
-        if (empty($talent->cost->base_cost)) {
-          $base_cost = 4000000;
-        } else {
-          $base_cost = $talent->cost->base_cost;
-        }
-        if (!empty($talent->cost->factor)) {
-          $level_multiplier = $talent->cost->factor;
-        }
-        if ((!empty($talent->effects) && !empty($talent->effects[0]->multiplicative))
-          || in_array($formatted_talent_name, array('dressing_for_success', 'trinket_hoarder', 'synergy', 'kilo_leveling', 'idolatry', 'maxed_power', 'legendary_friendship', 'golden_friendship', 'friendly_helpers', 'extra_training', 'superior_training', 'tenk_training', 'bonus_training', 'montage_training', 'magical_training'))){
-          $damage_type = '*';
-        }
-        if (!empty($talent->effects[0]->base_amount)){
-          $damage_base = $talent->effects[0]->base_amount;
-          $damage_base_multiplier = $talent->effects[0]->per_level;
-          $stacks = htmlspecialchars($_POST[$formatted_talent_name]);
-        } else if(!empty($talent->effects[0]->per_level)) {
-          $damage_base = $talent->effects[0]->per_level;
-          $damage_base_multiplier = $damage_base;
-        }
+        $stacks = $talent_levels;
         if ($formatted_talent_name == 'bonus_training') {
           $main_dps_slot = htmlspecialchars($_POST['main_dps_slot']);
         }
@@ -256,10 +256,10 @@ if (!empty($_POST)) {
         if ($formatted_talent_name == 'mission_accomplished') {
           $stacks = htmlspecialchars($_POST['missions_accomplished']);
         }
-        $talent_object = new Talent($talent_id, $formatted_talent_name, $talent->tier, $talent->num_levels, $base_cost, $level_multiplier, $talent_levels,
-                                    $damage_type, $damage_base, $damage_base_multiplier, $stacks, $main_dps_slot);
-        $talents[$formatted_talent_name] = $talent_object;
       }
+      $talent_object = new Talent($talent_id, $formatted_talent_name, $talent->tier, $talent->num_levels, $base_cost, $level_multiplier, $talent_levels,
+                                  $damage_type, $damage_base, $damage_base_multiplier, $stacks, $main_dps_slot);
+      $talents[$formatted_talent_name] = $talent_object;
     }
 
 
