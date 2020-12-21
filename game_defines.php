@@ -161,6 +161,11 @@ class GameDefines {
     $talents = array();
     foreach($this->game_json->talent_defines AS $talent) {
       $talents[$talent->id] = $talent;
+      if (!empty($talent->effects[0]->multiplicative)) {
+        $damage_type = '*';
+      } else {
+        $damage_type = '+';
+      }
     }
     return $talents;
   }
@@ -274,6 +279,46 @@ class GameDefines {
       $sorted_crusaders[$crusader->seat_id][] = $crusader;
     }
     return $sorted_crusaders;
+  }
+
+  public function generate_talent_tree_table($user, $fully_implemented_talents, $partially_implemented_talents) {
+    $talent_defines = array();
+    $max_trees = 0;
+    foreach ($this->talents AS $id => $talent) {
+      if (empty($talent->properties->removed)) {
+        if ($max_trees < $talent->tree) {
+          $max_trees = $talent->tree;
+        }
+        //Their defines have multiple entries for the same position so these need to be here so that we can see all talents
+        if (in_array($id, array(47, 19, 51))) {
+          $talent_defines[$talent->tier][$talent->tree][($talent->tier_order - 1)] = $id;
+        } else if (in_array($id, array(103, 101, 66, 65, 107, 106, 104, 115, 116))) {
+          $talent_defines[$talent->tier][$talent->tree][($talent->tier_order + 1)] = $id;
+        } else if (in_array($id, array(105))) {
+          $talent_defines[$talent->tier][$talent->tree][($talent->tier_order + 2)] = $id;
+        } else {
+          $talent_defines[$talent->tier][$talent->tree][$talent->tier_order] = $id;
+        }
+      }
+    }
+    $talent_html = "<table><tr><th colspan='8'>Active</th> <th colspan='8'>Passive</th> <th colspan='8'>Utility</th></tr>";
+    foreach ($talent_defines AS $tier => $talent_trees) {
+      $talent_html .= "<tr>";
+      for ($tree = 1; $tree <= $max_trees; $tree++) {
+        for ($cells = 1; $cells < 5; $cells++) {
+          if (!empty($talent_trees[$tree][$cells])) {
+            $formatted_talent_name = str_replace(array(' ', '-', "'", '10', '!'), array('_', '_', '', 'ten', ''), strtolower($this->talents[$talent_trees[$tree][$cells]]->name));
+            $talent_html .= "<td class='" . get_talent_implemented_css($this->talents[$talent_trees[$tree][$cells]]->id, $fully_implemented_talents, $partially_implemented_talents) . "'>" . $this->talents[$talent_trees[$tree][$cells]]->name . '</td>
+            <td><input style="width:50px" type="text" name="' . $formatted_talent_name . '" id="' . $formatted_talent_name . '" value=' . $user->get_talent_value($formatted_talent_name) . '></td>';
+          } else {
+            $talent_html .= "<td></td><td></td>";
+          }
+        }
+      }
+      $talent_html .= "</tr>";
+    }
+    $talent_html .= "</table>";
+    return $talent_html;
   }
 }
 ?>

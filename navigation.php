@@ -1,5 +1,6 @@
 <?php
 include_once "utility.php";
+include_once "talents.php";
 include_once "game_defines.php";
 include_once "user_defines.php";
 ?>
@@ -292,4 +293,3 @@ function trashDrop(ev) {
 | <a href="./best_mission_crusaders.php">Mission Calc(beta)</a>
 | <a href="https://github.com/gragatrim/cotli_talent_picker">Github</a>
 <br>
-

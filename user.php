@@ -1,42 +1,20 @@
 <?php
 //TODO refactor this.... it's trash
 class User {
-  function __construct($user_id = '', $user_hash = '', $server = 'idlemaster', $total_idols = '0', $golden_items = 0, $common_and_uncommon_recipes = 0, $rare_recipes = 0, $epic_recipes = 0, $missions_accomplished = 0, $legendaries = 0, $brass_rings = 0, $silver_rings = 0, $golden_rings = 0, $diamond_rings = 0, $average_mission_completion = 0, $main_dps_slot = 0, $cooldown_reduction = 0, $ep_from_main_dps = 0, $ep_from_benched_crusaders = 0, $epics_on_main_dps = 0, $epics_on_benched_crusaders = 0, $storm_rider_gear_bonus = 0, $main_dps_benched_crusaders_legendaries = 0, $main_dps_benched_crusaders_golden_gear = 0, $taskmasters_owned = 0, $clicks_per_second = 0, $crusaders_owned = 0, $crusaders_in_formation = 0, $critical_chance = 0, $click_damage_per_dps = 0, $gold_bonus_provided_by_crusaders = 0, $talents = 0, $talents_to_recommend = 1, $max_level_reached = 0, $debug = false, $t2_11ths_completed = 0, $max_area_reached = 0, $time_to_complete_fp = 0, $time_to_complete_sprint = 0, $areas_sprintable = 0, $dungeon_areas_per_hour = 0, $idol_buff = 1, $main_dps_max_level_increase_from_runes = 0, $hitting_level_cap = true, $ignore_impatience = true) {
-    $this->user_id = trim($user_id);
-    $this->user_hash = trim($user_hash);
-    $this->server = $server;
-    $this->total_idols = sprintf('%.0f', $total_idols);
-    $this->golden_items = $golden_items;
-    $this->common_and_uncommon_recipes = $common_and_uncommon_recipes;
-    $this->rare_recipes = $rare_recipes;
-    $this->epic_recipes = $epic_recipes;
-    $this->missions_accomplished = $missions_accomplished;
-    $this->legendaries = $legendaries;
-    $this->brass_rings = $brass_rings;
-    $this->silver_rings = $silver_rings;
-    $this->golden_rings = $golden_rings;
-    $this->diamond_rings = $diamond_rings;
-    $this->average_mission_completion = $average_mission_completion;
-    $this->main_dps_slot = $main_dps_slot;
-    $this->cooldown_reduction = $cooldown_reduction;
-    $this->ep_from_main_dps = $ep_from_main_dps;
-    $this->ep_from_benched_crusaders = $ep_from_benched_crusaders;
-    $this->epics_on_main_dps = $epics_on_main_dps;
-    $this->epics_on_benched_crusaders = $epics_on_benched_crusaders;
-    $this->storm_rider_gear_bonus = $storm_rider_gear_bonus;
-    $this->main_dps_benched_crusaders_legendaries = $main_dps_benched_crusaders_legendaries;
-    $this->main_dps_benched_crusaders_golden_gear = $main_dps_benched_crusaders_golden_gear;
-    $this->taskmasters_owned = $taskmasters_owned;
-    $this->clicks_per_second = $clicks_per_second;
-    $this->crusaders_owned = $crusaders_owned;
-    $this->crusaders_in_formation = $crusaders_in_formation;
-    $this->critical_chance = $critical_chance;
-    $this->click_damage_per_dps = $click_damage_per_dps;
-    $this->gold_bonus_provided_by_crusaders = $gold_bonus_provided_by_crusaders;
+  function __construct($post_data = array(), $talents = 0, $t2_11ths_completed = 0, $max_area_reached = 0, $time_to_complete_fp = 0, $time_to_complete_sprint = 0, $areas_sprintable = 0, $dungeon_areas_per_hour = 0, $idol_buff = 1) {
+    foreach ($post_data AS $key => $value) {
+      if ($key == 'total_idols') {
+        $this->total_idols = sprintf('%.0f', $value);
+      } else if ($key == 'user_id' || $key  == 'user_hash') {
+        $this->$key = trim($value);
+      } else {
+        $this->$key = htmlspecialchars($value);
+      }
+    }
+    if (empty($this->debug)) {
+      $this->debug = false;
+    }
     $this->talents = $talents;
-    $this->talents_to_recommend = $talents_to_recommend;
-    $this->max_level_reached = $max_level_reached;
-    $this->debug = $debug;
     $this->t2_11ths_completed = $t2_11ths_completed;
     $this->max_area_reached = $max_area_reached;
     $this->time_to_complete_fp = $time_to_complete_fp;
@@ -44,14 +22,11 @@ class User {
     $this->areas_sprintable = $areas_sprintable;
     $this->dungeon_areas_per_hour = $dungeon_areas_per_hour;
     $this->idol_buff = $idol_buff;
-    $this->main_dps_max_level_increase_from_runes = $main_dps_max_level_increase_from_runes;
     if (!empty($this->talents)) {
       $this->talents_at_max = $this->get_max_talents();
       $this->total_talent_levels = $this->get_all_talent_levels();
       $this->main_dps_max_levels = 5000 + ($this->talents['extra_training']->current_level + $this->talents['superior_training']->current_level + $this->talents['tenk_training']->current_level + $this->talents['montage_training']->current_level + $this->talents['magical_training']->current_level + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot)) * 25 + $this->main_dps_max_level_increase_from_runes;
     }
-    $this->hitting_level_cap = $hitting_level_cap;
-    $this->ignore_impatience = $ignore_impatience;
     $this->dungeon_level_increment = 500;
     $this->dungeon_idol_increment = array(500  => .0001,
                                           1000 => .0002,
@@ -105,6 +80,9 @@ class User {
   public function get_total_damage() {
     $total_damage = bcmul(bcmul(bcadd(1, bcadd(bcadd(bcadd(bcmul(.01, $this->brass_rings), bcmul(.02, $this->silver_rings)), bcmul(.04, $this->golden_rings)), bcmul(.08, $this->diamond_rings))), bcadd(1, bcmul($this->total_idols, .03))), ($this->total_idols < 1 ? 1 : 100));
     foreach ($this->talents AS $talent_name => $talent) {
+      if (!in_array($talent->id, $talent->dps_talents)) {
+        continue;
+      }
       $talent_damage = $talent->get_current_damage();
       if ($talent->current_level > 0 && $talent_damage > 0) {
         $total_damage = bcmul($total_damage, $talent_damage, 40);
@@ -124,6 +102,9 @@ class User {
   public function get_next_talent_to_buy() {
     $talent_to_buy = '';
     $best_dps_diff = 0;
+    if ($this->debug) {
+      echo "<br style='clear: left;'>";
+    }
     foreach ($this->talents AS $talent_name => $talent) {
       if (!$this->is_valid_talent($talent)) {
         continue;
@@ -139,9 +120,10 @@ class User {
       $future_total_damage = $future_talents_user->get_total_damage();
       $damage_diff = bcdiv(bcdiv(bcsub($future_total_damage, $current_total_damage, 40), $current_total_damage, 40), $next_talent_level_cost, 40);
       if ($this->debug) {
-        echo $talent_name . " DPS diff of " . $damage_diff . " current damage " . format($current_total_damage) . " new talent damage " . format($future_total_damage) . "<br>";
-        echo "<br>future_total_damage: " . format($future_total_damage) . " current_total_damage: " . format($current_total_damage) . " next_talent_level_cost: " . format($next_talent_level_cost) . " damage_diff: " . format($damage_diff) . "<br>";
-        echo "<br>";
+        echo "<br>" . $talent_name . " DPS diff of " . $damage_diff
+        . "<br>future_total_damage: " . format($future_total_damage) . " current_total_damage: " . format($current_total_damage)
+        . "<br>next_talent_level_cost: " . format($next_talent_level_cost) . " damage_diff: " . format($damage_diff)
+        . "<br>current talent damage: " . format($current_talent_damage) . " future talent damage: " . format($future_talents_user->talents[$talent_name]->get_current_damage()) . "<br>";
       }
       if ($damage_diff > $best_dps_diff) {
         $talent_to_buy = $talent_name;
@@ -189,7 +171,7 @@ class User {
     $this->talents_at_max = $this->get_max_talents();
     $this->total_talent_levels = $this->get_all_talent_levels();
     $this->talents['maxed_power']->stacks = $this->talents_at_max;
-    $this->talents['level_all_the_way']->damage_base_multiplier = $this->total_talent_levels;
+    $this->talents['level_all_the_way']->stacks = $this->total_talent_levels;
     $this->main_dps_max_levels = 5000 + ($this->talents['extra_training']->current_level + $this->talents['superior_training']->current_level + $this->talents['tenk_training']->current_level + $this->talents['montage_training']->current_level + $this->talents['magical_training']->current_level + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot)) * 25 + $this->main_dps_max_level_increase_from_runes;
     $this->talents['kilo_leveling']->stacks = floor($this->main_dps_max_levels/1000);
   }
@@ -219,6 +201,7 @@ class User {
     $results['idol_over_fp'] = $idol_over_fp;
     return $results;
   }
+
   public function get_talent_value($value) {
     if (!empty($this->talents[$value]->current_level)) {
       return $this->talents[$value]->current_level;

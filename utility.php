@@ -222,6 +222,9 @@ function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_mat
     $total_silver_chests = 0;
     $total_jeweled_chests = 0;
     foreach ($user_chests AS $chest_id => $number_of_chests) {
+      if (empty($chest_defines[$chest_id])){
+        continue;
+      }
       if (stripos($chest_defines[$chest_id]->name, 'silver') !== false) {
         $total_silver_chests += $number_of_chests;
       } else if (stripos($chest_defines[$chest_id]->name, 'jeweled') !== false) {
@@ -243,5 +246,26 @@ function generate_formation_table($game_defines) {
   $all_formations .= '</table>';
   return $all_formations;
 }
-?>
 
+function get_talent_implemented_css($id, $fully_implemented_talents, $partially_implemented_talents) {
+  $color = "brown";
+  if (in_array($id, $fully_implemented_talents)) {
+    $color = "purple";
+  } else if (in_array($id, $partially_implemented_talents)) {
+    $color = "blue";
+  } else {
+    $color = "brown";
+  }
+  return $color;
+}
+
+function exp2int($exp) {
+  if (strlen($exp) < 1 || $exp == 0) {
+    return 0;
+  }
+  list($mantissa, $exponent) = explode("e", strtolower($exp));
+  if($exponent=='') return $exp;
+  list($int, $dec) = explode(".", $mantissa);
+  return bcmul($mantissa, bcpow("10", $exponent, 40), 40);
+}
+?>
