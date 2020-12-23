@@ -166,6 +166,9 @@ class UserDefines {
   public function generate_crusader_loot($game_defines) {
     $this->crusader_loot = array();
     foreach ($this->crusaders AS $crusader) {
+      if (empty($game_defines->crusader_loot[$crusader->hero_id])) {
+        continue;
+      }
       foreach ($game_defines->crusader_loot[$crusader->hero_id] AS $crusader_loot_slot) {
         foreach ($crusader_loot_slot AS $slot_id => $crusader_loot) {
           if (!empty($this->loot[$crusader_loot->id])) {
