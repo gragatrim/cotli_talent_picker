@@ -68,6 +68,9 @@
   echo '</table><br><table><tr><th colspan="9">Crusader Rune Effects</th></tr><tr>';
   $i = 0;
   foreach($game_defines->crusaders AS $crusader) {
+    if (empty($crusader->hero_gem_slots)) {
+      continue;
+    }
     if ($i >= 9) {
       echo '</tr><tr>';
       $i = 0;
