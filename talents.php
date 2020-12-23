@@ -137,7 +137,7 @@ class Talent {
       } else if ($this->level_multiplier == 'arithmagician') {
         $level_cost = $this->arith_cost[$level];
       } else {
-        //Bossing around lvl 2
+        //Bossing around
         $level_cost = $this->level_costs[$level+1];
       }
     }

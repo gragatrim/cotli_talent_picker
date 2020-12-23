@@ -175,6 +175,9 @@ class User {
     $this->talents['maxed_power']->stacks = $this->talents_at_max;
     $this->talents['level_all_the_way']->stacks = $this->total_talent_levels;
     if ($this->hitting_level_cap != false) {
+      if (empty($this->talents['magical_training'])) {
+        $this->talents['magical_training']->current_level = 0;
+      }
       $this->main_dps_max_levels = 5000 + ($this->talents['extra_training']->current_level + $this->talents['superior_training']->current_level + $this->talents['tenk_training']->current_level + $this->talents['montage_training']->current_level + $this->talents['magical_training']->current_level + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot)) * 25 + $this->main_dps_max_level_increase_from_runes;
       $this->talents['kilo_leveling']->stacks = floor($this->main_dps_max_levels/1000);
     }
