@@ -11,7 +11,7 @@ class Talent {
     $this->max_level = $max_level;
     $this->base_cost = $base_cost;
     $this->level_multiplier = $level_multiplier;
-    $this->current_level = $current_level;
+    $this->current_level = (is_numeric($current_level) ? $current_level : 0);
     $this->damage_type = $damage_type;
     $this->damage_base = $damage_base;
     $this->damage_base_multiplier = $damage_base_multiplier;
