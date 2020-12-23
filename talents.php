@@ -4,7 +4,7 @@
 $fully_implemented_talents = array(119, 3, 66, 63, 118, 92, 120, 5, 16, 17, 23, 31, 54, 121, 34, 36, 39, 41, 56, 122, 74, 104, 106, 107, 114, 115, 105, 111, 112, 113, 73);
 $partially_implemented_talents = array(55, 102 );
 class Talent {
-  function __construct($id, $name, $tier, $max_level, $base_cost, $level_multiplier, $current_level = 0, $damage_type = '', $damage_base = 0, $damage_base_multiplier = 1, $stacks = 1, $main_dps_slot = 0) {
+  function __construct($id, $name, $tier, $max_level, $base_cost, $level_multiplier, $current_level = 0, $damage_type = '', $damage_base = 0, $damage_base_multiplier = 1, $stacks = 1, $main_dps_slot = 0, $level_costs = array()) {
     $this->id = $id;
     $this->name = $name;
     $this->tier = $tier;
@@ -36,6 +36,7 @@ class Talent {
                         16 => '1189142078973',
                         17 => '2107159763941',
                         18 => '3769708817690'];
+    $this->level_costs = $level_costs;
     $this->dps_talents = array(119, 3, 66, 63, 118, 92, 120, 5, 16, 17, 23, 31, 54, 121, 34, 36, 39, 41, 56, 122, 74, 104, 106, 107, 114, 115, 105, 111, 112, 113, 73, 55, 102);
   }
 
@@ -120,7 +121,8 @@ class Talent {
   public function get_cost_at_level($level) {
     $level_cost = '0';
     if ($level < $this->max_level || $this->max_level == -1) {
-      if ($this->level_multiplier != 'arithmagician') {
+      if ($this->level_multiplier != 'arithmagician'
+        && $this->name != 'bossing_around') {
         $unrounded_level_cost = bcmul($this->base_cost, bcpow($this->level_multiplier, $level, 40), 40);
         if (strpos($unrounded_level_cost, '.' !== false)) {
           $unrounded_level_cost_floored = substr($unrounded_level_cost, 0, strpos($unrounded_level_cost, '.'));
@@ -132,8 +134,11 @@ class Talent {
         } else {
           $level_cost = $unrounded_level_cost;
         }
-      } else {
+      } else if ($this->level_multiplier == 'arithmagician') {
         $level_cost = $this->arith_cost[$level];
+      } else {
+        //Bossing around lvl 2
+        $level_cost = $this->level_costs[$level+1];
       }
     }
     return $level_cost;

@@ -159,11 +159,13 @@ if (!empty($_POST)) {
         $damage_base = $talent->effects[0]->per_level;
         $damage_base_multiplier = $damage_base;
       }
-      //Just bossing around, which we don't care about anyway in this iteration of the calc
+      //Just bossing around
       if (empty($talent->cost->base_cost)) {
-        $base_cost = 4000000;
+        $base_cost = $talent->cost->level_costs[1];
+        $level_costs = $talent->cost->level_costs;
       } else {
         $base_cost = $talent->cost->base_cost;
+        $level_costs = array();
       }
       if (!empty($talent->cost->factor)) {
         $level_multiplier = $talent->cost->factor;
@@ -262,7 +264,7 @@ if (!empty($_POST)) {
         }
       }
       $talent_object = new Talent($talent_id, $formatted_talent_name, $talent->tier, $talent->num_levels, $base_cost, $level_multiplier, $talent_levels,
-                                  $damage_type, $damage_base, $damage_base_multiplier, $stacks, $main_dps_slot);
+                                  $damage_type, $damage_base, $damage_base_multiplier, $stacks, $main_dps_slot, $level_costs);
       $talents[$formatted_talent_name] = $talent_object;
     }
 
