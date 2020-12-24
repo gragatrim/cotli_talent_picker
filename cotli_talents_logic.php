@@ -322,7 +322,7 @@ if (!empty($_POST)) {
         } else if ($next_talent_cost <= $leftover_idols) {
           $color = "yellow";
           $leftover_idols -= $next_talent_cost;
-          $future_damage = bcmul(bcdiv($future_damage, $future_talents_user->talents[$talent_to_buy]->get_current_damage()), $future_talents_user->talents[$talent_to_buy]->get_damage_at_additional_level(1));
+          $future_damage = $future_talents_user->get_total_damage();
         }
         $talents_to_buy .= '<div style="clear: right; background: ' . $color . ';">Talent to buy: ' . $talent_to_buy . '</div>';
       }
