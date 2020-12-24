@@ -127,15 +127,21 @@ if (!empty($_POST)) {
       $total_mat_div_with_chests = '<div style="float: left; clear: left;">Total Materials(including epic mats and all unopened chests): ' . $total_mats_with_chests . '</div>';
     }
     $talents_to_generate = array();
-    if (!empty($user_info->talents)) {
-      $talents_to_generate = $user_info->talents;
-    } else {
-      foreach ($game_defines->talents AS $id => $talent) {
-        if (!empty($talent->properties->removed)) {
-          continue;
-        }
+    foreach ($game_defines->talents AS $id => $talent) {
+      if (!empty($talent->properties->removed)) {
+        continue;
+      }
+      if (!empty($user_info->talents[$id])) {
+        $talents_to_generate[$id] = $user_info->talents[$id];
+      } else {
         $formatted_talent_name = str_replace(array(' ', '-', "'", '10', '!'), array('_', '_', '', 'ten', ''), strtolower($talent->name));
-        $talents_to_generate[$id] = $_POST[$formatted_talent_name];
+        //If they are using userid/hash, so we should 0 out all talents and ignore the post data
+        $user_talent_levels = 0;
+        if (empty($user_info->talents)) {
+          //They aren't using user_id/hash, so lets use the data they entered in
+        $user_talent_levels = $_POST[$formatted_talent_name];
+        }
+        $talents_to_generate[$id] = $user_talent_levels;
       }
     }
     foreach ($talents_to_generate AS $talent_id => $talent_levels) {
@@ -271,7 +277,6 @@ if (!empty($_POST)) {
                                   $damage_type, $damage_base, $damage_base_multiplier, $stacks, $main_dps_slot, $level_costs);
       $talents[$formatted_talent_name] = $talent_object;
     }
-
 
     $user = new User($_POST, $talents);
     $user->talents['maxed_power']->stacks = $user->talents_at_max;
