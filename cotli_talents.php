@@ -12,10 +12,12 @@ include "cotli_talents_logic.php";
 ?>
 <div style="float: left; width: 800px; font-weight: bold;">
 If you fill in the user id and user hash in the left column below it'll populate the right column and your talents.
-If you want to fiddle with things, leave the user id and user hash fields empty and then the information in the right columns and your talents won't get overwritten with what is in your game.
-The gold bonus provided by crusaders accepts values in the form 1.0E34
-Formation Full Up assumes the gold find is converted 1:1 into DPS.
-Front Line Fire and Must be Magic, always assume they will be active.
+<br>If you want to fiddle with things, leave the user id and user hash fields empty and then the information in the right columns and your talents won't get overwritten with what is in your game.
+<br>Set bonus assumes all crusaders have all thier gear slots filled
+<br>The gold bonus provided by crusaders accepts values in the form 1.0E34
+<br>Formation Full Up assumes the gold find is converted 1:1 into DPS.
+<br>Front Line Fire and Must be Magic, always assume they will be active.
+<br>This calc will suggest the single talent that gives the highest absolute DPS gain(if you ask for multiple talents it will evaluate each one as if it's the only talent it's looking for).
 </div>
 <div style="float: left; clear: left; font-weight: bold;" class="red">Leave Raw User Data empty if using userid & hash, the raw user data only updates when you refresh the game</div>
 <div style="float: left;padding-right: 5px; clear: left;">
