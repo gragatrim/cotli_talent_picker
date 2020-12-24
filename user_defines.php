@@ -14,6 +14,10 @@ class UserDefines {
       $json_response->details = json_decode($raw_user_data);
     }
     $this->json_response = $json_response;
+    if (!empty($this->json_response->failure_reason)) {
+      echo "You most likely entered an incorrect userid/hash, please go back and confirm your entry<br>";
+      die();
+    }
     $this->user_json = $json_response->details;
     $this->all_season_data = $this->user_json->seasons;
     $this->instance_id = $this->user_json->instance_id;
