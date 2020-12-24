@@ -58,7 +58,17 @@ class Talent {
     } else if ($this->damage_type == '*') {
       $damage = $this->get_multiplicative_damage();
     }
-    return bcsub($damage, 100, 40);
+    if ($this->name == 'extra_training'
+     || $this->name == 'superior_training'
+     || $this->name == 'tenk_training'
+     || ($this->name == 'bonus_training' && $this->current_level >= $this->main_dps_slot)
+     || $this->name == 'montage_training'
+     || $this->name == 'magical_training') {
+      $return_damage = $damage;
+    } else {
+      $return_damage = bcsub($damage, 100, 40);
+    }
+    return $return_damage;
   }
 
   function get_additive_damage() {
@@ -101,7 +111,7 @@ class Talent {
       } else {
         $level_multiplier = '4';
       }
-      $damage = bcmul(bcpow($level_multiplier, $this->current_level, 40), 100, 40);
+      $damage = bcpow($level_multiplier, $this->current_level, 40);
     } else if ($this->name == 'cheer_squad') {
       $damage = bcadd(bcmul($this->current_level, $this->stacks, 40), 100, 40);
     } else if ($this->name == 'kilo_leveling') {
