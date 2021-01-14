@@ -79,7 +79,13 @@
     foreach ($crusader->hero_gem_slots AS $gem_slot) {
       if (isset($gem_slot->effects[0])) {
         $rune_type = strtok($game_defines->gems[$gem_slot->gem_id]->name, " ");
-        echo '<div><div style="float: left;clear: left;padding-left: 10px;" >' . $rune_type . '</div><div style="float: right;clear: right; padding-right: 10px;" class="' . $gem_slot->effects[0] . '">' . $gem_slot->effects[0] . '</div></div>';
+        $gem_slot_effect = '';
+        if (!is_object($gem_slot->effects[0])) {
+          $gem_slot_effect = $gem_slot->effects[0];
+        } else {
+          $gem_slot_effect = $gem_slot->effects[0]->effect_string;
+        }
+        echo '<div><div style="float: left;clear: left;padding-left: 10px;" >' . $rune_type . '</div><div style="float: right;clear: right; padding-right: 10px;" class="' . $gem_slot_effect . '">' . $gem_slot_effect . '</div></div>';
       }
     }
     $i++;
