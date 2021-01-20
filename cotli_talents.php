@@ -39,6 +39,8 @@ If you fill in the user id and user hash in the left column below it'll populate
   Gold bonus provided by crusaders: <input type="text" name="gold_bonus_provided_by_crusaders" value="<?php echo (isset($user->gold_bonus_provided_by_crusaders) ? $user->gold_bonus_provided_by_crusaders : 0); ?>"><br>
   Hitting Level Cap on Crusaders: <input type="checkbox" name="hitting_level_cap" value="true" <?php echo ((isset($user->hitting_level_cap) && $user->hitting_level_cap == false) ? '' : 'checked'); ?>><br>
   Ignore Impatience: <input type="checkbox" name="ignore_impatience" value="true" <?php echo ((isset($user->ignore_impatience) && $user->ignore_impatience == false) ? '' : 'checked'); ?>><br>
+  Ignore Must Be Magic: <input type="checkbox" name="ignore_must_be_magic" value="true" <?php echo ((!isset($user->ignore_must_be_magic) || $user->ignore_must_be_magic == false) ? '' : 'checked'); ?>><br>
+  Ignore Front Line Fire: <input type="checkbox" name="ignore_front_line_fire" value="true" <?php echo ((!isset($user->ignore_front_line_fire) || $user->ignore_front_line_fire == false) ? '' : 'checked'); ?>><br>
 </div>
 <div style="float: left;">
   Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : '0'); ?>"> <label for="debug">Debug: </label><input type="checkbox" id="debug" name="debug" value="true" <?php echo (isset($_POST['debug']) ? "checked" : ''); ?>><br>

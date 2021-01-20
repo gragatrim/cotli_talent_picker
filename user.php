@@ -162,7 +162,9 @@ class User {
         $is_valid = false;
       }
     }
-    if ($this->ignore_impatience == true && $talent->name == 'impatience') {
+    if (($this->ignore_impatience == true && $talent->name == 'impatience')
+      || ($this->ignore_must_be_magic == true && $talent->name == 'must_be_magic')
+      || ($this->ignore_front_line_fire == true && $talent->name == 'front_line_fire')) {
       $is_valid = false;
     }
     return $is_valid;

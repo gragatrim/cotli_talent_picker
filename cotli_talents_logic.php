@@ -14,6 +14,12 @@ if (!empty($_POST)) {
     if (!isset($_POST['ignore_impatience'])) {
       $_POST['ignore_impatience'] = false;
     }
+    if (!isset($_POST['ignore_must_be_magic'])) {
+      $_POST['ignore_must_be_magic'] = false;
+    }
+    if (!isset($_POST['ignore_front_line_fire'])) {
+      $_POST['ignore_front_line_fire'] = false;
+    }
     $game_json = $game_defines->game_json;
     if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['raw_user_data'])) {
       $user_info = new UserDefines('', $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
