@@ -152,7 +152,7 @@ if (!empty($json_response->entries)) {
       if (!empty($entry->info->objective_awards->dungeon_progress)) {
         $reset_reward .= ' also gained ' . $entry->info->objective_awards->dungeon_progress . ' dungeon points and ' . $entry->info->objective_awards->dungeon_coins . ' dungeon coins';
       }
-      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Reset on objective " . $game_defines->campaign_formations[$entry->info->objective_id]['name'] . " for " . $entry->info->idols->gained . " idols, in " . $entry->info->play_time/60 . " minutes at area " . $entry->info->current_area . $reset_reward . "<br>";
+      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Reset on objective " . $game_defines->campaign_formations[$entry->info->objective_id]['name'] . " for " . $entry->info->idols->gained . " idols, in " . $entry->info->play_time/60 . " minutes at area " . $entry->info->highest_area_unlocked . $reset_reward . "<br>";
     } else if (!empty($entry->info->reset_stats->rewards[0]->reward)) {
       if ($entry->info->reset_stats->rewards[0]->reward == 'challenge_tokens') {
         //The challenge rewards are split between 2 entries, so this fudges it so it reports on 1 line
