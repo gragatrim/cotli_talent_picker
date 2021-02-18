@@ -11,7 +11,7 @@ if ($_POST) {
                    htmlspecialchars($_POST['areas_sprintable']),
                    htmlspecialchars($_POST['dungeon_areas_per_hour']),
                    htmlspecialchars($_POST['idol_buff']));
-  for($i = 500; $i < 14500; $i += 500) {
+  for($i = 500; $i < 15500; $i += 500) {
     $dungeon_results[$i] = $user->get_dungeon_data($i);
   }
 }

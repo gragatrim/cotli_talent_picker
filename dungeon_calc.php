@@ -2,7 +2,7 @@
 include "navigation.php";
 include "dungeon_calc_logic.php";
 ?>
-<div>This is updated to work for Season 2 of the dungeons, aka the Clocktower.</div>
+<div>This is updated to work for Season 3 of the dungeons, aka The Waterways.</div>
 <div style="color: red;">If you know your actual times, update the default values, the default values assume active/optimal play</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : 0); ?>"><br>
@@ -27,7 +27,7 @@ Dungeon only Idol Buff(Check your bonuses one is dungeon only for the entire sea
     <th>Idols per FP time</th>
     <th>Idols gained over FP</th>
   <?php
-  for ($i = 500; $i <= 14000; $i += 500) {
+  for ($i = 500; $i <= 15000; $i += 500) {
     if (empty($dungeon_results[$i])) {
     echo '<tr class="colorblindred">
             <td>' .  $i . '</td>
