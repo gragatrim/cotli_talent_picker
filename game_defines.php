@@ -205,10 +205,18 @@ class GameDefines {
       }
     }
     foreach($this->objectives AS $objective) {
-      if ($objective->campaign_order == 100) {
+      if ($objective->campaign_order == 100 || $objective->campaign_order == 101) {
         if ($objective->name == 'All the Shapes') {
           $campaign_formations[$objective->id]['name'] = $objective->name;
           foreach ($objective->game_changes[3]->formation AS $id => $node) {
+            if ($node->x !== 0 && $node->y != 0) {
+              $campaign_formations[$objective->id][$id]['x'] = $node->x;
+              $campaign_formations[$objective->id][$id]['y'] = $node->y;
+            }
+          }
+        } else if ($objective->name == 'Top to Bottom') {
+          $campaign_formations[$objective->id]['name'] = $objective->name;
+          foreach ($objective->game_changes[1]->formation AS $id => $node) {
             if ($node->x !== 0 && $node->y != 0) {
               $campaign_formations[$objective->id][$id]['x'] = $node->x;
               $campaign_formations[$objective->id][$id]['y'] = $node->y;
