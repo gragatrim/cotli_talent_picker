@@ -263,9 +263,9 @@ function exp2int($exp) {
   if (strlen($exp) < 1 || $exp == 0) {
     return 0;
   }
-  list($mantissa, $exponent) = explode("e", strtolower($exp));
+  @list($mantissa, $exponent) = explode("e", strtolower($exp));
   if($exponent=='') return $exp;
-  list($int, $dec) = explode(".", $mantissa);
+  @list($int, $dec) = explode(".", $mantissa);
   return bcmul($mantissa, bcpow("10", $exponent, 40), 40);
 }
 ?>
