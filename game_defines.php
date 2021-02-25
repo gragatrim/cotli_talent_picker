@@ -289,6 +289,7 @@ class GameDefines {
     return $sorted_crusaders;
   }
 
+  //The array of talents is in talents.php
   public function generate_talent_tree_table($user, $fully_implemented_talents, $partially_implemented_talents) {
     $talent_defines = array();
     $max_trees = 0;

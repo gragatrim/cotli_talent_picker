@@ -183,7 +183,7 @@ if (!empty($_POST)) {
         $level_multiplier = $talent->cost->factor;
       }
       if ((!empty($talent->effects) && !empty($talent->effects[0]->multiplicative))
-        || in_array($formatted_talent_name, array('dressing_for_success', 'trinket_hoarder', 'synergy', 'kilo_leveling', 'idolatry', 'maxed_power', 'legendary_friendship', 'golden_friendship', 'friendly_helpers', 'extra_training', 'superior_training', 'tenk_training', 'bonus_training', 'montage_training', 'magical_training'))){
+        || in_array($formatted_talent_name, array('dressing_for_success', 'trinket_hoarder', 'synergy', 'kilo_leveling', 'idolatry', 'maxed_power', 'legendary_friendship', 'golden_friendship', 'friendly_helpers', 'extra_training', 'superior_training', 'tenk_training', 'bonus_training', 'montage_training', 'magical_training', 'olympian_training'))){
         $damage_type = '*';
       }
       //I'm using a hardcoded table of costs to deal with arith

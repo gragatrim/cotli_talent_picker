@@ -1,7 +1,7 @@
 <?php
 
 //Semi global, mainly I'm just lazy, if you add to these arrays, you must add it to the dps_talents array in the talent constructor
-$fully_implemented_talents = array(119, 3, 66, 63, 118, 92, 120, 5, 16, 17, 23, 31, 54, 121, 34, 36, 39, 41, 56, 122, 74, 104, 106, 107, 114, 115, 105, 111, 112, 113, 73);
+$fully_implemented_talents = array(119, 3, 66, 63, 118, 92, 120, 5, 16, 17, 23, 31, 54, 121, 34, 36, 39, 41, 56, 122, 74, 104, 106, 107, 114, 115, 105, 111, 112, 113, 73, 123);
 $partially_implemented_talents = array(55, 102 );
 class Talent {
   function __construct($id, $name, $tier, $max_level, $base_cost, $level_multiplier, $current_level = 0, $damage_type = '', $damage_base = 0, $damage_base_multiplier = 1, $stacks = 1, $main_dps_slot = 0, $level_costs = array()) {
@@ -37,7 +37,7 @@ class Talent {
                         17 => '2107159763941',
                         18 => '3769708817690'];
     $this->level_costs = $level_costs;
-    $this->dps_talents = array(119, 3, 66, 63, 118, 92, 120, 5, 16, 17, 23, 31, 54, 121, 34, 36, 39, 41, 56, 122, 74, 104, 106, 107, 114, 115, 105, 111, 112, 113, 73, 55, 102);
+    $this->dps_talents = array(119, 3, 66, 63, 118, 92, 120, 5, 16, 17, 23, 31, 54, 121, 34, 36, 39, 41, 56, 122, 74, 104, 106, 107, 114, 115, 105, 111, 112, 113, 73, 55, 102, 123);
   }
 
   public function get_damage_at_additional_level($levels_to_add) {
@@ -63,6 +63,7 @@ class Talent {
      || $this->name == 'tenk_training'
      || ($this->name == 'bonus_training' && $this->current_level >= $this->main_dps_slot)
      || $this->name == 'montage_training'
+     || $this->name == 'olympian_training'
      || $this->name == 'magical_training') {
       $return_damage = $damage;
     } else {
@@ -105,6 +106,7 @@ class Talent {
      || $this->name == 'tenk_training'
      || ($this->name == 'bonus_training' && $this->current_level >= $this->main_dps_slot)
      || $this->name == 'montage_training'
+     || $this->name == 'olympian_training'
      || $this->name == 'magical_training') {
       if ($this->main_dps_slot == 27) {
         $level_multiplier = '4.25';

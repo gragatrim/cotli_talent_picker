@@ -26,7 +26,7 @@ class User {
       $this->talents_at_max = $this->get_max_talents();
       $this->total_talent_levels = $this->get_all_talent_levels();
       if ($this->hitting_level_cap != false) {
-        $this->main_dps_max_levels = 5000 + ($this->talents['extra_training']->current_level + $this->talents['superior_training']->current_level + $this->talents['tenk_training']->current_level + $this->talents['montage_training']->current_level + $this->talents['magical_training']->current_level + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot)) * 25 + $this->main_dps_max_level_increase_from_runes;
+        $this->main_dps_max_levels = 5000 + ($this->talents['extra_training']->current_level + $this->talents['superior_training']->current_level + $this->talents['tenk_training']->current_level + $this->talents['montage_training']->current_level + $this->talents['olympian_training']->current_level + $this->talents['magical_training']->current_level + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot)) * 25 + $this->main_dps_max_level_increase_from_runes;
       }
     }
     $this->dungeon_level_increment = 500;
@@ -158,6 +158,8 @@ class User {
       $is_valid = true;
     } else if ($talent->tier <=7 && $this->max_level_reached >= 2700) {
       $is_valid = true;
+    } else if ($talent->tier <=8 && $this->max_level_reached >= 3000) {
+      $is_valid = true;
     }
     if ($this->hitting_level_cap == false) {
       if ($talent->name == 'extra_training' || $talent->name == 'kilo_leveling' || $talent->name == 'superior_training' || $talent->name == 'tenk_training') {
@@ -179,7 +181,7 @@ class User {
     $this->talents['maxed_power']->stacks = $this->talents_at_max;
     $this->talents['level_all_the_way']->stacks = $this->total_talent_levels;
     if ($this->hitting_level_cap != false) {
-      $this->main_dps_max_levels = 5000 + ($this->talents['extra_training']->current_level + $this->talents['superior_training']->current_level + $this->talents['tenk_training']->current_level + $this->talents['montage_training']->current_level + $this->talents['magical_training']->current_level + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot)) * 25 + $this->main_dps_max_level_increase_from_runes;
+      $this->main_dps_max_levels = 5000 + ($this->talents['extra_training']->current_level + $this->talents['superior_training']->current_level + $this->talents['tenk_training']->current_level + $this->talents['montage_training']->current_level + $this->talents['olympian_training']->current_level + $this->talents['magical_training']->current_level + max(0, ($this->talents['bonus_training']->current_level + 1) - $this->main_dps_slot)) * 25 + $this->main_dps_max_level_increase_from_runes;
       $this->talents['kilo_leveling']->stacks = floor($this->main_dps_max_levels/1000);
     }
   }
