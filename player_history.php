@@ -30,9 +30,11 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? $_POST['user_id'] : ''); ?>"><br>
 User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? $_POST['user_hash'] : ''); ?>"><br>
+Show Bonus Boss Idols: <input type="checkbox" name="show_bonus_boss_idols" value="true" <?php echo ((!isset($_POST['show_bonus_boss_idols']) || $_POST['show_bonus_boss_idols'] == false) ? '' : 'checked'); ?>><br>
 Page: <input type="text" name="page" value="<?php echo (isset($_POST['page']) ? $_POST['page'] : 1); ?>"><br>
 <input type="submit">
 <?php
+
   if (!empty($json_response->entries)) {
     echo '<input type="submit" name="previous_page" value="Previous Page"><input type="submit" name="next_page" value="Next Page">';
   }
@@ -163,7 +165,11 @@ if (!empty($json_response->entries)) {
     } else if (!empty($entry->info->code)) {
       echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Redeemed code " . $entry->info->code . "<br>";
     } else if (isset($entry->info->action) && $entry->info->action === 'add_normal') {
-      continue;
+      if ($entry->info->bonus_boss_idols->gained > 0 && isset($_POST['show_bonus_boss_idols']) && $_POST['show_bonus_boss_idols'] == true) {
+        echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Gained " . $entry->info->bonus_boss_idols->gained . " bonus boss idols from area " . $entry->info->chest_area_sent . "<br>";
+      } else {
+        continue;
+      }
     } else if (isset($entry->info->objective_id)) {
       echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Started on objective " . $game_defines->campaign_formations[$entry->info->objective_id]['name'] . "<br>";
     } else {
@@ -175,5 +181,3 @@ if (!empty($json_response->entries)) {
   }
 }
 ?>
-
-
