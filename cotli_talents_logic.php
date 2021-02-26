@@ -284,6 +284,8 @@ if (!empty($_POST)) {
       $talents[$formatted_talent_name] = $talent_object;
     }
 
+    $_POST['can_buy_olympian'] = $user_info->can_buy_olympian;
+    $_POST['can_buy_newt'] = $user_info->can_buy_newt;
     $user = new User($_POST, $talents);
     $user->talents['maxed_power']->stacks = $user->talents_at_max;
     $user->talents['level_all_the_way']->stacks = $user->total_talent_levels;

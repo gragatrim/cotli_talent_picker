@@ -26,6 +26,17 @@ class UserDefines {
     $this->reset_currency = $this->user_json->reset_currency;
     $this->taskmasters = $this->get_taskmasters();
     $this->talents = $this->get_talents();
+    //For some reason the raw json and the data pulled directly from CNE differs.......
+    if (!empty($raw_user_data)) {
+      $this->can_buy_olympian = $this->user_json->objective_status[852]->complete;
+    } else {
+      $this->can_buy_olympian = $this->user_json->objective_status[825]->complete;
+    }
+    if (!empty($raw_user_data)) {
+      $this->can_buy_newt = $this->user_json->objective_status[854]->complete;
+    } else {
+      $this->can_buy_newt = $this->user_json->objective_status[827]->complete;
+    }
     $this->loot = $this->get_loot();
     $this->buffs = $this->get_buffs();
     $this->crusaders = $this->get_crusaders();

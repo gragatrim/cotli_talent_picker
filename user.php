@@ -171,6 +171,11 @@ class User {
       || ($this->ignore_front_line_fire == true && $talent->name == 'front_line_fire')) {
       $is_valid = false;
     }
+
+    if ($this->can_buy_olympian != 1 && $talent->name == 'olympian_training'
+     || $this->can_buy_newt != 1 && $talent->name == 'arithmagician_newts') {
+      $is_valid = false;
+    }
     return $is_valid;
  }
 
