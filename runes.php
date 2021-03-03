@@ -80,12 +80,34 @@
       if (isset($gem_slot->effects[0])) {
         $rune_type = strtok($game_defines->gems[$gem_slot->gem_id]->name, " ");
         $gem_slot_effect = '';
+        $gem_slot_effect_class = '';
         if (!is_object($gem_slot->effects[0])) {
+          $gem_slot_effect_class = $gem_slot->effects[0];
           $gem_slot_effect = $gem_slot->effects[0];
         } else {
-          $gem_slot_effect = $gem_slot->effects[0]->effect_string;
+          $gem_slot_effect = '';
+          foreach ($gem_slot->effects AS $gem_effects) {
+            $effect_array = explode(',', $gem_effects->effect_string);
+            if ($effect_array[0] == 'buff_formation_abilities') {
+              $gem_slot_effect .= $game_defines->formation_abilities[$effect_array[2]]->name . ',';
+            } else if ($effect_array[0] == 'unlock_formation_ability') {
+              $gem_slot_effect .= $game_defines->formation_abilities[$effect_array[1]]->name . ',';
+            } else if ($effect_array[0] == 'buff_upgrades') {
+              $gem_upgrade_count = count($effect_array);
+              for ($j = 2; $j < $gem_upgrade_count; $j++) {
+                $gem_slot_effect .= $game_defines->crusader_upgrades[$effect_array[$j]]->name . ',';
+              }
+            } else if ($effect_array[0] == 'global_dps_multiplier_mult') {
+              $gem_slot_effect .= 'Buff Global DPS,';
+            } else if ($effect_array[0] == 'critical_click_chance_mult') {
+              $gem_slot_effect .= 'Critical Click Chance,';
+            } else {
+              $gem_slot_effect .= $gem_slot->effects[0]->effect_string . ',';
+            }
+          }
+          $gem_slot_effect = rtrim($gem_slot_effect, ',');
         }
-        echo '<div><div style="float: left;clear: left;padding-left: 10px;" >' . $rune_type . '</div><div style="float: right;clear: right; padding-right: 10px;" class="' . $gem_slot_effect . '">' . $gem_slot_effect . '</div></div>';
+        echo '<div><div style="float: left;clear: left;padding-left: 10px;" >' . $rune_type . '</div><div style="float: right;clear: right; padding-right: 10px;" class="' . $gem_slot_effect_class . '">' . $gem_slot_effect . '</div></div>';
       }
     }
     $i++;
