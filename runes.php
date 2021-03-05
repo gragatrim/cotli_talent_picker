@@ -88,7 +88,7 @@
           $gem_slot_effect = '';
           foreach ($gem_slot->effects AS $gem_effects) {
             $effect_array = explode(',', $gem_effects->effect_string);
-            if ($effect_array[0] == 'buff_formation_abilities') {
+            if ($effect_array[0] == 'buff_formation_abilities' || $effect_array[0] == 'buff_formation_ability') {
               $gem_slot_effect .= $game_defines->formation_abilities[$effect_array[2]]->name . '<br>';
             } else if ($effect_array[0] == 'unlock_formation_ability') {
               $gem_slot_effect .= $game_defines->formation_abilities[$effect_array[1]]->name . '<br>';
@@ -101,6 +101,8 @@
               $gem_slot_effect .= 'Buff Global DPS<br>';
             } else if ($effect_array[0] == 'critical_click_chance_mult') {
               $gem_slot_effect .= 'Critical Click Chance<br>';
+            } else if ($effect_array[0] == 'gold_multiplier_mult') {
+              $gem_slot_effect .= 'Increase All Gold Found<br>';
             } else {
               $gem_slot_effect .= $gem_slot->effects[0]->effect_string . '<br>';
             }
