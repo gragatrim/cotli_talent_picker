@@ -301,10 +301,8 @@ class GameDefines {
         //Their defines have multiple entries for the same position so these need to be here so that we can see all talents
         if (in_array($id, array(47, 19, 51))) {
           $talent_defines[$talent->tier][$talent->tree][($talent->tier_order - 1)] = $id;
-        } else if (in_array($id, array(103, 101, 66, 65, 107, 106, 104, 115, 116))) {
+        } else if (in_array($id, array(103, 101, 66, 65, 107, 106, 104))) {
           $talent_defines[$talent->tier][$talent->tree][($talent->tier_order + 1)] = $id;
-        } else if (in_array($id, array(105))) {
-          $talent_defines[$talent->tier][$talent->tree][($talent->tier_order + 2)] = $id;
         } else {
           $talent_defines[$talent->tier][$talent->tree][$talent->tier_order] = $id;
         }

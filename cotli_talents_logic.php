@@ -145,7 +145,9 @@ if (!empty($_POST)) {
         $user_talent_levels = 0;
         if (empty($user_info->talents)) {
           //They aren't using user_id/hash, so lets use the data they entered in
-        $user_talent_levels = $_POST[$formatted_talent_name];
+          if (!empty($_POST[$formatted_talent_name])) {
+            $user_talent_levels = $_POST[$formatted_talent_name];
+          }
         }
         $talents_to_generate[$id] = $user_talent_levels;
       }
@@ -284,8 +286,13 @@ if (!empty($_POST)) {
       $talents[$formatted_talent_name] = $talent_object;
     }
 
-    $_POST['can_buy_olympian'] = $user_info->can_buy_olympian;
-    $_POST['can_buy_newt'] = $user_info->can_buy_newt;
+    if (!empty($user_info)) {
+      $_POST['can_buy_olympian'] = $user_info->can_buy_olympian;
+      $_POST['can_buy_newt'] = $user_info->can_buy_newt;
+    } else {
+      $_POST['can_buy_olympian'] = 0;
+      $_POST['can_buy_newt'] = 0;
+    }
     $user = new User($_POST, $talents);
     $user->talents['maxed_power']->stacks = $user->talents_at_max;
     $user->talents['level_all_the_way']->stacks = $user->total_talent_levels;
