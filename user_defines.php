@@ -39,7 +39,10 @@ class UserDefines {
     }
     $this->loot = $this->get_loot();
     $this->buffs = $this->get_buffs();
-    $this->crusaders = $this->get_crusaders();
+    $crusader_info = $this->get_crusaders();
+    $this->crusaders = $crusader_info['crusaders'];
+    $this->total_ep = $crusader_info['total_ep'];
+    $this->number_owned_crusaders = $crusader_info['number_owned_crusaders'];
     $this->chests = $this->get_chests();
     $this->stats = $this->get_stats();
     $this->skins = $this->get_skins();
@@ -84,16 +87,23 @@ class UserDefines {
 
   public function get_crusaders() {
     $this->set_assigned_gems();
-    $crusaders = array();
+    $return = array();
+    $return['total_ep'] = 0;
+    $return['number_owned_crusaders'] = 0;
+    $return['crusaders'] = array();
     foreach($this->user_json->heroes AS $hero) {
-      $crusaders[$hero->hero_id] = $hero;
+      $return['crusaders'][$hero->hero_id] = $hero;
       if (isset($this->assigned_gems[$hero->hero_id])) {
-        $crusaders[$hero->hero_id]->gems = $this->assigned_gems[$hero->hero_id];
+        $return['crusaders'][$hero->hero_id]->gems = $this->assigned_gems[$hero->hero_id];
       } else {
-        $crusaders[$hero->hero_id]->gems = array();
+        $return['crusaders'][$hero->hero_id]->gems = array();
+      }
+      if ($hero->owned == 1) {
+        $return['total_ep'] += $hero->disenchant;
+        $return['number_owned_crusaders'] += 1;
       }
     }
-    return $crusaders;
+    return $return;
   }
 
   public function get_missions() {

@@ -15,6 +15,8 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     $saved_user_info_filename = md5($hash);
     $shareable_user_info = json_decode("{}");
     $shareable_user_info->crusaders = $user_info->crusaders;
+    $shareable_user_info->total_ep = $user_info->total_ep;
+    $shareable_user_info->number_owned_crusaders = $user_info->number_owned_crusaders;
     $shareable_user_info->reset_currency = $user_info->reset_currency;
     $shareable_user_info->reset_currency_spent = $user_info->reset_currency_spent;
     $shareable_user_info->loot = $user_info->loot;
@@ -128,6 +130,8 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $chests_opened = '<div style="float: left; clear: left;">Total normal silver chests opened: ' . $user_info->stats['normal_chests_opened'] . '</div>';
   $chests_opened .= '<div style="float: left; clear: left;">Total normal jeweled chests opened: ' . $user_info->stats['rare_chests_opened'] . '</div>';
   $gold_missions_completed = '<div style="float: left; clear: left;">Total gold missions completed: ' . $user_info->stats['gold_missions_completed'] . '</div>';
+  $ep_info = '<div style="float: left; clear: left;">Total EP among all crusaders: ' . $user_info->total_ep . '</div>';
+  $ep_info .= '<div style="float: left; clear: left;">Average EP among all crusaders: ' . ($user_info->total_ep / $user_info->number_owned_crusaders) . '</div>';
   $total_idols_div = '<div style="float: left; clear: left;">Total Idols: ' . (sprintf('%.0f', $user_info->reset_currency) + sprintf('%.0f', $user_info->reset_currency_spent)) . '</div>';
   $all_season_points_div = '';
   foreach ($user_info->all_season_data AS $season) {
@@ -220,6 +224,9 @@ if (!empty($chests_opened)) {
 }
 if (!empty($gold_missions_completed)) {
   echo $gold_missions_completed;
+}
+if (!empty($ep_info)) {
+  echo $ep_info;
 }
 if (!empty($user_crusaders)) {
   echo $user_crusaders;
