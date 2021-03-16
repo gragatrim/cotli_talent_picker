@@ -86,41 +86,41 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $column_count = 0;
   $hero_gem_slot_count = count($game_defines->crusaders[1]->hero_gem_slots);
   foreach ($user_info->crusaders AS $id => $crusader) {
-    $crusader_name = '';
-    if ($crusader->owned == 1) {
-      $crusader_image_info = get_crusader_image($game_defines->crusaders[$crusader->hero_id]->name);
-      $image = $crusader_image_info['image'];
-      $crusader_name = $crusader_image_info['name'];
-      $crusader_loot = get_crusader_loot($crusader, $user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $crusader);
-      for ($slot = 1; $slot <= $hero_gem_slot_count; $slot++) {
-        if (!empty($crusader->gems->$slot)) {
-          $crusader_gems[$slot] = $crusader->gems->$slot;
-        } else {
-          $crusader_gems[$slot] = new \stdClass();
-          $crusader_gems[$slot]->gem_id = $game_defines->crusaders[$crusader->hero_id]->hero_gem_slots[$slot]->gem_id;
-          $crusader_gems[$slot]->level = 0;
-        }
-      }
-      $crusader_gem_td = '';
-      $gem_css = array(1 => 'text-align: center;width: 15px; height: 15px;position: relative;top: 25px;',
-                       2 => 'text-align: center;width: 15px; height: 15px;position: relative;top: 30px; left: 10px;',
-                       3 => 'text-align: center;width: 15px; height: 15px;position: relative;top: 15px; left: 28px;',
-                       4 => 'text-align: center;width: 15px; height: 15px;position: relative;top: -20px; left: 34px;',
-                       5 => 'text-align: center;width: 15px; height: 15px;position: relative;top: -52px; left: 18px;');
-      foreach ($crusader_gems AS $slot => $crusader_gem) {
-        if (!empty($crusader_gem)) {
-          $crusader_gem_td .= '<div style="' . $gem_css[$slot] . '" class="' . strtok($game_defines->gems[$crusader_gem->gem_id]->name, " ") . '">' . $crusader_gem->level . '</div>';
-        } else {
-          $crusader_gem_td .= '<div style="' . $gem_css[$slot] . '">0</div>';
-        }
-      }
-      if ($column_count > 10) {
-        $user_crusaders .= '</tr></tr>';
-        $column_count = 0;
-      }
-      $user_crusaders .= '<td style="vertical-align: top"><img src="' . $image . '" width="48px" height="48x">' . $crusader_gem_td . '</td><td style="text-align: center; width: 15px;">' . implode('', $crusader_loot) . '</td>';
-      $column_count++;
+    $unowned_crusader_img = '';
+    $crusader_image_info = get_crusader_image($game_defines->crusaders[$crusader->hero_id]->name);
+    $image = $crusader_image_info['image'];
+    if ($crusader->owned !== 1) {
+      $unowned_crusader_img = '<img src="./images/empty_slot.png" width="48px" height="48x" style="margin-left: -48px; opacity: 0.7;">';
     }
+    $crusader_loot = get_crusader_loot($crusader, $user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $crusader);
+    for ($slot = 1; $slot <= $hero_gem_slot_count; $slot++) {
+      if (!empty($crusader->gems->$slot)) {
+        $crusader_gems[$slot] = $crusader->gems->$slot;
+      } else {
+        $crusader_gems[$slot] = new \stdClass();
+        $crusader_gems[$slot]->gem_id = $game_defines->crusaders[$crusader->hero_id]->hero_gem_slots[$slot]->gem_id;
+        $crusader_gems[$slot]->level = 0;
+      }
+    }
+    $crusader_gem_td = '';
+    $gem_css = array(1 => 'text-align: center;width: 15px; height: 15px;position: relative;top: 25px;',
+                     2 => 'text-align: center;width: 15px; height: 15px;position: relative;top: 30px; left: 10px;',
+                     3 => 'text-align: center;width: 15px; height: 15px;position: relative;top: 15px; left: 28px;',
+                     4 => 'text-align: center;width: 15px; height: 15px;position: relative;top: -20px; left: 34px;',
+                     5 => 'text-align: center;width: 15px; height: 15px;position: relative;top: -52px; left: 18px;');
+    foreach ($crusader_gems AS $slot => $crusader_gem) {
+      if (!empty($crusader_gem)) {
+        $crusader_gem_td .= '<div style="' . $gem_css[$slot] . '" class="' . strtok($game_defines->gems[$crusader_gem->gem_id]->name, " ") . '">' . $crusader_gem->level . '</div>';
+      } else {
+        $crusader_gem_td .= '<div style="' . $gem_css[$slot] . '">0</div>';
+      }
+    }
+    if ($column_count > 10) {
+      $user_crusaders .= '</tr></tr>';
+      $column_count = 0;
+    }
+    $user_crusaders .= '<td style="vertical-align: top"><img src="' . $image . '" width="48px" height="48x">' . $unowned_crusader_img . $crusader_gem_td . '</td><td style="text-align: center; width: 15px;">' . implode('', $crusader_loot) . '</td>';
+    $column_count++;
   }
   $user_crusaders .= '</tr></table>';
   $total_mats = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials);
@@ -191,7 +191,7 @@ function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot)
 
 
 ?>
-<div style="color:red;">This will only display your crusaders and their gear</div>
+<div style="color:red;">This will display all crusaders(unowned will have a light red X over their image) and their gear. It also displays mats/buffs/trinkets/dungeon points/runes/total & average ep/chests opened count.</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 <div style="float: left;padding-right: 5px; clear: left;">
   User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
