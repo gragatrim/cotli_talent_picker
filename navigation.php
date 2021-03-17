@@ -6,6 +6,7 @@ include_once "user_defines.php";
 ?>
 <html>
 <head>
+<link rel="shortcut icon" href="./favicon.ico">
 <style>
 table, th, td {
     border: 1px solid black;
