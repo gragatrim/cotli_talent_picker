@@ -68,7 +68,7 @@
   echo '</table><br><table><tr><th colspan="9">Crusader Rune Effects</th></tr><tr>';
   $i = 0;
   foreach($game_defines->crusaders AS $crusader) {
-    if (empty($crusader->hero_gem_slots)) {
+    if (empty($crusader->hero_gem_slots) || empty($crusader->name)) {
       continue;
     }
     if ($i >= 9) {
@@ -89,7 +89,10 @@
           foreach ($gem_slot->effects AS $gem_effects) {
             $effect_array = explode(',', $gem_effects->effect_string);
             if ($effect_array[0] == 'buff_formation_abilities' || $effect_array[0] == 'buff_formation_ability') {
-              $gem_slot_effect .= $game_defines->formation_abilities[$effect_array[2]]->name . '<br>';
+              $effect_array_size = count($effect_array);
+              for ($k = 2; $k < $effect_array_size; $k++) {
+                $gem_slot_effect .= $game_defines->formation_abilities[$effect_array[$k]]->name . '<br>';
+              }
             } else if ($effect_array[0] == 'unlock_formation_ability') {
               $gem_slot_effect .= $game_defines->formation_abilities[$effect_array[1]]->name . '<br>';
             } else if ($effect_array[0] == 'buff_upgrades') {
@@ -108,7 +111,7 @@
             }
           }
         }
-        echo '<div><div style="float: left;clear: left;padding-left: 10px;" >' . $rune_type . '</div><div style="float: right;clear: right; padding-right: 10px;" class="' . $gem_slot_effect_class . '">' . $gem_slot_effect . '</div></div>';
+        echo '<div><div style="float: left;clear: left;padding-left: 10px;" >' . $rune_type . '</div><div style="float: right;clear: right;" class="' . $gem_slot_effect_class . '">' . $gem_slot_effect . '</div></div>';
       }
     }
     $i++;
