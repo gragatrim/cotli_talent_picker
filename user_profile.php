@@ -15,7 +15,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     }
     $saved_form_html = generate_saved_forms($user_info->formation_saves['campaigns'], $game_defines);
     $saved_form_html .= generate_saved_forms($user_info->formation_saves['challenges'], $game_defines);
-    $saved_user_info_filename = md5($hash);
+    $saved_user_info_filename = md5(password_hash($hash, PASSWORD_DEFAULT));
     $shareable_user_info = json_decode("{}");
     $shareable_user_info->crusaders = $user_info->crusaders;
     $shareable_user_info->total_ep = $user_info->total_ep;
