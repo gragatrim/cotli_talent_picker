@@ -165,7 +165,7 @@ if (!empty($json_response->entries)) {
     } else if (!empty($entry->info->code)) {
       echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Redeemed code " . $entry->info->code . "<br>";
     } else if (isset($entry->info->action) && $entry->info->action === 'add_normal') {
-      if ($entry->info->bonus_boss_idols->gained > 0 && isset($_POST['show_bonus_boss_idols']) && $_POST['show_bonus_boss_idols'] == true) {
+      if (!empty($entry->info->bonus_boss_idols) && $entry->info->bonus_boss_idols->gained > 0 && isset($_POST['show_bonus_boss_idols']) && $_POST['show_bonus_boss_idols'] == true) {
         echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Gained " . $entry->info->bonus_boss_idols->gained . " bonus boss idols from area " . $entry->info->chest_area_sent . "<br>";
       } else {
         continue;
