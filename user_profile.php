@@ -5,6 +5,7 @@ $game_json = $game_defines->game_json;
 if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['raw_user_data']) || !empty($_GET['saved_info'])) {
   if (!empty($_GET['saved_info'])) {
     $user_info = unserialize(file_get_contents('user_profiles/' . $_GET['saved_info']));
+    $saved_form_html = $user_info->saved_form_html;
   } else {
     $user_info = new UserDefines('', $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
     if (empty($_POST['user_id']) || empty($_POST['user_hash'])) {
@@ -12,6 +13,8 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     } else {
       $hash = $_POST['user_id'] . $_POST['user_hash'];
     }
+    $saved_form_html = generate_saved_forms($user_info->formation_saves['campaigns'], $game_defines);
+    $saved_form_html .= generate_saved_forms($user_info->formation_saves['challenges'], $game_defines);
     $saved_user_info_filename = md5($hash);
     $shareable_user_info = json_decode("{}");
     $shareable_user_info->crusaders = $user_info->crusaders;
@@ -26,6 +29,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     $shareable_user_info->chests = $user_info->chests;
     $shareable_user_info->stats = $user_info->stats;
     $shareable_user_info->crafting_materials = $user_info->crafting_materials;
+    $shareable_user_info->saved_form_html = $saved_form_html;
     $shareable_user_info->all_season_data = new \stdClass();
     foreach ($user_info->all_season_data AS $season_id => $season_info) {
       $shareable_user_info->all_season_data->$season_id = new \stdClass();
@@ -192,6 +196,7 @@ function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot)
 
 ?>
 <div style="color:red;">This will display all crusaders(unowned will have a light red X over their image) and their gear. It also displays mats/buffs/trinkets/dungeon points/runes/total & average ep/chests opened count.</div>
+<div style="color:red;">This also displays your saved formations as well. Due to how the raw user data is saved, they will appear out of order if you use it.</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 <div style="float: left;padding-right: 5px; clear: left;">
   User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
@@ -239,6 +244,9 @@ if (!empty($user_trinkets)) {
 }
 if (!empty($crafting_materials_table)) {
   echo $crafting_materials_table;
+}
+if (!empty($saved_form_html)) {
+  echo $saved_form_html;
 }
 ?>
 </html>
