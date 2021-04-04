@@ -4,8 +4,12 @@ $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
 if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['raw_user_data']) || !empty($_GET['saved_info'])) {
   if (!empty($_GET['saved_info'])) {
-    $user_info = unserialize(file_get_contents('user_profiles/' . $_GET['saved_info']));
-    $saved_form_html = $user_info->saved_form_html;
+    if (file_exists('user_profiles/' . $_GET['saved_info'])) {
+      $user_info = unserialize(file_get_contents('user_profiles/' . $_GET['saved_info']));
+      $saved_form_html = $user_info->saved_form_html;
+    } else {
+      die();
+    }
   } else {
     $user_info = new UserDefines('', $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
     if (empty($_POST['user_id']) || empty($_POST['user_hash'])) {
