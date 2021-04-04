@@ -9,13 +9,16 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   } else {
     $user_info = new UserDefines('', $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
     if (empty($_POST['user_id']) || empty($_POST['user_hash'])) {
-      $hash = $user_info->user_json->challenge_details->last_challenge_started->user_id;
+      $identifier = md5($user_info->user_json->challenge_details->last_challenge_started->user_id);
+      $salt = $user_info->user_json->challenge_details->last_challenge_started->user_id;
     } else {
-      $hash = $_POST['user_id'] . $_POST['user_hash'];
+      $identifier = $_POST['user_hash'];
+      $salt = $_POST['user_id'];
     }
     $saved_form_html = generate_saved_forms($user_info->formation_saves['campaigns'], $game_defines);
     $saved_form_html .= generate_saved_forms($user_info->formation_saves['challenges'], $game_defines);
-    $saved_user_info_filename = md5(password_hash($hash, PASSWORD_DEFAULT));
+    //The salt needs to be 22 characters long users ID should be at least 7 characters, so I repeat it a few times to be sure that we should get it over 22 chars
+    $saved_user_info_filename = md5(crypt($identifier, '$2y$10$' . substr(str_repeat($salt, 22), 0, 22) . '$'));
     $shareable_user_info = json_decode("{}");
     $shareable_user_info->crusaders = $user_info->crusaders;
     $shareable_user_info->total_ep = $user_info->total_ep;
