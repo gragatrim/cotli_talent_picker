@@ -1,7 +1,23 @@
 <?php
   include "navigation.php";
   $game_defines = new GameDefines();
-  echo '</table><br><table><tr><th>Crusader Name</th><th colspan="15">Crusader 5th Rune Scaling</th></tr>';
+  echo '</table><br><table><tr><th colspan="16">Crusader 5th Rune Scaling</th></tr><tr><th>Crusader Name</th>
+  <th> Lvl 1</th>
+  <th> Lvl 2</th>
+  <th> Lvl 3</th>
+  <th> Lvl 4</th>
+  <th> Lvl 5</th>
+  <th> Lvl 6</th>
+  <th> Lvl 7</th>
+  <th> Lvl 6</th>
+  <th> Lvl 9</th>
+  <th> Lvl 10</th>
+  <th> Lvl 11</th>
+  <th> Lvl 12</th>
+  <th> Lvl 13</th>
+  <th> Lvl 14</th>
+  <th> Lvl 15</th>
+  </tr>';
   $row_number = 0;
   foreach($game_defines->crusaders AS $crusader) {
     if (empty($crusader->hero_gem_slots) || empty($crusader->name)) {
