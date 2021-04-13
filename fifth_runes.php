@@ -25,7 +25,7 @@
           if ($i%5 == 0) {
             $style = 'style="background: lightblue;"';
           }
-          $rune_levels .= '<td ' . $style . '>' . sprintf('%.3E', $amount) . '</td>';
+          $rune_levels .= '<td ' . $style . '>' . sprintf('%.2E', $amount) . '</td>';
           $i++;
         }
       } else {
@@ -35,7 +35,7 @@
           if ($i%5 == 0) {
             $style = 'style="background: lightblue;"';
           }
-          $rune_levels .= '<td ' . $style . '>' . sprintf('%.3E', $amount) . '</td>';
+          $rune_levels .= '<td ' . $style . '>' . sprintf('%.2E', $amount) . '</td>';
           $i++;
         }
       }
