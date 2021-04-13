@@ -19,7 +19,7 @@
     $rune_levels = '';
     if ($crusader->hero_gem_slots[5]->slot_id == 5) {
       if (is_array($crusader->hero_gem_slots[5]->effects[0]->level_amounts)) {
-        $i = 0;
+        $i = 1;
         foreach ($crusader->hero_gem_slots[5]->effects[0]->level_amounts AS $level => $amount) {
           $style = '';
           if ($i%5 == 0) {
@@ -29,7 +29,7 @@
           $i++;
         }
       } else {
-        $i = 0;
+        $i = 1;
         foreach ($game_defines->hero_gem_scaling[$crusader->hero_gem_slots[5]->effects[0]->level_amounts] AS $amount) {
           $style = '';
           if ($i%5 == 0) {
