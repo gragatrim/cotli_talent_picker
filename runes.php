@@ -77,6 +77,9 @@
     }
     echo '<td><b>' . $crusader->name . '</b><br>';
     foreach ($crusader->hero_gem_slots AS $gem_slot) {
+      if (isset($gem_slot->properties->coming_soon) && $gem_slot->properties->coming_soon == true) {
+        continue;
+      }
       if (isset($gem_slot->effects[0])) {
         $rune_type = strtok($game_defines->gems[$gem_slot->gem_id]->name, " ");
         $gem_slot_effect = '';
