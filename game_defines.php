@@ -38,6 +38,7 @@ class GameDefines {
     $this->crafting_materials = $this->get_crafting_materials();
     $this->set_hero_gem_slots();
     $this->hero_gem_effects = $this->get_hero_gem_effects();
+    $this->hero_gem_scaling = $this->get_hero_gem_scaling();
   }
 
   public function get_loot() {
@@ -279,6 +280,16 @@ class GameDefines {
       }
     }
     return $hero_gem_effects;
+  }
+
+  public function get_hero_gem_scaling() {
+    $hero_gem_scalings = array();
+    if (isset($this->game_json->hero_gem_scaling_defines)) {
+      foreach($this->game_json->hero_gem_scaling_defines AS $hero_gem_scaling) {
+        $hero_gem_scalings[$hero_gem_scaling->key] = $hero_gem_scaling->scaling;
+      }
+    }
+    return $hero_gem_scalings;
   }
 
   public function sort_crusaders_by_seat() {
