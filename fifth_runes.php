@@ -1,7 +1,7 @@
 <?php
   include "navigation.php";
   $game_defines = new GameDefines();
-  echo '<table style="margin-left: auto; margin-right: auto"><tr><th colspan="16">Crusader 5th Rune Scaling</th></tr><tr><th>Crusader Name</th>
+  echo '<table style="margin-left: auto; margin-right: auto"><tr><th colspan="16">Crusader 5th Rune Scaling(all numbers are percentages)</th></tr><tr><th>Crusader Name</th>
   <th> Lvl 1</th>
   <th> Lvl 2</th>
   <th> Lvl 3</th>
