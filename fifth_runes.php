@@ -9,7 +9,7 @@
   <th> Lvl 5</th>
   <th> Lvl 6</th>
   <th> Lvl 7</th>
-  <th> Lvl 6</th>
+  <th> Lvl 8</th>
   <th> Lvl 9</th>
   <th> Lvl 10</th>
   <th> Lvl 11</th>
