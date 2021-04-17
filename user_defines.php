@@ -51,6 +51,7 @@ class UserDefines {
     $this->missions = $this->get_missions();
     $this->owned_crafting_recipes = $this->get_owned_crafting_recipes();
     $this->total_gems = $this->get_total_level_one_gem_value();
+    $this->total_gems_available = $this->get_total_level_one_gem_value_available();
   }
 
   public function get_loot() {
@@ -186,6 +187,16 @@ class UserDefines {
       }
     }
     return $total_gems;
+  }
+
+  public function get_total_level_one_gem_value_available() {
+    $total_gems_available = $this->total_gems;
+    foreach ($this->user_json->gems->assigned AS $hero_id => $runes_info) {
+      foreach ($runes_info AS $rune_slot => $gem_data) {
+          $total_gems_available[$gem_data->gem_id] -= pow(2, ($gem_data->level - 1));
+      }
+    }
+    return $total_gems_available;
   }
 
   public function generate_crusader_loot($game_defines) {

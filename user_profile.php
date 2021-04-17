@@ -31,6 +31,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     $shareable_user_info->reset_currency_spent = $user_info->reset_currency_spent;
     $shareable_user_info->loot = $user_info->loot;
     $shareable_user_info->total_gems = $user_info->total_gems;
+    $shareable_user_info->total_gems_available = $user_info->total_gems_available;
     $shareable_user_info->buffs = $user_info->buffs;
     $shareable_user_info->crafting_materials = $user_info->crafting_materials;
     $shareable_user_info->chests = $user_info->chests;
@@ -150,7 +151,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   }
   $base_gem_total = '<div style="float: left;clear: left;">';
   foreach ($user_info->total_gems AS $gem_id => $gem_count) {
-    $base_gem_total .= 'You have the equivalent of ' . $gem_count . ' lvl 1 ' . $game_defines->gems[$gem_id]->name .'s<br>';
+    $base_gem_total .= 'You have the equivalent of ' . $gem_count . ' lvl 1 ' . $game_defines->gems[$gem_id]->name .'s, and ' . $user_info->total_gems_available[$gem_id] . ' available <br>';
   }
   $base_gem_total .= '</div>';
 }
