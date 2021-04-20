@@ -29,7 +29,7 @@ foreach($game_defines->crusaders_in_seat_order AS $crusader_seat) {
       $draggable = 'draggable="true" ondragstart="drag(event)"';
       if ($image != './images/empty_slot.png') {
         //This has to be in here(as well as the check above to safely not leak new crusaders that get pushed live before they should be
-        if (in_array($crusader->id, $saved_form)) {
+        if (!is_array($saved_form) || in_array($crusader->id, $saved_form)) {
           $image = './images/empty_slot.png';
           $draggable = 'draggable="true"';
         }
