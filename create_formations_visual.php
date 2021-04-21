@@ -5,6 +5,8 @@ $game_json = $game_defines->game_json;
 
 $saved_form = array();
 if (!empty($_POST) && !empty($_POST['formation_id'])) {
+  //Try to sanitize the input a bit
+  $_POST['formation_id'] = intval($_POST['formation_id']);
   $saved_form_html = '';
   $saved_form_html .= '<b style="float: left; clear: left;">' . $game_defines->campaign_formations[$_POST['formation_id']]['name'] . '</b><br>';
   if (((!empty($_POST['user_id']) && !empty($_POST['user_hash'])) || !empty($_POST['raw_user_data'])) && !empty($_POST['save_slot'])) {
