@@ -80,7 +80,7 @@ if (!empty($json_response->entries)) {
           } else if (!empty($entry->info->rewards->red_rubies)) {
             echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->red_rubies . " rubies<br>";
           } else if (!empty($entry->info->rewards->arcane_jewels)) {
-            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->arcane_jewels . " Geodes<br>";
+            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->arcane_jewels . " Geode<br>";
           } else {
             echo "<pre>" . print_r($entry, true) . "</pre>";
           }
