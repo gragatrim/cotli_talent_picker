@@ -20,6 +20,9 @@ if (!empty($_POST)) {
     if (!isset($_POST['ignore_front_line_fire'])) {
       $_POST['ignore_front_line_fire'] = false;
     }
+    if (!isset($_POST['ignore_backline_defensive'])) {
+      $_POST['ignore_backline_defensive'] = false;
+    }
     $game_json = $game_defines->game_json;
     if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['raw_user_data'])) {
       $user_info = new UserDefines('', $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);

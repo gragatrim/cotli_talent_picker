@@ -168,7 +168,8 @@ class User {
     }
     if (($this->ignore_impatience == true && $talent->name == 'impatience')
       || ($this->ignore_must_be_magic == true && $talent->name == 'must_be_magic')
-      || ($this->ignore_front_line_fire == true && $talent->name == 'front_line_fire')) {
+      || ($this->ignore_front_line_fire == true && $talent->name == 'front_line_fire')
+      || ($this->ignore_backline_defensive == true && $talent->name == 'backline_defensive')) {
       $is_valid = false;
     }
 
@@ -204,7 +205,15 @@ class User {
     }
     //This is to properly handle that you only get an increase in BI every 5 areas and not for every area reached
     $floored_max_area_reached = floor($this->max_area_reached * 2 / 10) / 2 * 10;
+    //$floored_max_area_using_new_bi = 0;
+    //if ($floored_max_area_reached > 5895) {
+    //  $floored_max_area_using_new_bi = $floored_max_area_reached - 5895;
+    //}
     $fp_idol_average = 0.4*10.201*(1+0.25*($this->t2_11ths_completed-1))*((1-pow(1.0201,(($floored_max_area_reached-95)/5)))/(1-1.0201));
+    //$test_fp_aaaaaaa = 0.4*10.201*((1+0.25*($this->t2_11ths_completed-1))*floor(10*pow(1.01,(0.4*($floored_max_area_reached-95)))));
+    //debug($test_fp_aaaaaaa, 'test_fp_aaaaaaa');
+    //debug($fp_idol_average, 'fp_idol_average');
+    //$fp_new_idol_average = 0.4*10.201*(1+0.25*($this->t2_11ths_completed-1))*((1-pow(1.0201,(($floored_max_area_reached-95)/5)))/(1-1.0201));
     $idols_gained = bcmul(bcmul($this->total_idols, $next_highest_idol_ledge), $this->idol_buff);
     $idols_per_hour = $idols_gained / $total_time * 60;
     $idols_per_fp_time = $idols_per_hour / 60 * $this->time_to_complete_fp;

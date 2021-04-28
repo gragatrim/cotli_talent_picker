@@ -41,6 +41,7 @@ If you fill in the user id and user hash in the left column below it'll populate
   Ignore Impatience: <input type="checkbox" name="ignore_impatience" value="true" <?php echo ((isset($user->ignore_impatience) && $user->ignore_impatience == false) ? '' : 'checked'); ?>><br>
   Ignore Must Be Magic: <input type="checkbox" name="ignore_must_be_magic" value="true" <?php echo ((!isset($user->ignore_must_be_magic) || $user->ignore_must_be_magic == false) ? '' : 'checked'); ?>><br>
   Ignore Front Line Fire: <input type="checkbox" name="ignore_front_line_fire" value="true" <?php echo ((!isset($user->ignore_front_line_fire) || $user->ignore_front_line_fire == false) ? '' : 'checked'); ?>><br>
+  Ignore Backline Defensive: <input type="checkbox" name="ignore_backline_defensive" value="true" <?php echo ((!isset($user->ignore_backline_defensive) || $user->ignore_backline_defensive == false) ? '' : 'checked'); ?>><br>
 </div>
 <div style="float: left;">
   Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : '0'); ?>"> <label for="debug">Debug: </label><input type="checkbox" id="debug" name="debug" value="true" <?php echo (isset($_POST['debug']) ? "checked" : ''); ?>><br>
