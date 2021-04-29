@@ -16,6 +16,11 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
       foreach($crusader_loot AS $gear_slot_id => $gear_slot_loot) {
         //Loops over each of the gear in each slot
         foreach($gear_slot_loot AS $id => $gear) {
+          //If you don't own the crusader, you can't get thier GE in the flash sale
+          if (empty($user_info->crusaders[$gear->hero_id]) || $user_info->crusaders[$gear->hero_id]->owned == 0) {
+            unset($ge_id_flip[$gear->id]);
+            continue;
+          }
           if ($gear->id == $loot_id && isset($ge_id_flip[$loot_id])
           || (isset($gear_slot_loot[($id-1)]) && $gear_slot_loot[($id-1)]->id == ($loot_id - 1) && isset($ge_id_flip[$gear_slot_loot[($id-1)]->id]))) {
             unset($ge_id_flip[$loot_id]);
