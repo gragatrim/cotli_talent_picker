@@ -3,11 +3,15 @@ include "navigation.php";
 $game_defines = new GameDefines();
 $game_json = $game_defines->game_json;
 
-$ge_ids = [2070,2640,2835,1735,2864,2707,2661,2373,2686,2571,2782,610,1764,1969,1758,1825,2093,2837,2267,2962,2369,849,2816,1831,2344,2619,2705,1665,1418,2285,2463,2611,2615,1735,2864,849,2939,2269,2753,2711,1850,956,892,566,3010];
-$ge_id_flip = array_flip($ge_ids);
 
 if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['raw_user_data'])) {
   $user_info = new UserDefines('', $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
+  foreach ($user_info->user_json->event_details AS $event) {
+    if ($event->event_id == 273 && $event->active == 1) {
+      $ge_ids = $event->details->flash_sale_loot_ids;
+      $ge_id_flip = array_flip($ge_ids);
+    }
+  }
   $missing_ge = '';
   foreach ($user_info->loot AS $loot_id => $loot_info) {
     //Loops over all crusaders so you can look at their gear
@@ -39,7 +43,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   }
 }
 ?>
-<div style="color: red;">This page will show you what GEs you are missing in the current flash sale frenzy!(for April 28-30, 2021)</div>
+<div style="color: red;">This page will show you what GEs you are missing in the current flash sale frenzy!(Assuming one is running)</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 <div style="float: left;padding-right: 5px; clear: left;">
   User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>

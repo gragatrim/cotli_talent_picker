@@ -292,5 +292,6 @@ function trashDrop(ev) {
 | <a href="./player_saved_formations.php">View saved formations</a> | <a href="./create_formations_visual.php">Create formations</a><a href="./create_formations.php">(old method)</a> | <a href="./user_profile.php">User profile</a>
 | <a href="./runes.php">View Rune Info</a>(<a href="./fifth_runes.php">5th scaling)</a>
 | <a href="./best_mission_crusaders.php">Mission Calc(beta)</a>
+| <a href="./flash_sale_frenzy.php">Flash Sale Frenzy</a>
 | <a href="https://github.com/gragatrim/cotli_talent_picker">Github</a>
 <br>
