@@ -110,7 +110,11 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
         $crusader_gems[$slot] = $crusader->gems->$slot;
       } else {
         $crusader_gems[$slot] = new \stdClass();
-        $crusader_gems[$slot]->gem_id = $game_defines->crusaders[$crusader->hero_id]->hero_gem_slots[$slot]->gem_id;
+        if (empty($game_defines->crusaders[$crusader->hero_id]->hero_gem_slots[$slot]->gem_id)) {
+          $crusader_gems[$slot]->gem_id = 1;
+        } else {
+          $crusader_gems[$slot]->gem_id = $game_defines->crusaders[$crusader->hero_id]->hero_gem_slots[$slot]->gem_id;
+        }
         $crusader_gems[$slot]->level = 0;
       }
     }
@@ -135,10 +139,16 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     $column_count++;
   }
   $user_crusaders .= '</tr></table>';
-  $total_mats = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials);
-  $total_mats_with_chests = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials, true, $user_info->chests, $game_defines->chests);
+  $material_info = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials);
+  $total_mats = $material_info[0];
+  $material_info_with_chests = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials, true, $user_info->chests, $game_defines->chests);
+  $total_mats_with_chests = $material_info_with_chests[0];
   $total_mat_div = '<div style="float: left; clear: left;">Total Materials(including epic mats): ' . $total_mats . '</div>';
   $total_mat_div_with_chests = '<div style="float: left; clear: left;">Total Materials(including epic mats and all unopened chests): ' . $total_mats_with_chests . '</div>';
+  $total_gear_levels_div = '';
+  foreach ($material_info[1] AS $level => $gears) {
+    $total_gear_levels_div .= '<div style="float: left; clear: left;">You have ' . $gears . ' legendary gear at level ' . $level . '</div>';
+  }
   $chests_opened = '<div style="float: left; clear: left;">Total normal silver chests opened: ' . $user_info->stats['normal_chests_opened'] . '</div>';
   $chests_opened .= '<div style="float: left; clear: left;">Total normal jeweled chests opened: ' . $user_info->stats['rare_chests_opened'] . '</div>';
   $gold_missions_completed = '<div style="float: left; clear: left;">Total gold missions completed: ' . $user_info->stats['gold_missions_completed'] . '</div>';
@@ -231,6 +241,9 @@ if (!empty($total_mat_div)) {
 }
 if (!empty($total_mat_div_with_chests)) {
   echo $total_mat_div_with_chests;
+}
+if (!empty($total_gear_levels_div)) {
+  echo $total_gear_levels_div;
 }
 if (!empty($chests_opened)) {
   echo $chests_opened;

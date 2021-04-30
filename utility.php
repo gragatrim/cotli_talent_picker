@@ -185,6 +185,7 @@ function generate_saved_forms($forms, $game_defines) {
 
 function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_materials, $include_unopened_chests = false, $user_chests = NULL, $chest_defines = NULL) {
   $total_mats = 0;
+  $gear_levels = array();
   foreach ($user_loot AS $id => $loot) {
     foreach($all_crusader_loot[$all_loot[$loot->loot_id]->hero_id] AS $slot_id => $crusader_all_slot_loot) {
       foreach ($crusader_all_slot_loot AS $crusader_slot_loot) {
@@ -192,6 +193,11 @@ function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_mat
           if ($crusader_slot_loot->rarity == 5) {
             for ($i = 1; $i < $loot->count; $i++) {
               $total_mats += (250 * pow(2, ($i-1)));
+            }
+            if (isset($gear_levels[$i])) {
+              $gear_levels[$i]++;
+            } else {
+              $gear_levels[$i] = 1;
             }
           }
         }
@@ -234,8 +240,8 @@ function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_mat
     //I don't think it matter if all that much, decided to floor it
     $total_mats += floor($total_silver_chests * $mats_per_sc + $total_jeweled_chests * $mats_per_jc);
   }
-
-  return $total_mats;
+  ksort($gear_levels);
+  return array($total_mats, $gear_levels);
 }
 
 function generate_formation_table($game_defines) {

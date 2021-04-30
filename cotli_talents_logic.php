@@ -130,9 +130,11 @@ if (!empty($_POST)) {
       $_POST['crusaders_owned'] = $crusaders_owned;
       $_POST['skins_owned'] = $skins_owned;
       $_POST['lowest_epic_trinket_count'] = $loweset_epic_trinket_count;
-      $total_mats = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials);
+      $material_info = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials);
+      $total_mats = $material_info[0];
       $total_mat_div = '<div style="float: left; clear: left;">Total Materials(including epic mats): ' . $total_mats . '</div>';
-      $total_mats_with_chests = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials, true, $user_info->chests, $game_defines->chests);
+      $material_info_with_chests = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials, true, $user_info->chests, $game_defines->chests);
+      $total_mats_with_chests = $material_info_with_chests[0];
       $total_mat_div_with_chests = '<div style="float: left; clear: left;">Total Materials(including epic mats and all unopened chests): ' . $total_mats_with_chests . '</div>';
     }
     $talents_to_generate = array();
