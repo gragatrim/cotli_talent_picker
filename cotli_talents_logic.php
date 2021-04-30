@@ -197,11 +197,11 @@ if (!empty($_POST)) {
       if ($formatted_talent_name == 'arithmagician') {
         $level_multiplier = 'arithmagician';
       }
+      if ($formatted_talent_name == 'bonus_training') {
+        $main_dps_slot = htmlspecialchars($_POST['main_dps_slot']);
+      }
       if ($talent_levels > 0) {
         $stacks = $talent_levels;
-        if ($formatted_talent_name == 'bonus_training') {
-          $main_dps_slot = htmlspecialchars($_POST['main_dps_slot']);
-        }
         if ($formatted_talent_name == 'trinket_hoarder') {
           //need 1 more than trinket sets for this for the math to check out
           $stacks = floor($_POST['lowest_epic_trinket_count']/20) + 1;
@@ -317,6 +317,7 @@ if (!empty($_POST)) {
     $results_legend = '<div class="green">Green means you can afford it</div><div class="yellow">Yellow means your leftover idols can afford it</div><div class="red">Red means you can\'t afford it</div>';
     $results_to_print = '<div style="float: right;clear: both;">Final damage is current damage + green suggestions, future damage adds the increase from yellow talent suggestions</div><div style="float: right; clear: right;">' . $results_legend . '<div style="float: right;clear: both;">Final Damage ' . format(bcsub($user->get_total_damage(), 40)) . "% Increase<br>";
     //This is here to make a copy of the object so we aren't still accessing things by reference
+    
     $future_talents_user = unserialize(serialize($user));
     $talents_to_buy = '';
     $future_damage = $future_talents_user->get_total_damage();
