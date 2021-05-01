@@ -293,5 +293,6 @@ function trashDrop(ev) {
 | <a href="./runes.php">View Rune Info</a>(<a href="./fifth_runes.php">5th scaling)</a>
 | <a href="./best_mission_crusaders.php">Mission Calc(beta)</a>
 | <a href="./flash_sale_frenzy.php">Flash Sale Frenzy</a>
+| <a href="./gear_levels.php">View Gear Levels</a>
 | <a href="https://github.com/gragatrim/cotli_talent_picker">Github</a>
 <br>
