@@ -12,34 +12,36 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
       $ge_id_flip = array_flip($ge_ids);
     }
   }
-  $missing_ge = '';
-  foreach ($user_info->loot AS $loot_id => $loot_info) {
-    //Loops over all crusaders so you can look at their gear
-    foreach ($game_defines->crusader_loot AS $crusder_loot_id => $crusader_loot) {
-      //Loops over all gear slots
-      foreach($crusader_loot AS $gear_slot_id => $gear_slot_loot) {
-        //Loops over each of the gear in each slot
-        foreach($gear_slot_loot AS $id => $gear) {
-          //If you don't own the crusader, you can't get thier GE in the flash sale
-          if (empty($user_info->crusaders[$gear->hero_id]) || $user_info->crusaders[$gear->hero_id]->owned == 0) {
-            unset($ge_id_flip[$gear->id]);
-            continue;
-          }
-          if ($gear->id == $loot_id && isset($ge_id_flip[$loot_id])
-          || (isset($gear_slot_loot[($id-1)]) && $gear_slot_loot[($id-1)]->id == ($loot_id - 1) && isset($ge_id_flip[$gear_slot_loot[($id-1)]->id]))) {
-            unset($ge_id_flip[$loot_id]);
-            unset($ge_id_flip[$gear_slot_loot[($id-1)]->id]);
-          }
-          //Billy's GL is 1151 while the GE is 610, breaking the standard that all other items use
-          if ($loot_id == 1151) {
-            unset($ge_id_flip[610]);
+  if (!empty($ge_ids)) {
+    $missing_ge = '';
+    foreach ($user_info->loot AS $loot_id => $loot_info) {
+      //Loops over all crusaders so you can look at their gear
+      foreach ($game_defines->crusader_loot AS $crusder_loot_id => $crusader_loot) {
+        //Loops over all gear slots
+        foreach($crusader_loot AS $gear_slot_id => $gear_slot_loot) {
+          //Loops over each of the gear in each slot
+          foreach($gear_slot_loot AS $id => $gear) {
+            //If you don't own the crusader, you can't get thier GE in the flash sale
+            if (empty($user_info->crusaders[$gear->hero_id]) || $user_info->crusaders[$gear->hero_id]->owned == 0) {
+              unset($ge_id_flip[$gear->id]);
+              continue;
+            }
+            if ($gear->id == $loot_id && isset($ge_id_flip[$loot_id])
+            || (isset($gear_slot_loot[($id-1)]) && $gear_slot_loot[($id-1)]->id == ($loot_id - 1) && isset($ge_id_flip[$gear_slot_loot[($id-1)]->id]))) {
+              unset($ge_id_flip[$loot_id]);
+              unset($ge_id_flip[$gear_slot_loot[($id-1)]->id]);
+            }
+            //Billy's GL is 1151 while the GE is 610, breaking the standard that all other items use
+            if ($loot_id == 1151) {
+              unset($ge_id_flip[610]);
+            }
           }
         }
       }
     }
-  }
-  foreach ($ge_id_flip AS $id => $value) {
-    $missing_ge .= '<b>' . $game_defines->crusaders[$game_defines->loot[$id]->hero_id]->name . '</b>:' . $game_defines->loot[$id]->name . '<br>';
+    foreach ($ge_id_flip AS $id => $value) {
+      $missing_ge .= '<b>' . $game_defines->crusaders[$game_defines->loot[$id]->hero_id]->name . '</b>:' . $game_defines->loot[$id]->name . '<br>';
+    }
   }
 }
 ?>
