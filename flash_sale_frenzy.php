@@ -42,6 +42,8 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     foreach ($ge_id_flip AS $id => $value) {
       $missing_ge .= '<b>' . $game_defines->crusaders[$game_defines->loot[$id]->hero_id]->name . '</b>:' . $game_defines->loot[$id]->name . '<br>';
     }
+  } else {
+      $missing_ge .= '<b>No current flash sale active!</b><br>';
   }
 }
 ?>
