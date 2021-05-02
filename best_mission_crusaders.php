@@ -320,8 +320,8 @@ function seconds_to_time($seconds) {
   </ul>
 </div>
 <div style="float: left;padding-right: 5px; clear: left;">
-  User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
-  User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
+  User Id: <input type="text" name="user_id" size="1" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
+  User Hash: <input type="password" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
   <div>Allow crusaders in save slots:
   <input type="checkbox" value='1' id="saved_slot_1" name="saved_slot_1" <?php echo (isset($_POST['saved_slot_1']) ? 'checked' : ''); ?>><label for="saved_slot_1">1</label>
   <input type="checkbox" value='1' id="saved_slot_2" name="saved_slot_2" <?php echo (isset($_POST['saved_slot_2']) ? 'checked' : ''); ?>><label for="saved_slot_2">2</label>

@@ -96,8 +96,8 @@ function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot)
 <div style="color:red;">This will only display your crusaders with legendary gear at the level of your choosing</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 <div style="float: left;padding-right: 5px; clear: left;">
-  User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
-  User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
+  User Id: <input type="text" name="user_id" size="1" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
+  User Hash: <input type="password" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
   Raw User Data: <input type="text" name="raw_user_data" value="<?php echo (isset($_POST['raw_user_data']) ? htmlspecialchars($_POST['raw_user_data']) : ''); ?>"><br>
   Which Gear To Display?: <table>
                             <tr>

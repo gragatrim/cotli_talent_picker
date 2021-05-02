@@ -21,8 +21,8 @@ If you fill in the user id and user hash in the left column below it'll populate
 </div>
 <div style="float: left; clear: left; font-weight: bold;" class="red">Leave Raw User Data empty if using userid & hash, the raw user data only updates when you refresh the game</div>
 <div style="float: left;padding-right: 5px; clear: left;">
-  User Id: <input type="text" name="user_id" value="<?php echo (isset($user->user_id) ? $user->user_id : ''); ?>"><br>
-  User Hash: <input type="text" name="user_hash" value="<?php echo (isset($user->user_hash) ? $user->user_hash : ''); ?>"><br>
+  User Id: <input type="text" name="user_id" size="1" value="<?php echo (isset($user->user_id) ? $user->user_id : ''); ?>"><br>
+  User Hash: <input type="password" name="user_hash" value="<?php echo (isset($user->user_hash) ? $user->user_hash : ''); ?>"><br>
   Raw User Data: <input autocomplete="off" type="text" name="raw_user_data" value="<?php echo (isset($_POST['raw_user_data']) ? htmlentities($_POST['raw_user_data']) : ''); ?>"><br>
   Talents to Recommend: <input type="text" name="talents_to_recommend" value="<?php echo (isset($user->talents_to_recommend) ? $user->talents_to_recommend : 1); ?>"><br>
   Average Mission Completion in 8h: <input type="text" name="average_mission_completion" value="<?php echo (isset($user->average_mission_completion) ? $user->average_mission_completion : 0); ?>"><br>

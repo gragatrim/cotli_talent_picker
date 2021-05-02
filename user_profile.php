@@ -217,8 +217,8 @@ function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot)
 <div style="color:red;">This also displays your saved formations as well. Due to how the raw user data is saved, they will appear out of order if you use it.</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 <div style="float: left;padding-right: 5px; clear: left;">
-  User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
-  User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
+  User Id: <input type="text" name="user_id" size="1" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
+  User Hash: <input type="password" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
   Raw User Data: <input autocomplete="off" type="text" name="raw_user_data" value="<?php echo (isset($_POST['raw_user_data']) ? htmlspecialchars($_POST['raw_user_data']) : ''); ?>"><br>
 </div>
 <input style="clear:both; float: left;" type="submit">

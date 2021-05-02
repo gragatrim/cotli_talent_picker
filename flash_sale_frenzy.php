@@ -12,8 +12,8 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
       $ge_id_flip = array_flip($ge_ids);
     }
   }
+  $missing_ge = '';
   if (!empty($ge_ids)) {
-    $missing_ge = '';
     foreach ($user_info->loot AS $loot_id => $loot_info) {
       //Loops over all crusaders so you can look at their gear
       foreach ($game_defines->crusader_loot AS $crusder_loot_id => $crusader_loot) {
@@ -50,8 +50,8 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
 <div style="color: red;">This page will show you what GEs you are missing in the current flash sale frenzy!(Assuming one is running)</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 <div style="float: left;padding-right: 5px; clear: left;">
-  User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
-  User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
+  User Id: <input type="text" name="user_id" size="1" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
+  User Hash: <input type="password" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
   Raw User Data: <input autocomplete="off" type="text" name="raw_user_data" value="<?php echo (isset($_POST['raw_user_data']) ? htmlspecialchars($_POST['raw_user_data']) : ''); ?>"><br>
 </div>
 <input style="clear:both; float: left;" type="submit">

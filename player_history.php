@@ -28,8 +28,8 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
 <div style="color:red;">This is still very much a work in progress, don't be surprised to see raw json</div>
 <div>This doesn't show chest/bi drop entries so it's possible pages will have nothing on them</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
-User Id: <input type="text" name="user_id" value="<?php echo (isset($_POST['user_id']) ? $_POST['user_id'] : ''); ?>"><br>
-User Hash: <input type="text" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? $_POST['user_hash'] : ''); ?>"><br>
+User Id: <input type="text" name="user_id" size="1" value="<?php echo (isset($_POST['user_id']) ? $_POST['user_id'] : ''); ?>"><br>
+User Hash: <input type="password" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? $_POST['user_hash'] : ''); ?>"><br>
 Show Bonus Boss Idols: <input type="checkbox" name="show_bonus_boss_idols" value="true" <?php echo ((!isset($_POST['show_bonus_boss_idols']) || $_POST['show_bonus_boss_idols'] == false) ? '' : 'checked'); ?>><br>
 Page: <input type="text" name="page" value="<?php echo (isset($_POST['page']) ? $_POST['page'] : 1); ?>"><br>
 <input type="submit">
