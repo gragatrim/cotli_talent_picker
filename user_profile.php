@@ -12,6 +12,9 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     }
   } else {
     $user_info = new UserDefines('', $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
+    if (empty($user_info->user_json)) {
+      die();
+    }
     if (empty($_POST['user_id']) || empty($_POST['user_hash'])) {
       $identifier = md5($user_info->user_json->challenge_details->last_challenge_started->user_id);
       $salt = $user_info->user_json->challenge_details->last_challenge_started->user_id;
