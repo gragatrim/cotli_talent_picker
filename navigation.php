@@ -198,6 +198,47 @@ td.formation_table {
   color: navy;
   font-weight: bold;
 }
+
+.dropbtn {
+  background-color: #4D6D63;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  background-color: lightskyblue;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #00400A;
+}
 </style>
 <script>
 function allowDrop(ev) {
@@ -287,12 +328,36 @@ function trashDrop(ev) {
 </script>
 </head>
 <body>
-<a href="./dungeon_calc.php">Dungeon Calculator</a> | <a href="./cotli_talents.php">Talent Picker</a> | <a href="./player_history.php">Player History</a>
-| <a href="./create_achievement_wiki.php">Create achievement wiki</a> | <a href="./create_crusader_wiki.php">Create crusader wiki</a> | <a href="./create_event_wiki.php">Create event wiki</a>
-| <a href="./player_saved_formations.php">View saved formations</a> | <a href="./create_formations_visual.php">Create formations</a><a href="./create_formations.php">(old method)</a> | <a href="./user_profile.php">User profile</a>
-| <a href="./runes.php">View Rune Info</a>(<a href="./fifth_runes.php">5th scaling)</a>
-| <a href="./best_mission_crusaders.php">Mission Calc(beta)</a>
-| <a href="./flash_sale_frenzy.php">Flash Sale Frenzy</a>
-| <a href="./gear_levels.php">View Gear Levels</a>
-| <a href="https://github.com/gragatrim/cotli_talent_picker">Github</a>
-<br>
+<div style="clear: both;">
+  <div class="dropdown">
+    <button class="dropbtn">User Info</button>
+    <div class="dropdown-content">
+      <a href="./cotli_talents.php">Talent Picker</a>
+      <a href="./user_profile.php">User profile</a>
+      <a href="./gear_levels.php">View Gear Levels</a>
+      <a href="./player_history.php">Player History</a>
+      <a href="./dungeon_calc.php">Dungeon Calculator</a>
+      <a href="./player_saved_formations.php">View saved formations</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">General Info</button>
+    <div class="dropdown-content">
+      <a href="./create_formations_visual.php">Create formations</a>
+      <a href="./runes.php">View Rune Info</a>
+      <a href="./fifth_runes.php">5th Rune scaling</a>
+      <a href="./best_mission_crusaders.php">Mission Calc(beta)</a>
+      <a href="./flash_sale_frenzy.php">Flash Sale Frenzy</a>
+      <a href="https://discord.gg/mytZhAT">Community Run Discord Invite</a>
+      <a href="https://github.com/gragatrim/cotli_talent_picker">Github</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Wiki Generation</button>
+    <div class="dropdown-content">
+      <a href="./create_achievement_wiki.php">Create achievement wiki</a>
+      <a href="./create_crusader_wiki.php">Create crusader wiki</a>
+      <a href="./create_event_wiki.php">Create event wiki</a>
+    </div>
+  </div>
+</div>
