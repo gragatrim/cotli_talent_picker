@@ -33,10 +33,11 @@
     }
     $rune_levels = '';
     if ($crusader->hero_gem_slots[5]->slot_id == 5) {
+      $rune_type = strtok($game_defines->gems[$crusader->hero_gem_slots[5]->gem_id]->name, " ");
       foreach ($crusader->hero_gem_slots[5]->effects AS $rune_effect) {
         $fifth_slot_effect = get_gem_effect($rune_effect, $game_defines);
         $fifth_slot_effect = trim(str_replace('<br>', ', ', $fifth_slot_effect), ', ');
-        $rune_levels .= '<tr ' . $row_style . '><td><b>' . $crusader->name . '(' . $fifth_slot_effect . ')</b></td>';
+        $rune_levels .= '<tr ' . $row_style . '><td><b>' . $crusader->name . '(' . $fifth_slot_effect . ') ' . $rune_type . ' Rune</b></td>';
         if (is_array($rune_effect->level_amounts)) {
           $i = 1;
           foreach ($rune_effect->level_amounts AS $level => $amount) {
