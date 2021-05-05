@@ -274,4 +274,40 @@ function exp2int($exp) {
   @list($int, $dec) = explode(".", $mantissa);
   return bcmul($mantissa, bcpow("10", $exponent, 40), 40);
 }
+
+function get_gem_effect($gem_effects, $game_defines) {
+  $effect_array = explode(',', $gem_effects->effect_string);
+  $gem_slot_effect = '';
+  if ($effect_array[0] == 'buff_formation_abilities' || $effect_array[0] == 'buff_formation_ability') {
+    $effect_array_size = count($effect_array);
+    for ($k = 2; $k < $effect_array_size; $k++) {
+      $gem_slot_effect .= $game_defines->formation_abilities[$effect_array[$k]]->name . '<br>';
+    }
+  } else if ($effect_array[0] == 'buff_formation_ability_indices') {
+    $effect_array_size = count($effect_array);
+    for ($k = 2; $k < ($effect_array_size - 1); $k++) {
+      $gem_slot_effect .= $game_defines->formation_abilities[$effect_array[$k]]->name . '<br>';
+    }
+  } else if ($effect_array[0] == 'unlock_formation_ability') {
+    $gem_slot_effect .= $game_defines->formation_abilities[$effect_array[1]]->name . '<br>';
+  } else if ($effect_array[0] == 'buff_upgrades' || $effect_array[0] == 'buff_upgrade_max_level') {
+    $gem_upgrade_count = count($effect_array);
+    for ($j = 2; $j < $gem_upgrade_count; $j++) {
+      $gem_slot_effect .= $game_defines->crusader_upgrades[$effect_array[$j]]->name . '<br>';
+    }
+  } else if ($effect_array[0] == 'buff_ability') {
+    $gem_slot_effect .= 'Buff ' . $game_defines->abilities[$effect_array[2]]->name . '<br>';
+  } else if ($effect_array[0] == 'global_dps_multiplier_mult') {
+    $gem_slot_effect .= 'Buff Global DPS<br>';
+  } else if ($effect_array[0] == 'critical_click_chance_mult') {
+    $gem_slot_effect .= 'Critical Click Chance<br>';
+  } else if ($effect_array[0] == 'gold_multiplier_mult') {
+    $gem_slot_effect .= 'Increase All Gold Found<br>';
+  } else if ($effect_array[0] == 'monster_explodes_damage_increase') {
+    $gem_slot_effect .= 'Increases the explosion damage of ' . $game_defines->formation_abilities[$effect_array[2]]->name . '<br>';
+  } else {
+    $gem_slot_effect .= $gem_effects->effect_string . '<br>';
+  }
+  return $gem_slot_effect;
+}
 ?>
