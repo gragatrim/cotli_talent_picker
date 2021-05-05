@@ -38,7 +38,7 @@
       foreach ($crusader->hero_gem_slots[5]->effects AS $rune_effect) {
         $fifth_slot_effect = get_gem_effect($rune_effect, $game_defines);
         $fifth_slot_effect = trim(str_replace('<br>', ', ', $fifth_slot_effect), ', ');
-        $rune_levels .= '<tr ' . $row_style . '><td><b>' . $crusader->name . '(' . $fifth_slot_effect . ')</b></td><td><b>' . $rune_type . '</b></td>';
+        $rune_levels .= '<tr ' . $row_style . '><td><b><a href="https://crusaders-of-the-lost-idols.fandom.com/wiki/' . str_replace(' ', '_', $crusader->name) . '">' . $crusader->name . '</a>(' . $fifth_slot_effect . ')</b></td><td><b>' . $rune_type . '</b></td>';
         if (is_array($rune_effect->level_amounts)) {
           $i = 1;
           foreach ($rune_effect->level_amounts AS $level => $amount) {
