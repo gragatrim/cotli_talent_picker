@@ -328,7 +328,7 @@ function trashDrop(ev) {
 </script>
 </head>
 <body>
-<div style="clear: both;">
+<div style="clear: both;position: fixed;width: 100%;height: 51px;z-index:999;background-color: lightgrey;border: solid 1px;top: 0px;">
   <div class="dropdown">
     <button class="dropbtn">User Info</button>
     <div class="dropdown-content">
@@ -349,7 +349,6 @@ function trashDrop(ev) {
       <a href="./best_mission_crusaders.php">Mission Calc(beta)</a>
       <a href="./flash_sale_frenzy.php">Flash Sale Frenzy</a>
       <a href="https://discord.gg/mytZhAT">Community Run Discord Invite</a>
-      <a href="https://github.com/gragatrim/cotli_talent_picker">Github</a>
     </div>
   </div>
   <div class="dropdown">
@@ -360,4 +359,6 @@ function trashDrop(ev) {
       <a href="./create_event_wiki.php">Create event wiki</a>
     </div>
   </div>
+  <a style="float: right;margin-right: 10px;" href="https://github.com/gragatrim/cotli_talent_picker"><button class="dropbtn">Github</button></a>
 </div>
+<div style="clear: both; height: 55px;"></div>
