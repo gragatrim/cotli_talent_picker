@@ -183,7 +183,7 @@ function generate_saved_forms($forms, $game_defines) {
   return $saved_form_html;
 }
 
-function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_materials, $include_unopened_chests = false, $user_chests = NULL, $chest_defines = NULL) {
+function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_materials, $include_unopened_chests = false, $user_chests = array(), $chest_defines = NULL) {
   $total_mats = 0;
   $gear_levels = array();
   foreach ($user_loot AS $id => $loot) {
@@ -204,20 +204,22 @@ function get_total_mats($user_loot, $all_crusader_loot, $all_loot, $crafting_mat
       }
     }
   }
-  foreach ($crafting_materials AS $id => $material) {
-    switch ($id) {
-      case 1:
-        $total_mats += $material;
-        break;
-      case 2:
-        $total_mats += $material * 2.5;
-        break;
-      case 3:
-        $total_mats += $material * 5;
-        break;
-      case 4:
-        $total_mats += $material * 10;
-        break;
+  if (!empty($crafting_materials)) {
+    foreach ($crafting_materials AS $id => $material) {
+      switch ($id) {
+        case 1:
+          $total_mats += $material;
+          break;
+        case 2:
+          $total_mats += $material * 2.5;
+          break;
+        case 3:
+          $total_mats += $material * 5;
+          break;
+        case 4:
+          $total_mats += $material * 10;
+          break;
+      }
     }
   }
 
