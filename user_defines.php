@@ -14,7 +14,7 @@ class UserDefines {
       $json_response->details = json_decode($raw_user_data);
     }
     $this->json_response = $json_response;
-    if (!empty($this->json_response->failure_reason)) {
+    if (!empty($this->json_response->failure_reason) || empty($json_response->details)) {
       echo "You most likely entered an incorrect userid/hash, please go back and confirm your entry<br>";
       die();
     }
@@ -125,32 +125,40 @@ class UserDefines {
     $chests = array();
     $chests[1] = $this->user_json->normal_loot_chests;
     $chests[2] = $this->user_json->rare_loot_chests;
-    foreach($this->user_json->chests AS $id => $chest) {
-      $chests[$id] = $chest;
+    if (!empty($this->user_json->chests)) {
+      foreach($this->user_json->chests AS $id => $chest) {
+        $chests[$id] = $chest;
+      }
     }
     return $chests;
   }
 
   public function get_stats() {
     $stats = array();
-    foreach($this->user_json->stats AS $stat => $value) {
-      $stats[$stat] = $value;
+    if (!empty($this->user_json->stats)) {
+      foreach($this->user_json->stats AS $stat => $value) {
+        $stats[$stat] = $value;
+      }
     }
     return $stats;
   }
 
   public function get_formation_saves() {
     $formation_saves = array();
-    foreach($this->user_json->formation_saves AS $formation_type => $formation_save) {
-      $formation_saves[$formation_type] = $formation_save;
+    if (!empty($this->user_json->formation_saves)) {
+      foreach($this->user_json->formation_saves AS $formation_type => $formation_save) {
+        $formation_saves[$formation_type] = $formation_save;
+      }
     }
     return $formation_saves;
   }
 
   public function get_abilities() {
     $abilities = array();
-    foreach($this->user_json->abilities AS $ability) {
-      $abilities[$ability->ability_id] = $ability;
+    if (!empty($this->user_json->abilities)) {
+      foreach($this->user_json->abilities AS $ability) {
+        $abilities[$ability->ability_id] = $ability;
+      }
     }
     return $abilities;
   }
@@ -165,8 +173,10 @@ class UserDefines {
 
   public function get_skins() {
     $skins = array();
-    foreach($this->user_json->skins->skins AS $hero_skin) {
-      $skins[$hero_skin->id] = $hero_skin;
+    if (!empty($this->user_json->skins) && !empty($this->user_json->skins->skins)) {
+      foreach($this->user_json->skins->skins AS $hero_skin) {
+        $skins[$hero_skin->id] = $hero_skin;
+      }
     }
     return $skins;
   }
