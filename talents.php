@@ -1,7 +1,7 @@
 <?php
 
 //Semi global, mainly I'm just lazy, if you add to these arrays, you must add it to the dps_talents array in the talent constructor
-$fully_implemented_talents = array(119, 3, 66, 63, 118, 92, 120, 5, 16, 17, 23, 31, 54, 121, 34, 36, 39, 41, 56, 122, 74, 104, 106, 107, 114, 115, 105, 111, 112, 113, 73, 123, 125, 126);
+$fully_implemented_talents = array(119, 3, 66, 63, 118, 92, 120, 5, 16, 17, 23, 31, 54, 121, 34, 36, 39, 41, 56, 122, 74, 104, 106, 107, 114, 115, 105, 111, 112, 113, 73, 123, 125, 126, 127);
 $partially_implemented_talents = array(55, 102);
 class Talent {
   function __construct($id, $name, $tier, $max_level, $base_cost, $level_multiplier, $current_level = 0, $damage_type = '', $damage_base = 0, $damage_base_multiplier = 1, $stacks = 1, $main_dps_slot = 0, $level_costs = array()) {
@@ -37,7 +37,7 @@ class Talent {
                         17 => '2107159763941',
                         18 => '3769708817690'];
     $this->level_costs = $level_costs;
-    $this->dps_talents = array(119, 3, 66, 63, 118, 92, 120, 5, 16, 17, 23, 31, 54, 121, 34, 36, 39, 41, 56, 122, 74, 104, 106, 107, 114, 115, 105, 111, 112, 113, 73, 55, 102, 123, 125, 126);
+    $this->dps_talents = array(119, 3, 66, 63, 118, 92, 120, 5, 16, 17, 23, 31, 54, 121, 34, 36, 39, 41, 56, 122, 74, 104, 106, 107, 114, 115, 105, 111, 112, 113, 73, 55, 102, 123, 125, 126, 127);
   }
 
   public function get_damage_at_additional_level($levels_to_add) {
@@ -100,6 +100,7 @@ class Talent {
     } else if ($this->name != 'apprentice_crafter'
       && $this->name != 'journeyman_crafter'
       && $this->name != 'master_crafter'
+      && $this->name != 'legendary_hoards'
       && $this->current_level != $this->damage_base_multiplier) {
       $this->damage_base_multiplier = $this->current_level;
     }
@@ -126,6 +127,8 @@ class Talent {
       $damage = bcmul(bcmul(bcpow(bcadd(bcdiv($this->damage_base_multiplier, 100, 40), 1, 40), $this->stacks, 40), 100, 40), bcadd(bcdiv($this->damage_base, 100, 40), 1, 40));
     } else if ($this->name == 'apprentice_crafter' || $this->name == 'journeyman_crafter' || $this->name == 'master_crafter') {
       $damage = bcmul(bcadd(bcmul(bcsub(bcpow(bcadd(bcdiv($this->damage_base_multiplier, 100, 40), 1, 40), $this->current_level, 40), 1, 40), $this->stacks, 40), 1, 40), 100, 40);
+    } else if ($this->name == 'legendary_hoards') {
+      $damage = bcmul(bcpow(bcadd(1, bcdiv(bcadd($this->damage_base, bcmul(bcsub($this->current_level, 1, 40), $this->damage_base_multiplier, 40)), 100, 40), 40), round(bcdiv($this->stacks, 5, 40)), 40), 100, 40);
     } else {
       $damage = bcmul(bcpow(bcadd('1', bcmul(bcdiv($this->damage_base, '100', 20), $this->damage_base_multiplier, 20), 20), $this->stacks, 20), 100, 20);
     }

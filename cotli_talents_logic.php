@@ -132,6 +132,11 @@ if (!empty($_POST)) {
       $_POST['lowest_epic_trinket_count'] = $loweset_epic_trinket_count;
       $material_info = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials);
       $total_mats = $material_info[0];
+      //If they are passing in their user data, we should reset this and regenerate it
+      $_POST['total_legendary_levels_on_all_gear'] = 0;
+      foreach ($material_info[1] AS $gear_level => $levels) {
+        $_POST['total_legendary_levels_on_all_gear'] += ($levels * $gear_level);
+      }
       $total_mat_div = '<div style="float: left; clear: left;">Total Materials(including epic mats): ' . $total_mats . '</div>';
       $material_info_with_chests = get_total_mats($user_info->loot, $game_defines->crusader_loot, $game_defines->loot, $user_info->crafting_materials, true, $user_info->chests, $game_defines->chests);
       $total_mats_with_chests = $material_info_with_chests[0];
@@ -190,7 +195,7 @@ if (!empty($_POST)) {
         $level_multiplier = $talent->cost->factor;
       }
       if ((!empty($talent->effects) && !empty($talent->effects[0]->multiplicative))
-        || in_array($formatted_talent_name, array('dressing_for_success', 'trinket_hoarder', 'synergy', 'kilo_leveling', 'idolatry', 'maxed_power', 'legendary_friendship', 'golden_friendship', 'friendly_helpers', 'extra_training', 'superior_training', 'tenk_training', 'bonus_training', 'montage_training', 'magical_training', 'olympian_training'))){
+        || in_array($formatted_talent_name, array('dressing_for_success', 'trinket_hoarder', 'synergy', 'kilo_leveling', 'idolatry', 'maxed_power', 'legendary_friendship', 'golden_friendship', 'friendly_helpers', 'extra_training', 'superior_training', 'tenk_training', 'bonus_training', 'montage_training', 'magical_training', 'olympian_training', 'legendary_hoards'))){
         $damage_type = '*';
       }
       //I'm using a hardcoded table of costs to deal with arith
@@ -206,6 +211,9 @@ if (!empty($_POST)) {
           //need 1 more than trinket sets for this for the math to check out
           $stacks = floor($_POST['lowest_epic_trinket_count']/20) + 1;
           $damage_base_multiplier = $talent_levels;
+        }
+        if ($formatted_talent_name == 'legendary_hoards') {
+          $stacks = $_POST['total_legendary_levels_on_all_gear'];
         }
         if ($formatted_talent_name == 'dressing_for_success') {
           if (!empty($user_info->skins)) {

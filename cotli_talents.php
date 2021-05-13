@@ -2,7 +2,7 @@
 include "navigation.php";
 include "cotli_talents_logic.php";
 ?>
-<form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
+<form action="<?php $_SERVER['PHP_SELF'];?>" method="post" autocomplete="on">
 <div class="purple legend">Purple background means it's implemented </div><div class="blue legend">Blue background means it's mostly implemented </div><div class="brown legend">Brown background means it's not implemented</div>
 <?php
   echo $game_defines->generate_talent_tree_table($user, $fully_implemented_talents, $partially_implemented_talents);
@@ -12,17 +12,20 @@ include "cotli_talents_logic.php";
 ?>
 <div style="float: left; width: 800px; font-weight: bold;">
 If you fill in the user id and user hash in the left column below it'll populate the right column and your talents.
-<br>If you want to fiddle with things, leave the user id and user hash fields empty and then the information in the right columns and your talents won't get overwritten with what is in your game.
-<br>Set bonus assumes all crusaders have all thier gear slots filled
-<br>The gold bonus provided by crusaders accepts values in the form 1.0E34
-<br>Formation Full Up assumes the gold find is converted 1:1 into DPS.
-<br>Front Line Fire and Must be Magic, always assume they will be active.
-<br>This calc will suggest the single talent that gives the highest absolute DPS gain(if you ask for multiple talents it will evaluate each one as if it's the only talent it's looking for).
+<ul>
+  <li>If you want to fiddle with things, leave the user id and user hash fields empty and then the information in the right columns and your talents won't get overwritten with what is in your game. If you do this, the calc assumes you don't have access to Olympian Training and Arithmagician Newts</li>
+  <li>Set bonus assumes all crusaders have all thier gear slots filled</li>
+  <li>The gold bonus provided by crusaders accepts values in the form 1.0E34</li>
+  <li>Formation Full Up assumes the gold find is converted 1:1 into DPS.</li>
+  <li>Front Line Fire, Power Saws Ablaze, and Must be Magic, always assume they will be active.</li>
+  <li>Due to a limitation in the large number library I'm using, the legendary hoards talent will only be precise on exact multiples of 5. The difference on all other cases will be too minor to matter.</li>
+  <li>This calc will suggest the single talent that gives the highest absolute DPS gain(if you ask for multiple talents it will evaluate each one as if it's the only talent it's looking for).</li>
+</ul>
 </div>
 <div style="float: left; clear: left; font-weight: bold;" class="red">Leave Raw User Data empty if using userid & hash, the raw user data only updates when you refresh the game</div>
 <div style="float: left;padding-right: 5px; clear: left;">
-  User Id: <input type="text" name="user_id" size="1" value="<?php echo (isset($user->user_id) ? $user->user_id : ''); ?>"><br>
-  User Hash: <input type="password" name="user_hash" value="<?php echo (isset($user->user_hash) ? $user->user_hash : ''); ?>"><br>
+  User Id: <input type="text" id="user_id" name="user_id" autocomplete="username" size="1" value="<?php echo (isset($user->user_id) ? $user->user_id : ''); ?>"><br>
+  User Hash: <input type="password" id="user_hash" name="user_hash" autocomplete="current-password" value="<?php echo (isset($user->user_hash) ? $user->user_hash : ''); ?>"><br>
   Raw User Data: <input autocomplete="off" type="text" name="raw_user_data" value="<?php echo (isset($_POST['raw_user_data']) ? htmlentities($_POST['raw_user_data']) : ''); ?>"><br>
   Talents to Recommend: <input type="text" name="talents_to_recommend" value="<?php echo (isset($user->talents_to_recommend) ? $user->talents_to_recommend : 1); ?>"><br>
   Average Mission Completion in 8h: <input type="text" name="average_mission_completion" value="<?php echo (isset($user->average_mission_completion) ? $user->average_mission_completion : 0); ?>"><br>
@@ -61,6 +64,7 @@ If you fill in the user id and user hash in the left column below it'll populate
   Crusaders owned: <input type="text" name="crusaders_owned" value="<?php echo (isset($user->crusaders_owned) ? $user->crusaders_owned : 0); ?>"><br>
   Skins owned: <input type="text" name="skins_owned" value="<?php echo (isset($user->skins_owned) ? $user->skins_owned : 0); ?>"><br>
   Lowest epic trinket count: <input type="text" name="lowest_epic_trinket_count" value="<?php echo (isset($user->lowest_epic_trinket_count) ? $user->lowest_epic_trinket_count : 0); ?>"><br>
+  Total legendary levels on all gear: <input type="text" name="total_legendary_levels_on_all_gear" value="<?php echo (isset($user->total_legendary_levels_on_all_gear) ? $user->total_legendary_levels_on_all_gear : 0); ?>"><br>
   <div class="hidden" >Storm Rider Gear Bonus: <input type="text" name="storm_rider_gear_bonus" value="<?php echo (isset($user->storm_rider_gear_bonus) ? $user->storm_rider_gear_bonus : 0); ?>"><br></div>
   <div class="hidden" >Clicks per second: <input type="text" name="clicks_per_second" value="<?php echo (isset($user->clicks_per_second) ? $user->clicks_per_second : 0); ?>"><br></div>
   <div class="hidden" >Click damage per DPS: <input type="text" name="click_damage_per_dps" value="<?php echo (isset($user->click_damage_per_dps) ? $user->click_damage_per_dps : 0); ?>"><br></div>
