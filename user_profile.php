@@ -95,7 +95,11 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $user_crusaders = '<table style="float: left; clear:both;"><tr>';
   $crafting_materials_table = '<table style="float: left; clear:both;"><tr><th>Crafting Material</th><th>Amount</th></tr>';
   foreach ($game_defines->crafting_materials AS $crafting_material) {
-    $crafting_materials_table .= '<tr><td>' . $crafting_material->name . '</td><td>' .  $user_info->crafting_materials->{$crafting_material->crafting_material_id} . '</td></tr>';
+    $crafting_materials_amount = 0;
+    if (!empty($user_info->crafting_materials->{$crafting_material->crafting_material_id})) {
+      $crafting_materials_amount = $user_info->crafting_materials->{$crafting_material->crafting_material_id};
+    }
+    $crafting_materials_table .= '<tr><td>' . $crafting_material->name . '</td><td>' .  $crafting_materials_amount . '</td></tr>';
   }
   $crafting_materials_table .= '</table>';
   $column_count = 0;
