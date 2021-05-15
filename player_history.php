@@ -156,7 +156,7 @@ if (!empty($json_response->entries)) {
       if (!empty($entry->info->objective_awards->dungeon_progress)) {
         $reset_reward .= ' also gained ' . $entry->info->objective_awards->dungeon_progress . ' dungeon points and ' . $entry->info->objective_awards->dungeon_coins . ' dungeon coins';
       }
-      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Reset on objective " . $game_defines->campaign_formations[$entry->info->objective_id]['name'] . " for " . $entry->info->idols->gained . " idols, in " . $entry->info->play_time/60 . " minutes at area " . $entry->info->highest_area_unlocked . $reset_reward . "<br>";
+      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Reset on objective " . $game_defines->objectives[$entry->info->objective_id]->name . " for campaign " . $game_defines->campaign_formations[$entry->info->campaign_id]['name'] ." and gained " . $entry->info->idols->gained . " idols, in " . $entry->info->play_time/60 . " minutes at area " . $entry->info->highest_area_unlocked . $reset_reward . "<br>";
     } else if (!empty($entry->info->reset_stats->rewards[0]->reward)) {
       if ($entry->info->reset_stats->rewards[0]->reward == 'challenge_tokens') {
         //The challenge rewards are split between 2 entries, so this fudges it so it reports on 1 line
@@ -173,7 +173,7 @@ if (!empty($json_response->entries)) {
         continue;
       }
     } else if (isset($entry->info->objective_id)) {
-      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Started on objective " . $game_defines->campaign_formations[$entry->info->objective_id]['name'] . "<br>";
+      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Started on objective " . $game_defines->objectives[$entry->info->objective_id]->name . " for campaign " . $game_defines->campaign_formations[$entry->info->campaign_id]['name'] . "<br>";
     } else {
       //I'm not going to bother printing out buff uses currently
       if (empty($entry->info->buff_use_details)) {

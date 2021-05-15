@@ -118,7 +118,10 @@ if (!empty($_POST)) {
         }
       }
 
-      $_POST['missions_accomplished'] = $user_info->stats['missions_completed'];
+      $_POST['missions_accomplished'] = 0;
+      if (!empty($user_info->stats['missions_completed'])) {
+        $_POST['missions_accomplished'] = $user_info->stats['missions_completed'];
+      }
       $_POST['total_idols'] = sprintf('%.0f', $user_info->reset_currency) + sprintf('%.0f', $user_info->reset_currency_spent);
       $_POST['common_and_uncommon_recipes'] = $common_and_uncommon_recipes/2;
       $_POST['rare_recipes'] = $rare_recipes;

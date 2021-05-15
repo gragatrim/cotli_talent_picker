@@ -106,7 +106,11 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $hero_gem_slot_count = count($game_defines->crusaders[1]->hero_gem_slots);
   foreach ($user_info->crusaders AS $id => $crusader) {
     $unowned_crusader_img = '';
-    $crusader_image_info = get_crusader_image($game_defines->crusaders[$crusader->hero_id]->name);
+    if (!empty($game_defines->crusaders[$crusader->hero_id])) {
+      $crusader_image_info = get_crusader_image($game_defines->crusaders[$crusader->hero_id]->name);
+    } else {
+      $crusader_image_info = get_crusader_image('missingno');
+    }
     $image = $crusader_image_info['image'];
     if ($crusader->owned !== 1) {
       $unowned_crusader_img = '<img src="./images/empty_slot.png" width="48px" height="48x" style="margin-left: -48px; opacity: 0.7;">';
