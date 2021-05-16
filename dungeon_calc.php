@@ -6,7 +6,7 @@ include "dungeon_calc_logic.php";
 <div style="color: red;">If you know your actual times, update the default values, the default values assume active/optimal play(and assuming e1100 cap)</div>
 <div style="color: red;font-size: 24px;">If your cap is above e1100 YOU WILL NEED TO UPDATE THE DEFAULT TIME VALUES!!!!</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
-Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : 0); ?>"><br>
+Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? sprintf('%.2e', $user->total_idols) : 0); ?>">(accepts idols using 8.37e15 notation)<br>
 T2 11ths Completed: <input type="text" name="t2_11ths_completed" value="<?php echo (isset($user->t2_11ths_completed) ? $user->t2_11ths_completed : 9); ?>"><br>
 Max area completed in FP: <input type="text" name="max_area_reached" value="<?php echo (isset($user->max_area_reached) ? $user->max_area_reached : 5761); ?>"><br>
 Time to complete FP(in minutes): <input type="text" name="time_to_complete_fp" value="<?php echo (isset($user->time_to_complete_fp) ? $user->time_to_complete_fp : 220); ?>">(Take an average of the time it takes to complete enough FPs + sprints to get back to 100% BI Bonus)<br>
