@@ -9,7 +9,7 @@ include "dungeon_calc_logic.php";
 Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : 0); ?>"><br>
 T2 11ths Completed: <input type="text" name="t2_11ths_completed" value="<?php echo (isset($user->t2_11ths_completed) ? $user->t2_11ths_completed : 9); ?>"><br>
 Max area completed in FP: <input type="text" name="max_area_reached" value="<?php echo (isset($user->max_area_reached) ? $user->max_area_reached : 5761); ?>"><br>
-Time to complete FP(in minutes): <input type="text" name="time_to_complete_fp" value="<?php echo (isset($user->time_to_complete_fp) ? $user->time_to_complete_fp : 220); ?>"><br>
+Time to complete FP(in minutes): <input type="text" name="time_to_complete_fp" value="<?php echo (isset($user->time_to_complete_fp) ? $user->time_to_complete_fp : 220); ?>">(Take an average of the time it takes to complete enough FPs + sprints to get back to 100% BI Bonus)<br>
 Time to complete sprint(in minutes): <input type="text" name="time_to_complete_sprint" value="<?php echo (isset($user->time_to_complete_sprint) ? $user->time_to_complete_sprint : 37); ?>"><br>
 Areas sprintable: <input type="text" name="areas_sprintable" value="<?php echo (isset($user->areas_sprintable) ? $user->areas_sprintable : 3500); ?>"><br>
 Dungeon areas per hour: <input type="text" name="dungeon_areas_per_hour" value="<?php echo (isset($user->dungeon_areas_per_hour) ? $user->dungeon_areas_per_hour : 1100); ?>"><br>
