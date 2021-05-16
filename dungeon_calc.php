@@ -2,8 +2,9 @@
 include "navigation.php";
 include "dungeon_calc_logic.php";
 ?>
-<div>This is updated to work for Season 3 of the dungeons, aka The Waterways.</div>
-<div style="color: red;">If you know your actual times, update the default values, the default values assume active/optimal play</div>
+<div>This is updated to work for Season 3 of the dungeons, aka The Waterways. Also correctly handles the new BI scaling above area 5895.</div>
+<div style="color: red;">If you know your actual times, update the default values, the default values assume active/optimal play(and assuming e1100 cap)</div>
+<div style="color: red;font-size: 24px;">If your cap is above e1100 YOU WILL NEED TO UPDATE THE DEFAULT TIME VALUES!!!!</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 Total Idols: <input type="text" name="total_idols" value="<?php echo (isset($user->total_idols) ? $user->total_idols : 0); ?>"><br>
 T2 11ths Completed: <input type="text" name="t2_11ths_completed" value="<?php echo (isset($user->t2_11ths_completed) ? $user->t2_11ths_completed : 9); ?>"><br>

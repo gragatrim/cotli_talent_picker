@@ -205,16 +205,22 @@ class User {
     }
     //This is to properly handle that you only get an increase in BI every 5 areas and not for every area reached
     $floored_max_area_reached = floor($this->max_area_reached * 2 / 10) / 2 * 10;
-    //$floored_max_area_using_new_bi = 0;
-    //if ($floored_max_area_reached > 5895) {
-    //  $floored_max_area_using_new_bi = $floored_max_area_reached - 5895;
-    //}
-    $fp_idol_average = 0.4*10.201*(1+0.25*($this->t2_11ths_completed-1))*((1-pow(1.0201,(($floored_max_area_reached-95)/5)))/(1-1.0201));
-    //$test_fp_aaaaaaa = 0.4*10.201*((1+0.25*($this->t2_11ths_completed-1))*floor(10*pow(1.01,(0.4*($floored_max_area_reached-95)))));
-    //debug($test_fp_aaaaaaa, 'test_fp_aaaaaaa');
-    //debug($fp_idol_average, 'fp_idol_average');
-    //$fp_new_idol_average = 0.4*10.201*(1+0.25*($this->t2_11ths_completed-1))*((1-pow(1.0201,(($floored_max_area_reached-95)/5)))/(1-1.0201));
+    $floored_max_area_using_new_bi = 0;
+    if ($floored_max_area_reached > 5895) {
+      $floored_max_area_using_new_bi = $floored_max_area_reached - 5895;
+    }
+    if ($floored_max_area_reached > 5895) {
+      //The new BI scaling below will correctly handle the rest
+      $floored_max_area_reached = 5895;
+    }
+    $fp_idol_average_before_5900 = 0.4*10.201*(1+0.25*($this->t2_11ths_completed-1))*((1-pow(1.0201,(($floored_max_area_reached-95)/5)))/(1-1.0201));
     $idols_gained = bcmul(bcmul($this->total_idols, $next_highest_idol_ledge), $this->idol_buff);
+    $fp_idol_gain_at_5895 = ((1+0.25*($this->t2_11ths_completed-1))*floor(10*pow(1.01,(0.4*(5800)))));
+    $new_bi_fp_idol_gain_sum = 0;
+    for ($i = 5; $i <= $floored_max_area_using_new_bi; $i += 5) {
+      $new_bi_fp_idol_gain_sum += $fp_idol_gain_at_5895*pow(1.01, $i/5);
+    }
+    $fp_idol_average = $new_bi_fp_idol_gain_sum * .4 + $fp_idol_average_before_5900;
     $idols_per_hour = $idols_gained / $total_time * 60;
     $idols_per_fp_time = $idols_per_hour / 60 * $this->time_to_complete_fp;
     $idol_over_fp = $idols_per_fp_time - $fp_idol_average * 2 * 1.25;
