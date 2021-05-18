@@ -91,7 +91,7 @@ if ($_POST) {
             $upgrade_effect = str_replace("\$source", $crusader_name, $upgrade_effect);
             $upgrade_effect = str_ireplace("\$amount", $formation_ability_variables[1], $upgrade_effect);
             $upgrade_effect = str_ireplace("amount", $formation_ability_variables[1], $upgrade_effect);
-            if (!empty($formation_ability_variables[3])) {
+            if (!empty($formation_ability_variables[3]) && !empty($formation_abilities[$formation_ability_variables[3]]->name)) {
               $upgrade_effect = preg_replace('/\$fa[^ ]*/', $formation_abilities[$formation_ability_variables[3]]->name, $upgrade_effect);
             }
           } else {
@@ -172,12 +172,15 @@ if ($_POST) {
     //They just numerically index these, and they randomly change the order, so this will ensure we get the right tier
     foreach ($crusader->properties->flavor_tags AS $tag) {
       if (strpos($tag, 'tier') !== false) {
-        $tier = substr($tag, 4);
+        $tier = 'the ' . $ordinal_numbers[substr($tag, 4)] . " tier of the [[" . $campaign_name . "]] Event.";
         break;
       }
     }
+    if (empty($tier)) {
+      $tier = $crusader->properties->flavor_tags[0];
+    }
     $wiki_text = $crusader_infobox . "
-    '''" . $crusader_name . "''' is the new Crusader in the " . $ordinal_numbers[$tier] . " tier of the [[" . $campaign_name . "]] Event.
+    '''" . $crusader_name . "''' is the new Crusader in " . $tier . "
     {{Clr}}
 
     " . $crusader_upgrades_wiki . "
