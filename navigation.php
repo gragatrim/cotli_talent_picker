@@ -348,6 +348,7 @@ function trashDrop(ev) {
       <a href="./fifth_runes.php">5th Rune scaling</a>
       <a href="./best_mission_crusaders.php">Mission Calc(beta)</a>
       <a href="./flash_sale_frenzy.php">Flash Sale Frenzy</a>
+      <a href="./average_bi_drop.php">Average BI drop</a>
       <a href="https://discord.gg/mytZhAT">Community Run Discord Invite</a>
     </div>
   </div>

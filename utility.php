@@ -316,4 +316,25 @@ function get_gem_effect($gem_effects, $game_defines) {
   }
   return $gem_slot_effect;
 }
+
+function get_bi_drop_total($max_area_reached, $t2_11ths_completed) {
+  //This is to properly handle that you only get an increase in BI every 5 areas and not for every area reached
+  $floored_max_area_reached = floor($max_area_reached * 2 / 10) / 2 * 10;
+  $floored_max_area_using_new_bi = 0;
+  if ($floored_max_area_reached > 5895) {
+    $floored_max_area_using_new_bi = $floored_max_area_reached - 5895;
+  }
+  if ($floored_max_area_reached > 5895) {
+    //The new BI scaling below will correctly handle the rest
+    $floored_max_area_reached = 5895;
+  }
+  $fp_idol_average_before_5900 = 0.4*10.201*(1+0.25*($t2_11ths_completed-1))*((1-pow(1.0201,(($floored_max_area_reached-95)/5)))/(1-1.0201));
+  $fp_idol_gain_at_5895 = ((1+0.25*($t2_11ths_completed-1))*floor(10*pow(1.01,(0.4*(5800)))));
+  $new_bi_fp_idol_gain_sum = 0;
+  for ($i = 5; $i <= $floored_max_area_using_new_bi; $i += 5) {
+    $new_bi_fp_idol_gain_sum += $fp_idol_gain_at_5895*pow(1.01, $i/5);
+  }
+  $fp_idol_average = $new_bi_fp_idol_gain_sum * .4 + $fp_idol_average_before_5900;
+  return $fp_idol_average;
+}
 ?>
