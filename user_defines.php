@@ -14,7 +14,7 @@ class UserDefines {
       $json_response->details = json_decode($raw_user_data);
     }
     $this->json_response = $json_response;
-    if (!empty($this->json_response->failure_reason) || empty($json_response->details)) {
+    if (!empty($this->json_response->failure_reason) || empty($json_response->details) || empty($json_response->details->instance_id)) {
       echo "You most likely entered an incorrect userid/hash, please go back and confirm your entry<br>";
       die();
     }
