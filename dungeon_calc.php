@@ -18,6 +18,8 @@ Dungeon only Idol Buff(Check your bonuses one is dungeon only for the entire sea
 </form>
 <div>The rows highlighted in <span class="colorblindblue">blue</span> mean running to that area will provide more idols than running a free play(over the same amount of time).</div>
 <div>The rows highlighted in <span class="colorblindred">red</span> mean running a FP becomes a better use of time.</div>
+<div>The chart compares for idol gain assuming you end your dungeon run at the given area for a row, but compares to a FP ran to your max area reached.</div>
+<div>Comparing in this manner allows for calculating optimal idols/hour.</div>
 <table>
   <tr>
     <th>Area reached</th>
