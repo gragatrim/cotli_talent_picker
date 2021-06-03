@@ -41,6 +41,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     $shareable_user_info->stats = $user_info->stats;
     $shareable_user_info->crafting_materials = $user_info->crafting_materials;
     $shareable_user_info->saved_form_html = $saved_form_html;
+    $shareable_user_info->max_areas_for_dungeons = $user_info->max_areas_for_dungeons;
     $shareable_user_info->all_season_data = new \stdClass();
     foreach ($user_info->all_season_data AS $season_id => $season_info) {
       $shareable_user_info->all_season_data->$season_id = new \stdClass();
@@ -165,6 +166,10 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $gold_missions_completed = '<div style="float: left; clear: left;">Total gold missions completed: ' . $user_info->stats['gold_missions_completed'] . '</div>';
   $ep_info = '<div style="float: left; clear: left;">Total EP among all crusaders: ' . $user_info->total_ep . '</div>';
   $ep_info .= '<div style="float: left; clear: left;">Average EP among all crusaders: ' . ($user_info->total_ep / $user_info->number_owned_crusaders) . '</div>';
+  $max_areas_for_dungeons = '';
+  foreach ($user_info->max_areas_for_dungeons AS $dungeon_id => $area_reached) {
+    $max_areas_for_dungeons .= '<div style="float: left; clear: left;">Reached max area ' . $area_reached . ' for dungeon ' . $game_defines->objectives[$dungeon_id]->name . '</div>';
+  }
   $total_idols_div = '<div style="float: left; clear: left;">Total Idols: ' . (sprintf('%.0f', $user_info->reset_currency) + sprintf('%.0f', $user_info->reset_currency_spent)) . '</div>';
   $all_season_points_div = '';
   foreach ($user_info->all_season_data AS $season) {
@@ -264,6 +269,9 @@ if (!empty($gold_missions_completed)) {
 }
 if (!empty($ep_info)) {
   echo $ep_info;
+}
+if (!empty($max_areas_for_dungeons)) {
+  echo $max_areas_for_dungeons;
 }
 if (!empty($user_crusaders)) {
   echo $user_crusaders;

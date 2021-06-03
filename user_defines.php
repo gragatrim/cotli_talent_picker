@@ -45,6 +45,7 @@ class UserDefines {
     $this->number_owned_crusaders = $crusader_info['number_owned_crusaders'];
     $this->chests = $this->get_chests();
     $this->stats = $this->get_stats();
+    $this->max_areas_for_dungeons = $this->get_max_areas_for_dungeons();
     $this->skins = $this->get_skins();
     $this->formation_saves = $this->get_formation_saves();
     $this->abilities = $this->get_abilities();
@@ -224,6 +225,20 @@ class UserDefines {
       }
     }
   }
+
+  public function get_max_areas_for_dungeons() {
+    $max_areas_for_dungeons = array();
+    if (!empty($this->user_json->stats)) {
+      foreach($this->user_json->stats AS $stat => $value) {
+        if (preg_match('/objective_([0-9]+)_highest_area/', $stat, $objective_id)) {
+          //The 0th index contains the entire string, the 1st just has the capture group
+          $max_areas_for_dungeons[$objective_id[1]] = $value;
+        }
+      }
+    }
+    return $max_areas_for_dungeons;
+  }
+
 }
 ?>
 
