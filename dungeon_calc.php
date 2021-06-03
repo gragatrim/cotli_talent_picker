@@ -23,18 +23,22 @@ Dungeon only Idol Buff(Check your bonuses one is dungeon only for the entire sea
 <table>
   <tr>
     <th>Area reached</th>
-    <th>Rough DPS needed</th>
+    <th>Rough DPS needed(Diff 1)</th>
+    <th>Rough DPS needed(Diff 2)</th>
+    <th>Rough DPS needed(Diff 3)</th>
     <th>Total Time to ledge(in minutes)</th>
     <th>Idols Gained</th>
     <th>Idols per Hour</th>
     <th>Idols per FP time</th>
     <th>Idols gained over FP</th>
   <?php
-  for ($i = 500; $i <= 15000; $i += 500) {
+  for ($i = 500; $i <= 17500; $i += 500) {
     if (empty($dungeon_results[$i])) {
     echo '<tr class="colorblindred">
             <td>' .  $i . '</td>
             <td>' .  $i / 5.16 . '</td>
+            <td>' .  ($i / 5.16 * 4 / 3) . '</td>
+            <td>' .  ($i / 5.16 * 176 / 99) . '</td>
             <td>0</td>
             <td>0</td>
             <td>0</td>
@@ -45,6 +49,8 @@ Dungeon only Idol Buff(Check your bonuses one is dungeon only for the entire sea
       echo '<tr class="' . ($dungeon_results[$i]['idol_over_fp'] > 0 ? 'colorblindblue' : 'colorblindred') . '">
               <td>' .  $i . '</td>
               <td>' .  $i / 5.16 . '</td>
+              <td>' .  ($i / 5.16 * 4 / 3) . '</td>
+              <td>' .  ($i / 5.16 * 176 / 99) . '</td>
               <td>' .  $dungeon_results[$i]['total_time'] . '</td>
               <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_gained']) . '</td>
               <td>' .  sprintf("%.2E", $dungeon_results[$i]['idols_per_hour']) . '</td>
