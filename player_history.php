@@ -173,7 +173,12 @@ if (!empty($json_response->entries)) {
         continue;
       }
     } else if (isset($entry->info->objective_id)) {
-      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Started on objective " . $game_defines->objectives[$entry->info->objective_id]->name . " for campaign " . $game_defines->campaign_formations[$entry->info->campaign_id]['name'] . "<br>";
+      if ($entry->info->campaign_id == 29) {
+        $campaign = 'Dungeons';
+      } else {
+        $campaign = $game_defines->campaign_formations[$entry->info->campaign_id]['name'];
+      }
+      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Started on objective " . $game_defines->objectives[$entry->info->objective_id]->name . " for campaign " . $campaign . "<br>";
     } else {
       //I'm not going to bother printing out buff uses currently
       if (empty($entry->info->buff_use_details)) {
