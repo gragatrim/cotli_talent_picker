@@ -12,9 +12,13 @@ if (!empty($_POST) && !empty($_POST['formation_id'])) {
   if (((!empty($_POST['user_id']) && !empty($_POST['user_hash'])) || !empty($_POST['raw_user_data'])) && !empty($_POST['save_slot'])) {
     $user_info = new UserDefines('', $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
     if (!empty($user_info->formation_saves['campaigns']->{$_POST['formation_id']})) {
-      $saved_form = $user_info->formation_saves['campaigns']->{$_POST['formation_id']}->{$_POST['save_slot']}[0];
+      if (!empty($user_info->formation_saves['campaigns']->{$_POST['formation_id']}->{$_POST['save_slot']}[0])) {
+        $saved_form = $user_info->formation_saves['campaigns']->{$_POST['formation_id']}->{$_POST['save_slot']}[0];
+      }
     } else {
-      $saved_form = $user_info->formation_saves['challenges']->{$_POST['formation_id']}->{$_POST['save_slot']}[0];
+      if (!empty($user_info->formation_saves['challenges']->{$_POST['formation_id']}->{$_POST['save_slot']}[0])) {
+        $saved_form = $user_info->formation_saves['challenges']->{$_POST['formation_id']}->{$_POST['save_slot']}[0];
+      }
     }
   }
   $saved_form_html .= '<div style="float: left; clear: left; position: relative; height: 400px; width: 500px; background-color: lightgray; border: 1px solid;">';
