@@ -171,6 +171,9 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     $max_areas_for_dungeons .= '<div style="float: left; clear: left;">Reached max area ' . $area_reached . ' for dungeon ' . $game_defines->objectives[$dungeon_id]->name . '</div>';
   }
   $total_idols_div = '<div style="float: left; clear: left;">Total Idols: ' . (sprintf('%.0f', $user_info->reset_currency) + sprintf('%.0f', $user_info->reset_currency_spent)) . '</div>';
+  if (!empty($user_info->user_json->current_area)) {
+    $current_area_div = '<div style="float: left; clear: left;">Current Area: ' . $user_info->user_json->current_area . '</div>';
+  }
   $all_season_points_div = '';
   foreach ($user_info->all_season_data AS $season) {
     $all_season_points_div .= '<div style="float: left; clear: left;">Season ' . $season->user_data->season_id . ' Dungeon Points: ' . $season->user_data->points . '</div>';
@@ -245,6 +248,9 @@ if (empty($_GET['saved_info']) && !empty($user_crusaders)) {
 }
 if (!empty($total_idols_div)) {
   echo $total_idols_div;
+}
+if (!empty($current_area_div)) {
+  echo $current_area_div;
 }
 if (!empty($base_gem_total)) {
   echo $base_gem_total;
