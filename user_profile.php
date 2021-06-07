@@ -238,6 +238,7 @@ function get_crusader_loot($crusader, $user_loot, $all_crusader_loot, $all_loot)
 <div style="float: left;padding-right: 5px; clear: left;">
   User Id: <input type="text" name="user_id" size="1" value="<?php echo (isset($_POST['user_id']) ? htmlspecialchars($_POST['user_id']) : ''); ?>"><br>
   User Hash: <input type="password" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? htmlspecialchars($_POST['user_hash']) : ''); ?>"><br>
+  <div>Fill out the above two, or the one below, not both</div>
   Raw User Data: <input autocomplete="off" type="text" name="raw_user_data" value="<?php echo (isset($_POST['raw_user_data']) ? htmlspecialchars($_POST['raw_user_data']) : ''); ?>"><br>
 </div>
 <input style="clear:both; float: left;" type="submit">
