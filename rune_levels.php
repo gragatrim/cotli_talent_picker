@@ -34,9 +34,9 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
       $allowed_crusader = false;
       foreach ($crusader->gems AS $rune_info) {
         //janky, but w/e
-        if ($_POST['join_type'] == 'and') {
+        if (isset($_POST['join_type']) && $_POST['join_type'] == 'and') {
           $rune_join_check = in_array($rune_info->level, $rune_level) && isset($rune_types[$rune_info->gem_id]);
-        } else if ($_POST['join_type'] == 'or') {
+        } else if (isset($_POST['join_type']) && $_POST['join_type'] == 'or') {
           $rune_join_check = in_array($rune_info->level, $rune_level) || isset($rune_types[$rune_info->gem_id]);
         } else {
           $rune_join_check = in_array($rune_info->level, $rune_level) || isset($rune_types[$rune_info->gem_id]);
