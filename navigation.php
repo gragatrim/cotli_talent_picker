@@ -335,6 +335,7 @@ function trashDrop(ev) {
       <a href="./cotli_talents.php">Talent Picker</a>
       <a href="./user_profile.php">User profile</a>
       <a href="./gear_levels.php">View Gear Levels</a>
+      <a href="./rune_levels.php">View Rune Levels</a>
       <a href="./player_history.php">Player History</a>
       <a href="./dungeon_calc.php">Dungeon Calculator</a>
       <a href="./player_saved_formations.php">View saved formations</a>
