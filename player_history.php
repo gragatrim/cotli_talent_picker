@@ -81,6 +81,12 @@ if (!empty($json_response->entries)) {
             echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->red_rubies . " rubies<br>";
           } else if (!empty($entry->info->rewards->arcane_jewels)) {
             echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->arcane_jewels . " Geode<br>";
+          } else if (!empty($entry->info->rewards->chests->{365})) {
+            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->chests->{365} . " Runic Chest<br>";
+          } else if (!empty($entry->info->rewards->chests->{2})) {
+            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->chests->{2} . " Jeweled Chest<br>";
+          } else if (!empty($entry->info->rewards->crafting_materials)) {
+            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->crafting_materials->{1} . " common mats, " . $entry->info->rewards->crafting_materials->{2} . " uncommon mats, " . $entry->info->rewards->crafting_materials->{3} . " rare mats, and " . (!empty($entry->info->rewards->crafting_materials->{4}) ? $entry->info->rewards->crafting_materials->{4} : 0) . " epic mats<br>";
           } else {
             echo "<pre>" . print_r($entry, true) . "</pre>";
           }
