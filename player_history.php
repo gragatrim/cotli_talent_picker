@@ -23,6 +23,8 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
   $crusaders = $game_defines->crusaders;
   $missions = $game_defines->missions;
   $chests = $game_defines->chests;
+  $buffs = $game_defines->buffs;
+  $quests = $game_defines->quests;
 }
 ?>
 <div style="color:red;">This is still very much a work in progress, don't be surprised to see raw json</div>
@@ -86,7 +88,9 @@ if (!empty($json_response->entries)) {
           } else if (!empty($entry->info->rewards->chests->{2})) {
             echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->chests->{2} . " Jeweled Chest<br>";
           } else if (!empty($entry->info->rewards->crafting_materials)) {
-            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->crafting_materials->{1} . " common mats, " . $entry->info->rewards->crafting_materials->{2} . " uncommon mats, " . $entry->info->rewards->crafting_materials->{3} . " rare mats, and " . (!empty($entry->info->rewards->crafting_materials->{4}) ? $entry->info->rewards->crafting_materials->{4} : 0) . " epic mats<br>";
+            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->crafting_materials->{1} . " common mats, " . (!empty($entry->info->rewards->crafting_materials->{2}) ? $entry->info->rewards->crafting_materials->{2} : 0) . " uncommon mats, " . (!empty($entry->info->rewards->crafting_materials->{3}) ? $entry->info->rewards->crafting_materials->{3} : 0) . " rare mats, and " . (!empty($entry->info->rewards->crafting_materials->{4}) ? $entry->info->rewards->crafting_materials->{4} : 0) . " epic mats<br>";
+          } else if (!empty($entry->info->rewards->activate_buffs)) {
+            echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . parse_effect_from_string($buffs[$entry->info->rewards->activate_buffs[0]->buff_id]->effect) . " for " . $entry->info->rewards->activate_buffs[0]->duration . " seconds<br>";
           } else {
             echo "<pre>" . print_r($entry, true) . "</pre>";
           }
@@ -190,11 +194,21 @@ if (!empty($json_response->entries)) {
         $campaign = $game_defines->campaign_formations[$entry->info->campaign_id]['name'];
       }
       echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Started on objective " . $game_defines->objectives[$entry->info->objective_id]->name . " for campaign " . $campaign . "<br>";
-    } else {
-      //I'm not going to bother printing out buff uses currently
-      if (empty($entry->info->buff_use_details)) {
-        echo "<pre>" . print_r($entry, true) . "</pre>";
+    } else if (!empty($entry->info->quest_id)) {
+      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed quest " . $quests[$entry->info->quest_id]->name . ", reward is " . $quests[$entry->info->quest_id]->rewards[0]->amount . ' ' . str_replace('_', ' ', $quests[$entry->info->quest_id]->rewards[0]->reward) . "<br>";
+    } else if (!empty($entry->info->buff_use_details)) {
+      $buffs_used_string = '';
+      $buffs_used_reward_string = '';
+      foreach ($entry->info->buff_use_details AS $id => $buff_details) {
+        $buffs_used_string .= $buff_details->uses . 'x ' . $buffs[$id]->name . ', ';
+        $buffs_used_reward_string .= parse_effect_from_string($buffs[$id]->effect) . '(base duration: ' . $buffs[$id]->duration . ' seconds), ';
       }
+      $buffs_used_string = trim($buffs_used_string, ', ');
+      $buffs_used_reward_string = trim($buffs_used_reward_string, ', ');
+      echo "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Used buff(s) " . $buffs_used_string . ", reward is " . $buffs_used_reward_string . "<br>";
+    } else {
+      //Catch all in case I haven't implemented it yet
+      echo "<pre>" . print_r($entry, true) . "</pre>";
     }
   }
 }

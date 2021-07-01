@@ -337,4 +337,24 @@ function get_bi_drop_total($max_area_reached, $t2_11ths_completed) {
   $fp_idol_average = $new_bi_fp_idol_gain_sum * .4 + $fp_idol_average_before_5900;
   return $fp_idol_average;
 }
+
+function parse_effect_from_string($effect) {
+  $effect_array = explode(',', $effect);
+  $return = $effect;
+  if ($effect_array[0] == 'gold_multiplier_mult') {
+    $return = '+' . $effect_array[1] . '% Gold';
+  } else if ($effect_array[0] == 'dps_to_all_monsters') {
+    $return = 'Deal ' . $effect_array[1] . '% of your DPS to all monsters';
+  } else if ($effect_array[0] == 'global_click_damage_dps_percent') {
+    $return = 'Increase CLK by ' . $effect_array[1] . '% of your DPS';
+  } else if ($effect_array[0] == 'critical_click_chance_damage_mult') {
+    $return = 'Increase your Critical Click Chance by ' . $effect_array[1] . ' and your Damage multiplier by ' . $effect_array[2];
+  } else if ($effect_array[0] == 'increase_monster_spawn_time_mult') {
+    $return = 'Increase monster spawn speed by ' . $effect_array[1] . '%';
+  } else if($effect_array[0] == 'global_dps_multiplier_mult') {
+    $return = 'Increase the DPS of all crusaders by ' . $effect_array[1] . '%';
+  }
+
+  return $return;
+}
 ?>

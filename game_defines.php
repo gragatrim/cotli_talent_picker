@@ -17,6 +17,7 @@ class GameDefines {
     $this->game_json = json_decode($game_info);
     $this->loot = $this->get_loot();
     $this->buffs = $this->get_buffs();
+    $this->quests = $this->get_quests();
     $this->generate_crusader_loot();
     $crusader_info = $this->get_crusaders();
     $this->crusaders = $crusader_info['crusaders'];
@@ -338,5 +339,14 @@ class GameDefines {
     $talent_html .= "</table>";
     return $talent_html;
   }
+
+  public function get_quests() {
+    $quests = array();
+    foreach($this->game_json->daily_quest_defines AS $id => $quest) {
+      $quests[$quest->id] = $quest;
+    }
+    return $quests;
+  }
+
 }
 ?>
