@@ -94,7 +94,7 @@ if (!empty($response)) {
             $chest_type = '';
             $chests_opened = 0;
             if (!empty($entry->info->normal_chests)) {
-              if ((!isset($_POST['show_chests_opened_by_crusaders']) || $_POST['show_chests_opened_by_crusaders'] == false) && $entry->info->opened_by == 'Crusader Ability') {
+              if ((!isset($_POST['show_chests_opened_by_crusaders']) || $_POST['show_chests_opened_by_crusaders'] == false) && (isset($entry->info->opened_by) && $entry->info->opened_by == 'Crusader Ability')) {
                 //skip to the next entry
                 continue;
               } else {
