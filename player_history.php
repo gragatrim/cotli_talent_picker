@@ -29,10 +29,12 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash'])) {
 ?>
 <div style="color:red;">This is still very much a work in progress, don't be surprised to see raw json</div>
 <div>This doesn't show chest/bi drop entries so it's possible pages will have nothing on them</div>
+<div>Additionally the gold gained might be slightly off for chest opening</div>
 <form action="<?php $_SERVER['PHP_SELF'];?>" method="post">
 User Id: <input type="text" name="user_id" size="1" value="<?php echo (isset($_POST['user_id']) ? $_POST['user_id'] : ''); ?>"><br>
 User Hash: <input type="password" name="user_hash" value="<?php echo (isset($_POST['user_hash']) ? $_POST['user_hash'] : ''); ?>"><br>
 Show Bonus Boss Idols: <input type="checkbox" name="show_bonus_boss_idols" value="true" <?php echo ((!isset($_POST['show_bonus_boss_idols']) || $_POST['show_bonus_boss_idols'] == false) ? '' : 'checked'); ?>><br>
+Show Chests opened by Crusaders: <input type="checkbox" name="show_chests_opened_by_crusaders" value="true" <?php echo ((!isset($_POST['show_chests_opened_by_crusaders']) || $_POST['show_chests_opened_by_crusaders'] == false) ? '' : 'checked'); ?>><br>
 Page: <input type="text" name="page" value="<?php echo (isset($_POST['page']) ? $_POST['page'] : 1); ?>"><br>
 <input type="submit">
 <?php
@@ -100,8 +102,13 @@ if (!empty($json_response->entries)) {
           $chest_type = '';
           $chests_opened = 0;
           if (!empty($entry->info->normal_chests)) {
-            $chest_type = 'silver chest(s)';
-            $chests_opened = $entry->info->normal_chests->used;
+            if ((!isset($_POST['show_chests_opened_by_crusaders']) || $_POST['show_chests_opened_by_crusaders'] == false) && $entry->info->opened_by == 'Crusader Ability') {
+              //skip to the next entry
+              continue;
+            } else {
+              $chest_type = 'silver chest(s)';
+              $chests_opened = $entry->info->normal_chests->used;
+            }
           } else if(!empty($entry->info->rare_chests)) {
             $chest_type = 'jeweled chest(s)';
             $chests_opened = $entry->info->rare_chests->used;
@@ -109,7 +116,7 @@ if (!empty($json_response->entries)) {
             $chest_type = $chests[$entry->info->chest_type_id]->name;
             $chests_opened = $entry->info->chests->used;
           }
-          $gold_gained = 0;
+          $gold_gained = '0e0';
           $common_mats = 0;
           $uncommon_mats = 0;
           $rare_mats = 0;
@@ -143,6 +150,10 @@ if (!empty($json_response->entries)) {
                 $rune_array[$rune->id][$rune->level] += $rune->count;
               }
             }
+            if (!empty($chest->add_gold_amount)) {
+              $current_gold_gained = $gold_gained;
+              $gold_gained = gold_gain_addition($chest->add_gold_amount, $current_gold_gained);
+            }
           }
           foreach ($rune_array AS $rune_id => $runes_gained) {
             foreach ($runes_gained AS $rune_level => $gain) {
@@ -152,7 +163,7 @@ if (!empty($json_response->entries)) {
           $rune_gain = rtrim($rune_gain, ", ");
 
           if (empty($rune_gain)) {
-            $chest_contents = $common_mats . " common materials, " . $uncommon_mats . " uncommon materials, " . $rare_mats . " rare materials, and " . $epic_mats . " epic materials<br>";
+            $chest_contents = $common_mats . " common materials, " . $uncommon_mats . " uncommon materials, " . $rare_mats . " rare materials, and " . $epic_mats . " epic materials and " . $gold_gained . " gold<br>";
           } else {
             $chest_contents = $rune_gain . "<br>";
           }

@@ -357,4 +357,22 @@ function parse_effect_from_string($effect) {
 
   return $return;
 }
+
+function gold_gain_addition($number1, $number2) {
+  //This function needs to exists since the gold gained is returned as a string using scientific notation and I can't figure out how to convert it to an actual number for use with bcmath
+  $sum = array(0,0);
+  $number1_array = explode('e', $number1);
+  $number2_array = explode('e', $number2);
+  //I'm also going to be lazy and not deal with converting 10.XX to 1.XX and increasing the exponent, or if the exponents are different actually adding in the smaller amount
+  if ($number1_array[1] == $number2_array[1]) {
+    $sum[0] = $number1_array[0] + $number2_array[0];
+    $sum[1] = $number1_array[1];
+  } else if ($number1_array[1] > $number2_array[1]) {
+    $sum = $number1_array;
+  } else {
+    $sum = $number2_array;
+  }
+
+  return $sum[0] . 'e' . $sum[1];
+}
 ?>
