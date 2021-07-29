@@ -16,6 +16,7 @@ class GameDefines {
     }
     $this->game_json = json_decode($game_info);
     $this->loot = $this->get_loot();
+    $this->golden_gear = $this->get_golden_gear();
     $this->buffs = $this->get_buffs();
     $this->quests = $this->get_quests();
     $this->generate_crusader_loot();
@@ -48,6 +49,16 @@ class GameDefines {
       $loot[$item->id] = $item;
     }
     return $loot;
+  }
+
+  public function get_golden_gear() {
+    $golden_gear = array();
+    foreach($this->game_json->loot_defines AS $id => $item) {
+      if ($item->golden != 0) {
+        $golden_gear[$item->hero_id][$item->slot_id][$item->rarity] = $item;
+      }
+    }
+    return $golden_gear;
   }
 
   public function get_buffs() {

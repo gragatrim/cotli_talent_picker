@@ -334,6 +334,7 @@ function trashDrop(ev) {
     <div class="dropdown-content">
       <a href="./cotli_talents.php">Talent Picker</a>
       <a href="./user_profile.php">User profile</a>
+      <a href="./golden_gear.php">View Golden Gear</a>
       <a href="./gear_levels.php">View Gear Levels</a>
       <a href="./rune_levels.php">View Rune Levels</a>
       <a href="./player_history.php">Player History</a>

@@ -1,8 +1,8 @@
 <?php
 include "navigation.php";
-$game_defines = new GameDefines();
-$game_json = $game_defines->game_json;
 if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['raw_user_data'])) {
+  $game_defines = new GameDefines();
+  $game_json = $game_defines->game_json;
   $user_info = new UserDefines('', $_POST['user_id'], $_POST['user_hash'], $_POST['raw_user_data']);
   $user_crusaders = '<table style="float: left; clear:both;"><tr>';
   $gear_level = array();
