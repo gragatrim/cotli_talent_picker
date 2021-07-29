@@ -163,6 +163,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   }
   $chests_opened = '<div style="float: left; clear: left;">Total normal silver chests opened: ' . $user_info->stats['normal_chests_opened'] . '</div>';
   $chests_opened .= '<div style="float: left; clear: left;">Total normal jeweled chests opened: ' . $user_info->stats['rare_chests_opened'] . '</div>';
+  $chests_opened .= '<div style="float: left; clear: left;">Total Runic chests opened: ' . $user_info->stats['chests_opened_type_365'] . '</div>';
   $gold_missions_completed = '<div style="float: left; clear: left;">Total gold missions completed: ' . (isset($user_info->stats['gold_missions_completed']) ? $user_info->stats['gold_missions_completed'] : 0) . '</div>';
   $ep_info = '<div style="float: left; clear: left;">Total EP among all crusaders: ' . $user_info->total_ep . '</div>';
   $ep_info .= '<div style="float: left; clear: left;">Average EP among all crusaders: ' . ($user_info->total_ep / $user_info->number_owned_crusaders) . '</div>';
