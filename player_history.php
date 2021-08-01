@@ -85,10 +85,14 @@ if (!empty($response)) {
               $player_history .= "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->crafting_materials->{1} . " common mats, " . (!empty($entry->info->rewards->crafting_materials->{2}) ? $entry->info->rewards->crafting_materials->{2} : 0) . " uncommon mats, " . (!empty($entry->info->rewards->crafting_materials->{3}) ? $entry->info->rewards->crafting_materials->{3} : 0) . " rare mats, and " . (!empty($entry->info->rewards->crafting_materials->{4}) ? $entry->info->rewards->crafting_materials->{4} : 0) . " epic mats<br>";
             } else if (!empty($entry->info->rewards->activate_buffs)) {
               $player_history .= "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . parse_effect_from_string($buffs[$entry->info->rewards->activate_buffs[0]->buff_id]->effect) . " for " . $entry->info->rewards->activate_buffs[0]->duration . " seconds<br>";
+            } else if (!empty($entry->info->rewards->gem_solvent)) {
+              $player_history .= "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->gem_solvent . " Solvent<br>";
             } else {
               $player_history .= "<pre>" . print_r($entry, true) . "</pre>";
             }
           }
+        } else if (!empty($entry->info->action) && $entry->info->action == 'redeem_code') {
+          $player_history .= "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Redeemed code " . $entry->info->code . "<br>";
         } else if (!empty($entry->info->action) && ($entry->info->action == 'use_normal' || $entry->info->action == 'use_rare' || $entry->info->action == 'use_generic_chest')) {
           if (!empty($entry->info->normal_chests) || !empty($entry->info->rare_chests) || !empty($entry->info->chests)) {
             $chest_type = '';
@@ -182,8 +186,6 @@ if (!empty($response)) {
         } else {
           $player_history .= "<pre>" . print_r($entry, true) . "</pre>";
         }
-      } else if (!empty($entry->info->code)) {
-        $player_history .= "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Redeemed code " . $entry->info->code . "<br>";
       } else if (isset($entry->info->action) && $entry->info->action === 'add_normal') {
         if (!empty($entry->info->bonus_boss_idols) && $entry->info->bonus_boss_idols->gained > 0 && isset($_POST['show_bonus_boss_idols']) && $_POST['show_bonus_boss_idols'] == true) {
           $player_history .= "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Gained " . $entry->info->bonus_boss_idols->gained . " bonus boss idols from area " . $entry->info->chest_area_sent . "<br>";
