@@ -170,7 +170,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $ep_info = '<div style="float: left; clear: left;">Total EP among all crusaders: ' . $user_info->total_ep . '</div>';
   $ep_info .= '<div style="float: left; clear: left;">Average EP among all crusaders: ' . ($user_info->total_ep / $user_info->number_owned_crusaders) . '</div>';
   $max_areas_for_dungeons = '';
-  $crusader_gem_levels = '<div style="float: left; clear: left;">You have: ' . $total_gem_levels . ' total gem levels and ' . ($total_gem_levels / 5) . ' stacks for runic hoards</div>';
+  $crusader_gem_levels = '<div style="float: left; clear: left;">You have: ' . $total_gem_levels . ' total rune levels and ' . ($total_gem_levels / 5) . ' stacks for runic hoards</div>';
   foreach ($user_info->max_areas_for_dungeons AS $dungeon_id => $area_reached) {
     $max_areas_for_dungeons .= '<div style="float: left; clear: left;">Reached max area ' . $area_reached . ' for dungeon ' . $game_defines->objectives[$dungeon_id]->name . '</div>';
   }
