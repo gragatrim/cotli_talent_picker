@@ -105,6 +105,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $crafting_materials_table .= '</table>';
   $column_count = 0;
   $hero_gem_slot_count = count($game_defines->crusaders[1]->hero_gem_slots);
+  $total_gem_levels = 0;
   foreach ($user_info->crusaders AS $id => $crusader) {
     $unowned_crusader_img = '';
     if (!empty($game_defines->crusaders[$crusader->hero_id])) {
@@ -138,6 +139,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
                      5 => 'text-align: center;width: 15px; height: 15px;position: relative;top: -52px; left: 18px;');
     foreach ($crusader_gems AS $slot => $crusader_gem) {
       if (!empty($crusader_gem)) {
+        $total_gem_levels += $crusader_gem->level;
         $crusader_gem_td .= '<div style="' . $gem_css[$slot] . '" class="' . strtok($game_defines->gems[$crusader_gem->gem_id]->name, " ") . '">' . $crusader_gem->level . '</div>';
       } else {
         $crusader_gem_td .= '<div style="' . $gem_css[$slot] . '">0</div>';
@@ -168,6 +170,7 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
   $ep_info = '<div style="float: left; clear: left;">Total EP among all crusaders: ' . $user_info->total_ep . '</div>';
   $ep_info .= '<div style="float: left; clear: left;">Average EP among all crusaders: ' . ($user_info->total_ep / $user_info->number_owned_crusaders) . '</div>';
   $max_areas_for_dungeons = '';
+  $crusader_gem_levels = '<div style="float: left; clear: left;">You have: ' . $total_gem_levels . ' total gem levels and ' . ($total_gem_levels / 5) . ' stacks for runic hoards</div>';
   foreach ($user_info->max_areas_for_dungeons AS $dungeon_id => $area_reached) {
     $max_areas_for_dungeons .= '<div style="float: left; clear: left;">Reached max area ' . $area_reached . ' for dungeon ' . $game_defines->objectives[$dungeon_id]->name . '</div>';
   }
@@ -184,6 +187,9 @@ if (!empty($_POST['user_id']) && !empty($_POST['user_hash']) || !empty($_POST['r
     $base_gem_total .= 'You have the equivalent of ' . $gem_count . ' lvl 1 ' . $game_defines->gems[$gem_id]->name .'s, and ' . $user_info->total_gems_available[$gem_id] . ' available <br>';
   }
   $base_gem_total .= '</div>';
+  if (!empty($user_info->stats['heroes_with_all_gem_slots_equipped'])) {
+    $heroes_with_all_gem_slots_equipped = '<div style="float: left;clear: left;">You have ' . $user_info->stats['heroes_with_all_gem_slots_equipped'] . ' crusaders with all gem slots equipped</div>';
+  }
 }
 
 //TODO this function is horrible it needs to be refactored, aka just removed and done better
@@ -256,6 +262,12 @@ if (!empty($current_area_div)) {
 }
 if (!empty($base_gem_total)) {
   echo $base_gem_total;
+}
+if (!empty($crusader_gem_levels)) {
+  echo $crusader_gem_levels;
+}
+if (!empty($heroes_with_all_gem_slots_equipped)) {
+  echo $heroes_with_all_gem_slots_equipped;
 }
 if (!empty($all_season_points_div)) {
   echo $all_season_points_div;
