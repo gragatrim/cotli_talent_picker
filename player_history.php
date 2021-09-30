@@ -61,7 +61,7 @@ if (!empty($response)) {
                 $mission_crusaders .= ' ' . $crusaders[$hero]->name;
               }
               $player_history .= "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", sent crusaders" . $mission_crusaders . " each received " . $entry->info->rewards->enchantment->points . " ep<br>";
-          } else if (!empty($entry->info->rewards->crafting_recipes)) {
+            } else if (!empty($entry->info->rewards->crafting_recipes)) {
               $crafting_reward = '';
               $hero_crafting_reward = '';
               foreach ($entry->info->rewards->crafting_recipes AS $crafting_recipe) {
@@ -87,6 +87,8 @@ if (!empty($response)) {
               $player_history .= "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . parse_effect_from_string($buffs[$entry->info->rewards->activate_buffs[0]->buff_id]->effect) . " for " . $entry->info->rewards->activate_buffs[0]->duration . " seconds<br>";
             } else if (!empty($entry->info->rewards->gem_solvent)) {
               $player_history .= "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->gem_solvent . " Solvent<br>";
+            } else if (!empty($entry->info->rewards->dungeon_progress)) {
+              $player_history .= "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Successfully completed mission " . $missions[$entry->info->mission_id]->name . ", reward is " . $entry->info->rewards->dungeon_progress . " Dungeon Points<br>";
             } else {
               $player_history .= "<pre>" . print_r($entry, true) . "</pre>";
             }
