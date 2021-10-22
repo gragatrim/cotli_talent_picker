@@ -172,9 +172,14 @@ if (!empty($response)) {
         } else if (!empty($entry->info->action) && ($entry->info->action == 'talent_payout')) {
             $player_history .= "<div><span style='font-weight: bold;'>" . $entry->history_date . "</span>: Gained  " . $entry->info->reward->amount . " common materials for " . $entry->info->reward->details . "</div>";
         //Should eventually uncomment this and implement the things caught here... but I'm lazy
+        } else if (isset($entry->info->action) && $entry->info->action == 'add_gems') {
+            $rune_type = key($entry->info);
+            $rune_level = key($entry->info->{$rune_type});
+            $runes_gained = $entry->info->{$rune_type}->{$rune_level}->after - $entry->info->{$rune_type}->{$rune_level}->before;
+            $player_history .= "<span style='font-weight: bold;'>" . $entry->history_date . "</span>: Gained " . $runes_gained . " level " . $rune_level . " " . $game_defines->gems[$rune_type]->name . " rune(s)<br>";
         //} else {
-        //  //Catch all in case I haven't implemented it yet
-        //  $player_history .= "<pre>" . print_r($entry, true) . "</pre>";
+          //Catch all in case I haven't implemented it yet
+          //$player_history .= "<pre>" . print_r($entry, true) . "</pre>";
         }
       } else if (!empty($entry->info->idols)) {
         $reset_reward = '';
