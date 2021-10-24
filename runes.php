@@ -71,7 +71,7 @@
     if (empty($crusader->hero_gem_slots) || empty($crusader->name)) {
       continue;
     }
-    if ($i >= 9) {
+    if ($i >= 5) {
       echo '</tr><tr>';
       $i = 0;
     }

@@ -311,6 +311,10 @@ function get_gem_effect($gem_effects, $game_defines) {
     $gem_slot_effect .= 'Increase All Gold Found<br>';
   } else if ($effect_array[0] == 'monster_explodes_damage_increase') {
     $gem_slot_effect .= 'Increases the explosion damage of ' . $game_defines->formation_abilities[$effect_array[2]]->name . '<br>';
+  } else if ($effect_array[0] == 'buff_garnet_stack_conversion_rate') {
+    $gem_slot_effect .= 'Increases the conversion rate of good luck stacks <br>';
+  } else if ($effect_array[0] == 'buff_garnet_warp_areas') {
+    $gem_slot_effect .= 'Increases the areas skipped by warping<br>';
   } else {
     $gem_slot_effect .= $gem_effects->effect_string . '<br>';
   }
