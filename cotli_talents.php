@@ -44,6 +44,7 @@ If you fill in the user id and user hash in the left column below it'll populate
   Hitting Level Cap on Crusaders: <input type="checkbox" name="hitting_level_cap" value="true" <?php echo ((isset($user->hitting_level_cap) && $user->hitting_level_cap == false) ? '' : 'checked'); ?>><br>
   Ignore Impatience: <input type="checkbox" name="ignore_impatience" value="true" <?php echo ((isset($user->ignore_impatience) && $user->ignore_impatience == false) ? '' : 'checked'); ?>><br>
   Ignore Must Be Magic: <input type="checkbox" name="ignore_must_be_magic" value="true" <?php echo ((!isset($user->ignore_must_be_magic) || $user->ignore_must_be_magic == false) ? '' : 'checked'); ?>><br>
+  Ignore Scars to Your Powerful: <input type="checkbox" name="ignore_scars_to_your_powerful" value="true" <?php echo ((!isset($user->ignore_scars_to_your_powerful) || $user->ignore_scars_to_your_powerful == false) ? '' : 'checked'); ?>><br>
   Ignore Front Line Fire: <input type="checkbox" name="ignore_front_line_fire" value="true" <?php echo ((!isset($user->ignore_front_line_fire) || $user->ignore_front_line_fire == false) ? '' : 'checked'); ?>><br>
   Ignore Backline Defensive: <input type="checkbox" name="ignore_backline_defensive" value="true" <?php echo ((!isset($user->ignore_backline_defensive) || $user->ignore_backline_defensive == false) ? '' : 'checked'); ?>><br>
 </div>

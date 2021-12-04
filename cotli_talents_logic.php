@@ -17,6 +17,9 @@ if (!empty($_POST)) {
     if (!isset($_POST['ignore_must_be_magic'])) {
       $_POST['ignore_must_be_magic'] = false;
     }
+    if (!isset($_POST['ignore_scars_to_your_powerful'])) {
+      $_POST['ignore_scars_to_your_powerful'] = false;
+    }
     if (!isset($_POST['ignore_front_line_fire'])) {
       $_POST['ignore_front_line_fire'] = false;
     }

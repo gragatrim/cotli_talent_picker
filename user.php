@@ -73,7 +73,6 @@ class User {
     foreach ($this->talents AS $talent_name => $talent) {
       $total_levels += $talent->current_level;
     }
-    return $total_levels;
   }
 
   public function get_max_talents() {
@@ -173,6 +172,7 @@ class User {
     }
     if (($this->ignore_impatience == true && $talent->name == 'impatience')
       || ($this->ignore_must_be_magic == true && $talent->name == 'must_be_magic')
+      || ($this->ignore_scars_to_your_powerful == true && $talent->name == 'scars_to_your_powerful')
       || ($this->ignore_front_line_fire == true && $talent->name == 'front_line_fire')
       || ($this->ignore_backline_defensive == true && $talent->name == 'backline_defensive')) {
       $is_valid = false;
