@@ -110,6 +110,8 @@ class User {
   public function get_next_talent_to_buy() {
     $talent_to_buy = '';
     $best_dps_diff = 0;
+    $current_talent_damage = $talent->get_current_damage();
+    $current_total_damage = $this->get_total_damage();
     if ($this->debug) {
       echo "<br style='clear: left;'>";
     }
@@ -117,8 +119,6 @@ class User {
       if (!$this->is_valid_talent($talent)) {
         continue;
       }
-      $current_talent_damage = $talent->get_current_damage();
-      $current_total_damage = $this->get_total_damage();
       $next_talent_level_cost = $talent->get_cost_at_level($talent->current_level);
       if (($talent->current_level + 1 > $talent->max_level && $talent->max_level != -1) || bccomp($next_talent_level_cost, bcdiv($this->total_idols, 3, 40)) == 1) {
         continue;
