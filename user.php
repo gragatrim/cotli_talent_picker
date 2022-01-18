@@ -110,7 +110,6 @@ class User {
   public function get_next_talent_to_buy() {
     $talent_to_buy = '';
     $best_dps_diff = 0;
-    $current_talent_damage = $talent->get_current_damage();
     $current_total_damage = $this->get_total_damage();
     if ($this->debug) {
       echo "<br style='clear: left;'>";
@@ -128,6 +127,7 @@ class User {
       $future_total_damage = $future_talents_user->get_total_damage();
       $damage_diff = bcdiv(bcdiv(bcsub($future_total_damage, $current_total_damage, 40), $current_total_damage, 40), $next_talent_level_cost, 40);
       if ($this->debug) {
+        $current_talent_damage = $talent->get_current_damage();
         echo "<br>" . $talent_name . " DPS diff of " . $damage_diff
         . "<br>future_total_damage: " . format($future_total_damage) . " current_total_damage: " . format($current_total_damage)
         . "<br>next_talent_level_cost: " . format($next_talent_level_cost) . " damage_diff: " . format($damage_diff)
