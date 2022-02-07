@@ -92,6 +92,7 @@ function generate_formation_image($saved_form, $objective, $all_crusaders, $camp
       }
     }
   }
+
   if (!empty($campaign_formations)) {
     foreach ($campaign_formations AS $formation) {
       if ($formation['name'] == $objective) {
@@ -147,7 +148,7 @@ function generate_saved_forms($forms, $game_defines) {
         $height = 'height: 300px;';
       }
       if (!empty($game_defines->objectives[$id]->campaign_id) && $game_defines->objectives[$id]->campaign_id == 29) {
-        $width = 'width: 270px;';
+        $width = 'width: 300px;';
       } else {
         $width = 'width: 330px;';
       }
@@ -378,5 +379,11 @@ function gold_gain_addition($number1, $number2) {
   }
 
   return $sum[0] . 'e' . $sum[1];
+}
+
+function seconds_to_time($seconds) {
+  $dtF = new \DateTime('@0');
+  $dtT = new \DateTime("@$seconds");
+  return $dtF->diff($dtT)->format('%a days, %h hours, %i minutes and %s seconds');
 }
 ?>
